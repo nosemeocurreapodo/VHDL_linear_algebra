@@ -34,11 +34,11 @@ architecture RTL of Vector8_dot_fast is
 	--3 stage
 	signal Vector_aux1_stage3      : Vector4;
 	signal Third_stage_request_id  : request_id;
-	signal Third_stage_enable      : std_logic;
+	signal Third_stage_enable      : std_logic := '0';
 	--4 stage
 	signal Vector_aux1_stage4      : Vector2;
 	signal Forth_stage_request_id  : request_id;
-	signal Forth_stage_enable      : std_logic;
+	signal Forth_stage_enable      : std_logic := '0';
 
 begin
 
