@@ -20,6 +20,19 @@ component Matrix3x3_VMultiplier_fast is
 	);
 end component Matrix3x3_VMultiplier_fast;
 	
+component Vector8_dot_fast is
+	port(
+		clk                      : in  std_logic;
+		new_operation_request    : in  std_logic;
+		new_operation_request_id : in  request_id;
+		new_operation_done       : out std_logic;
+		new_operation_done_id    : out request_id;
+		Vector1_input            : in  Vector8;
+		Vector2_input            : in  Vector8;
+		output                   : out scalar
+	);
+end component Vector8_dot_fast;
+
 end package Matrix_component_pack;
 
 package body Matrix_component_pack is

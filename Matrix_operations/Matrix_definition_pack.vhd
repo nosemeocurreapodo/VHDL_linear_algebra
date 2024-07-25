@@ -8,6 +8,7 @@ package Matrix_definition_pack is
 
 	-- tipos especificos de el paquete de operaciones con matrices
 	type Matrix3x3 is array (8 downto 0) of scalar;
+	type Vector8 is array (7 downto 0) of scalar;
 	type Vector3 is array (2 downto 0) of scalar;
 	type Vector2 is array (1 downto 0) of scalar;
 	
