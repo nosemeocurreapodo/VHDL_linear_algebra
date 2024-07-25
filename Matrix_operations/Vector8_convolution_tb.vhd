@@ -31,10 +31,13 @@ architecture rtl of Vector8_convolution_tb is
 	signal new_operation_request    : std_logic := '0';
 	signal new_operation_request_id : request_id;
 	signal new_operation_done       : std_logic;
-	signal new_operation_done_id    : std_logic;
+	signal new_operation_done_id    : request_id;
 	signal Vector1_input            : Vector8;
 	signal Vector2_input            : Vector8;
-	signal scalar_ouput             : scalar;
+	signal scalar_output            : scalar;
+
+	type state_type is (IDLE, BUSY, READY);
+	signal state : state_type := IDLE;
 
 	-- random number generator
 	signal rand_num : integer := 0;
@@ -57,16 +60,13 @@ begin
 		variable Vector_input_B : Vector8;
 		variable scalar_output  : scalar;
 
-		type state_type is (IDLE, BUSY, READY);
-		signal state : state_type := IDLE;
-
 		--random number generator
 		variable seed1, seed2  : positive; -- seed values for random generator
 		variable rand          : real;  -- random real-number value in range 0 to 1.0  
 		variable range_of_rand : real := 10.0; -- the range of random values created will be 0 to +1000.
 	begin
 		if (rising_edge(clk)) then
-			case state is:
+			case state is
 				when IDLE =>
 					--initialize data
 					for I in 0 to 7 loop
@@ -102,7 +102,6 @@ begin
 			--			
 			--				FPU_BUS_to.new_request_id <= to_signed(aux, request_id_size);
 
-			end if;
 		end if;
 	end process verify;
 end rtl;
