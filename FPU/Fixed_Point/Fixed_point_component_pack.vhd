@@ -3,7 +3,6 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 use work.Fixed_point_definition.all;
-use work.Fixed_point_interface_pack.all;
 use work.request_id_pack.all;
 
 package Fixed_point_component_pack is
@@ -59,23 +58,7 @@ package Fixed_point_component_pack is
 		);
 	end component Fixed_point_Divider;
 
-	component Fixed_point_unit is
-		port(
-			clk              : in  std_logic;
-			opa              : in  fixed_point;
-			opb              : in  fixed_point;
-			operation        : in  FPU_operation;
-			output           : out fixed_point;
-			exceptions       : out FPU_exception;
-			-- communicacion
-			new_request      : in  std_logic;
-			new_request_id   : in  request_id;
-			request_ready    : out std_logic;
-			request_ready_id : out request_id
-		);
-	end component Fixed_point_unit;
-
 end package Fixed_point_component_pack;
 
-package body My_Fixed_point_component_pack is
-end package body My_Fixed_point_component_pack;
+package body Fixed_point_component_pack is
+end package body Fixed_point_component_pack;

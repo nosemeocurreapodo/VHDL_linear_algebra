@@ -3,9 +3,9 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 use work.request_id_pack.all;
 use work.Fixed_point_definition.all;
-use work.FPU_interface_pack.all;
+use work.FPU_unit_common_pack.all;
 
-package Fixed_point_interface_pack is
+package Fixed_point_unit_interface_pack is
 
 	type BUS_to_fixed_point_unit is record
 		opa            : fixed_point;
@@ -30,8 +30,8 @@ package Fixed_point_interface_pack is
 		output            : fixed_point;
 	end record;
 
-end package Fixed_point_interface_pack;
+end package Fixed_point_unit_interface_pack;
 
-package body Fixed_point_interface_pack is
+package body Fixed_point_unit_interface_pack is
 
-end package body Fixed_point_interface_pack;
+end package body Fixed_point_unit_interface_pack;

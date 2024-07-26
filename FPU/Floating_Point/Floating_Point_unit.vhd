@@ -2,25 +2,10 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 use work.request_id_pack.all;
-use work.My_Floating_point_definition.all;
-use work.My_Floating_point_component_pack.all;
-use work.FPU_interface_pack.all;
-
-entity My_Floating_point_unit is
-	port(
-		clk              : in  std_logic;
-		opa              : in  floating_point;
-		opb              : in  floating_point;
-		operation        : in  FPU_operation;
-		output           : out floating_point;
-		exceptions       : out FPU_exception;
-		-- communicacion
-		new_request      : in  std_logic;
-		new_request_id   : in  request_id;
-		request_ready    : out std_logic;
-		request_ready_id : out request_id
-	);
-end entity My_Floating_point_unit;
+use work.Floating_point_definition.all;
+use work.Floating_point_component_pack.all;
+use work.Floating_point_unit_interface_pack.all;
+use work.FPU_unit_common_pack.all;
 
 
 entity Floating_point_unit is
@@ -31,26 +16,7 @@ entity Floating_point_unit is
 	);
 end entity;
 
-architecture RTL of Floating_point_unit is
-begin
-	-- instantiate fpu
-	i_fpu : My_Floating_point_unit port map(
-			clk                  => clk,
-			opa                  => FPU_BUS_in.opa,
-			opb                  => FPU_BUS_in.opb,
-			operation            => FPU_BUS_in.fpu_op,
-			output               => FPU_BUS_out.output,
-			exceptions           => FPU_BUS_out.FPU_exc,
-			-- communicacion
-			new_request          => FPU_BUS_in.new_request,
-			new_request_id       => FPU_BUS_in.new_request_id,
-			request_ready        => FPU_BUS_out.request_ready,
-			request_ready_id     => FPU_BUS_out.request_ready_id);
-
-end architecture RTL;
-
-
-architecture RTL2 of My_Floating_point_unit is
+architecture RTL2 of Floating_point_unit is
 	signal opa_reg           : floating_point;
 	signal opb_reg           : floating_point;
 	signal op_reg            : FPU_operation;
@@ -76,7 +42,7 @@ architecture RTL2 of My_Floating_point_unit is
 	signal div_output_ready : std_logic;
 
 begin
-	adder_int : My_Floating_point_Adder port map(
+	adder_int : Floating_point_Adder port map(
 			clk       => clk,
 			opa       => opa_reg,
 			opb       => opb_reg,
@@ -86,7 +52,7 @@ begin
 			op_id_out => add_out_id,
 			op_ready  => add_output_ready);
 
-	substractor_int : My_Floating_point_Substractor port map(
+	substractor_int : Floating_point_Substractor port map(
 			clk       => clk,
 			opa       => opa_reg,
 			opb       => opb_reg,
@@ -96,7 +62,7 @@ begin
 			op_id_out => sub_out_id,
 			op_ready  => sub_output_ready);
 
-	multiplier_int : My_Floating_Point_Multiplier port map(
+	multiplier_int : Floating_Point_Multiplier port map(
 			clk       => clk,
 			opa       => opa_reg,
 			opb       => opb_reg,
@@ -106,7 +72,7 @@ begin
 			op_id_out => mul_out_id,
 			op_ready  => mul_output_ready);
 
-	divider_int : My_Floating_Point_Divider port map(
+	divider_int : Floating_Point_Divider port map(
 			clk       => clk,
 			opa       => opa_reg,
 			opb       => opb_reg,

@@ -2,7 +2,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-package FPU_common_pack is
+package FPU_unit_common_pack is
 	type FPU_operation is (ADD, SUB, MUL, DIV, SQRT);
 	type FPU_rounding_mode is (nearest_even, zero, up, down);
 
@@ -31,9 +31,9 @@ package FPU_common_pack is
 	function to_fpu_rounding_mode(fpu_rmode_slv : std_logic_vector(1 downto 0)) return FPU_rounding_mode;
 	function to_std_logic_vector(fp_rmode : FPU_rounding_mode) return std_logic_vector;
 
-end package FPU_common_pack;
+end package FPU_unit_common_pack;
 
-package body FPU_interface_pack is
+package body FPU_unit_common_pack is
 	function to_fpu_operation(fpu_op_slv : std_logic_vector(2 downto 0)) return FPU_operation is
 		variable fpu_op : FPU_operation;
 	begin
@@ -94,4 +94,4 @@ package body FPU_interface_pack is
 		end if;
 		return fp_rmode_slv;
 	end function;
-end package body FPU_interface_pack;
+end package body FPU_unit_common_pack;

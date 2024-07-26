@@ -2,9 +2,9 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-use work.My_Floating_point_definition.all;
-use work.Floating_point_interface_pack.all;
-use work.FPU_interface_pack.all;
+use work.Floating_point_definition.all;
+use work.Floating_point_unit_interface_pack.all;
+use work.FPU_unit_common_pack.all;
 
 use std.textio.all;
 use work.txt_util.all;

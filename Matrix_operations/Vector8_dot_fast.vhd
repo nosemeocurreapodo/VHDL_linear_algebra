@@ -3,8 +3,8 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 use work.request_id_pack.all;
 
-use work.FPU_wrapper_component_pack.all;
-use work.FPU_wrapper_definitions_pack.all;
+use work.FPU_definitions_pack.all;
+use work.FPU_component_pack.all;
 use work.Matrix_definition_pack.all;
 
 entity Vector8_dot_fast is
@@ -70,8 +70,8 @@ begin
 
 	generate_multiplires : for I in 1 to 7 generate
 		Multipliers_stage1 : FPU_multiplier port map(clk      => clk,
-				                              opa      => Matrix_input_reg(I),
-				                              opb      => Vector_input_reg(I),
+				                              opa      => Vector1_input_reg(I),
+				                              opb      => Vector2_input_reg(I),
 				                              new_op   => First_stage_enable,
 				                              output   => Vector_aux1_stage2(I),
 				                              op_id_in => First_stage_request_id);
@@ -91,7 +91,7 @@ begin
 	generate_adders_stage3 : for I in 1 to 3 generate
 	Adders_stage3 : FPU_adder port map(clk      => clk,
 				                       opa      => Vector_aux1_stage2(I*2),
-				                       opb      => Vector_aux2_stage2(I*2+1),
+				                       opb      => Vector_aux1_stage2(I*2+1),
 				                       output   => Vector_aux1_stage3(I),
 				                       new_op   => Second_stage_enable,
 				                       op_id_in => Second_stage_request_id);
@@ -118,7 +118,7 @@ begin
 	-- 5 stage (output)
 	-- 1 sumadores
 	Adder_stage5 : FPU_adder port map(clk       => clk,
-			                          opa       => Vector_aux3_stage4(0),
+			                          opa       => Vector_aux1_stage4(0),
 			                          opb       => Vector_aux1_stage4(1),
 			                          output    => output,
 			                          new_op    => Forth_stage_enable,

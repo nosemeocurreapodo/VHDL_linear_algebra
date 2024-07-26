@@ -39,9 +39,6 @@ architecture rtl of Vector8_convolution_tb is
 	type state_type is (IDLE, BUSY, READY);
 	signal state : state_type := IDLE;
 
-	-- random number generator
-	signal rand_num : integer := 0;
-
 begin
 	Vector8_dot_fast_instantiation : Vector8_dot_fast port map(
 			clk                      => clk,
@@ -58,7 +55,6 @@ begin
 	verify : process(clk)
 		variable Vector_input_A : Vector8;
 		variable Vector_input_B : Vector8;
-		variable scalar_output  : scalar;
 
 		--random number generator
 		variable seed1, seed2  : positive; -- seed values for random generator
@@ -69,30 +65,35 @@ begin
 			case state is
 				when IDLE =>
 					--initialize data
-					for I in 0 to 7 loop
+					init_a : for I in 0 to 7 loop
 						uniform(seed1, seed2, rand); -- generate random number
-						rand_num          <= integer(rand * range_of_rand); -- rescale to 0..1000, convert integer part 
-						Vector_input_A(I) := to_scalar(std_logic_vector(to_signed(rand_num, fixed_point_size)));
+						Vector_input_A(I) := to_scalar(rand);
 					end loop;
-					for I in 0 to 7 loop
+					init_b : for I in 0 to 7 loop
 						uniform(seed1, seed2, rand); -- generate random number
-						rand_num          <= integer(rand * range_of_rand); -- rescale to 0..1000, convert integer part 
-						Vector_input_B(I) := to_scalar(std_logic_vector(to_signed(rand_num, fixed_point_size)));
+						Vector_input_B(I) := to_scalar(rand);
 					end loop;
+
 					new_operation_request <= '1';
+					Vector1_Input         <= Vector_Input_A;
+					Vector2_Input         <= Vector_Input_B;
 					state <= BUSY;
 				when BUSY =>
 					for I in 0 to 6 loop
 						Vector_input_A(I) := Vector_input_A(I+1);
 					end loop;
 					uniform(seed1, seed2, rand); -- generate random number
-					rand_num          <= integer(rand * range_of_rand); -- rescale to 0..1000, convert integer part 
-					Vector_input_A(7) := to_scalar(std_logic_vector(to_signed(rand_num, fixed_point_size)));
+					Vector_input_A(7) := to_scalar(rand);
+
+					Vector1_Input <= Vector_input_A;
+				when READY =>
+					state <= IDLE;
+					assert false
+						report "processing done!!"
+						severity failure;
 			end case;
 
-			new_operation_request <= '1';
-			Vector1_Input         <= Vector_Input_A;
-			Vector2_Input         <= Vector_Input_B;
+
 
 			--				aux := rand_num * rand_num + rand_num * rand_num + rand_num * rand_num;
 			--

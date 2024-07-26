@@ -2,10 +2,10 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 use work.request_id_pack.all;
-use work.My_Floating_point_definition.all;
-use work.FPU_interface_pack.all;
+use work.Floating_point_definition.all;
+use work.FPU_unit_common_pack.all;
 
-package Floating_point_interface_pack is
+package Floating_point_unit_interface_pack is
 	type BUS_to_floating_point_unit is record
 		opa            : floating_point;
 		opb            : floating_point;
@@ -35,7 +35,7 @@ package Floating_point_interface_pack is
 		                                                                       FPU_exc          => FPU_exceptions_initial_state,
 		                                                                       output           => to_floating_point(std_logic_vector(to_unsigned(0, floating_point_size))));
 
-end Floating_point_interface_pack;
+end Floating_point_unit_interface_pack;
 
-package body Floating_point_interface_pack is
-end Floating_point_interface_pack;
+package body Floating_point_unit_interface_pack is
+end Floating_point_unit_interface_pack;

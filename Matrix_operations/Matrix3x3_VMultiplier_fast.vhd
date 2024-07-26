@@ -3,8 +3,8 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 use work.request_id_pack.all;
 
-use work.FPU_wrapper_component_pack.all;
-use work.FPU_wrapper_definitions_pack.all;
+use work.FPU_component_pack.all;
+use work.FPU_definitions_pack.all;
 use work.Matrix_definition_pack.all;
 
 entity Matrix3x3_VMultiplier_fast is
@@ -57,7 +57,7 @@ begin
 	-- second stage
 	-- 9 multiplicadores
 	--X
-	Multipliers : FPU_wrapper_multiplier port map(clk       => clk,
+	Multipliers : FPU_multiplier port map(clk       => clk,
 			                                      opa       => Matrix_input_reg(0),
 			                                      opb       => Vector_input_reg(0),
 			                                      new_op    => First_stage_enable,
@@ -67,7 +67,7 @@ begin
 			                                      op_id_out => Second_stage_request_id);
 
 	generate_multiplires : for I in 1 to 2 generate
-		Multipliers : FPU_wrapper_multiplier port map(clk      => clk,
+		Multipliers : FPU_multiplier port map(clk      => clk,
 				                                      opa      => Matrix_input_reg(I * 3),
 				                                      opb      => Vector_input_reg(0),
 				                                      new_op   => First_stage_enable,
@@ -76,7 +76,7 @@ begin
 	end generate;
 	--Y
 	generate_y_multiplires : for I in 0 to 2 generate
-		Multipliers : FPU_wrapper_multiplier port map(clk      => clk,
+		Multipliers : FPU_multiplier port map(clk      => clk,
 				                                      opa      => Matrix_input_reg(((I) * 3) + 1),
 				                                      opb      => Vector_input_reg(1),
 				                                      output   => Vector_aux2_stage2(I),
@@ -85,7 +85,7 @@ begin
 	end generate;
 	--Z
 	generate_z_multiplires : for I in 0 to 2 generate
-		Multipliers : FPU_wrapper_multiplier port map(clk      => clk,
+		Multipliers : FPU_multiplier port map(clk      => clk,
 				                                      opa      => Matrix_input_reg(((I) * 3) + 2),
 				                                      opb      => Vector_input_reg(2),
 				                                      output   => Vector_aux3_stage2(I),
@@ -95,7 +95,7 @@ begin
 
 	-- 3 stage
 	-- 3 sumadores
-	Adder_stage3 : FPU_wrapper_adder port map(clk       => clk,
+	Adder_stage3 : FPU_adder port map(clk       => clk,
 			                                  opa       => Vector_aux1_stage2(0),
 			                                  opb       => Vector_aux2_stage2(0),
 			                                  output    => Vector_aux1_stage3(0),
@@ -104,7 +104,7 @@ begin
 			                                  op_ready  => Third_stage_enable,
 			                                  op_id_out => Third_stage_request_id);
 	generate_adders_stage3 : for I in 1 to 2 generate
-		Adders : FPU_wrapper_adder port map(clk      => clk,
+		Adders : FPU_adder port map(clk      => clk,
 				                            opa      => Vector_aux1_stage2(I),
 				                            opb      => Vector_aux2_stage2(I),
 				                            output   => Vector_aux1_stage3(I),
@@ -114,7 +114,7 @@ begin
 
 	-- 4 stage (output)
 	-- 3 sumadores
-	Adder_stage4 : FPU_wrapper_adder port map(clk       => clk,
+	Adder_stage4 : FPU_adder port map(clk       => clk,
 			                                  opa       => Vector_aux3_stage2(0),
 			                                  opb       => Vector_aux1_stage3(0),
 			                                  output    => Vector_output(0),
@@ -123,7 +123,7 @@ begin
 			                                  op_ready  => new_operation_done,
 			                                  op_id_out => new_operation_done_id);
 	generate_adders_stage_4 : for I in 1 to 2 generate
-		Adders_stage4 : FPU_wrapper_adder port map(clk      => clk,
+		Adders_stage4 : FPU_adder port map(clk      => clk,
 				                                   opa      => Vector_aux3_stage2(I),
 				                                   opb      => Vector_aux1_stage3(I),
 				                                   output   => Vector_output(I),

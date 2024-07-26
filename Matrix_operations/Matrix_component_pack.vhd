@@ -3,6 +3,7 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 use work.request_id_pack.all;
+use work.FPU_definitions_pack.all;
 use work.Matrix_definition_pack.all;
 
 package Matrix_component_pack is
