@@ -13,95 +13,81 @@ end entity Vector8_convolution_tb;
 
 architecture rtl of Vector8_convolution_tb is
 
-	component Vector8_dot_fast is
+	component Vector8_convolution_fast is
 		port(
 			clk                      : in  std_logic;
 			new_operation_request    : in  std_logic;
-			new_operation_request_id : in  request_id;
 			new_operation_done       : out std_logic;
-			new_operation_done_id    : out request_id;
-			Vector1_input            : in  Vector8;
-			Vector2_input            : in  Vector8;
+			input                    : in  scalar;
 			output                   : out scalar
 		);
-	end component Vector8_dot_fast;
+	end component Vector8_convolution_fast;
 
 	signal clk : std_logic := '1';
 
 	signal new_operation_request    : std_logic := '0';
-	signal new_operation_request_id : request_id;
 	signal new_operation_done       : std_logic;
-	signal new_operation_done_id    : request_id;
-	signal Vector1_input            : Vector8;
-	signal Vector2_input            : Vector8;
+	signal scalar_input             : scalar := scalar_zero;
 	signal scalar_output            : scalar;
+	signal slv_output               : std_logic_vector(scalar_size - 1 downto 0);
 
-	type state_type is (IDLE, BUSY, READY);
+	type state_type is (IDLE, FEEDING, BUSY, WAITING, READY);
 	signal state : state_type := IDLE;
 
+	signal counter : integer := 0;
+
 begin
-	Vector8_dot_fast_instantiation : Vector8_dot_fast port map(
+	Vector8_convolution_fast_instantiation : Vector8_convolution_fast port map(
 			clk                      => clk,
 			new_operation_request    => new_operation_request,
-			new_operation_request_id => new_operation_request_id,
 			new_operation_done       => new_operation_done,
-			new_operation_done_id    => new_operation_done_id,
-			Vector1_input            => Vector1_input,
-			Vector2_input            => Vector2_input,
+			input                    => scalar_input,
 			output                   => scalar_output);
 
 	clk <= not (clk) after 5 ns;
 
 	verify : process(clk)
-		variable Vector_input_A : Vector8;
-		variable Vector_input_B : Vector8;
-
 		--random number generator
 		variable seed1, seed2  : positive; -- seed values for random generator
 		variable rand          : real;  -- random real-number value in range 0 to 1.0  
 		variable range_of_rand : real := 10.0; -- the range of random values created will be 0 to +1000.
 	begin
 		if (rising_edge(clk)) then
+		
+			counter <= counter + 1;
+		
 			case state is
 				when IDLE =>
-					--initialize data
-					init_a : for I in 0 to 7 loop
-						uniform(seed1, seed2, rand); -- generate random number
-						Vector_input_A(I) := to_scalar(rand);
-					end loop;
-					init_b : for I in 0 to 7 loop
-						uniform(seed1, seed2, rand); -- generate random number
-						Vector_input_B(I) := to_scalar(rand);
-					end loop;
-
-					new_operation_request <= '1';
-					Vector1_Input         <= Vector_Input_A;
-					Vector2_Input         <= Vector_Input_B;
-					state <= BUSY;
-				when BUSY =>
-					for I in 0 to 6 loop
-						Vector_input_A(I) := Vector_input_A(I+1);
-					end loop;
+					if (counter > 10) then
+						state <= FEEDING;
+						new_operation_request <= '1';
+					end if;
+				when FEEDING =>
 					uniform(seed1, seed2, rand); -- generate random number
-					Vector_input_A(7) := to_scalar(rand);
-
-					Vector1_Input <= Vector_input_A;
+					scalar_input <= to_scalar(rand);
+					
+					if(counter > 100) then
+					    state <= BUSY;
+						new_operation_request <= '0';
+					end if;
+					
+                when BUSY =>
+                    if(new_operation_done = '1') then
+						state <= WAITING;
+					end if;
+                
+                when WAITING =>
+                    if(new_operation_done = '0') then
+						state <= READY;
+					end if;
+                
 				when READY =>
-					state <= IDLE;
 					assert false
 						report "processing done!!"
 						severity failure;
 			end case;
 
-
-
-			--				aux := rand_num * rand_num + rand_num * rand_num + rand_num * rand_num;
-			--
-			--				Vector_output(0) := to_fixed_point(std_logic_vector(to_signed(aux, fixed_point_size)));
-			--				Vector_output(1) := to_fixed_point(std_logic_vector(to_signed(aux, fixed_point_size)));
-			--				Vector_output(2) := to_fixed_point(std_logic_vector(to_signed(aux, fixed_point_size)));
-			--			
-			--				FPU_BUS_to.new_request_id <= to_signed(aux, request_id_size);
+			slv_output <= scalar_to_std_logic_vector(scalar_output);			
 
 		end if;
 	end process verify;

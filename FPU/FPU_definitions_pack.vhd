@@ -19,6 +19,9 @@ package FPU_definitions_pack is
 	-- for floating point
 	constant scalar_size : integer := floating_point_size;
 	subtype scalar is floating_point;
+
+	constant scalar_zero : floating_point := floating_point_zero;
+
 	subtype BUS_to_FPU is BUS_to_floating_point_unit;
 	subtype BUS_from_FPU is BUS_from_floating_point_unit;
 

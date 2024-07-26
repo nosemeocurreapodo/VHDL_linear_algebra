@@ -11,6 +11,8 @@ package Fixed_point_definition is
 
 	subtype fixed_point is signed(fixed_point_size - 1 downto 0);
 
+	constant fixed_point_zero : fixed_point := to_signed(0, fixed_point_size);
+	
 	function to_fixed_point(slv : std_logic_vector(fixed_point_size - 1 downto 0)) return fixed_point;
 	function to_fixed_point(slv : signed(fixed_point_size - 1 downto 0)) return fixed_point;
 	function to_fixed_point(int : integer) return fixed_point;

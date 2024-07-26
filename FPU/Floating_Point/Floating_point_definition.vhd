@@ -16,6 +16,10 @@ package Floating_point_definition is
 		mantissa : unsigned(mantissa_size - 1 downto 0);
 	end record;
 
+	constant floating_point_zero : floating_point := (sign            => '0',
+													  exponent        => to_unsigned(128, exponent_size),
+													  mantissa        => to_unsigned(0, mantissa_size));
+
 	function to_floating_point(slv : std_logic_vector(floating_point_size - 1 downto 0)) return floating_point;
 	function to_floating_point(slv : signed(floating_point_size - 1 downto 0)) return floating_point;
 	function to_floating_point(int : integer) return floating_point;
