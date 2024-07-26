@@ -19,12 +19,13 @@ end entity Vector8_convolution_fast;
 
 architecture RTL of Vector8_convolution_fast is
 
-	type state_type is (IDLE, LOADING, BUSY);
+	type state_type is (IDLE, LOADING, BUSY_1, BUSY_2);
 	signal state : state_type := IDLE;
 
-	signal Vector1_input            : Vector8;
-	signal Vector2_input            : Vector8;
-	signal scalar_output            : scalar;
+	signal Vector1_input : Vector8;
+	signal Vector2_input : Vector8;
+	signal scalar_input  : scalar := scalar_zero;
+	signal scalar_output : scalar;
 
 	signal op_request : std_logic := '0';
 	signal op_done    : std_logic;
@@ -40,9 +41,19 @@ begin
 			new_operation_done       => op_done,
 			Vector1_input            => Vector1_input,
 			Vector2_input            => Vector2_input,
-			output                   => scalar_output);
+			output                   => output);
 
 	new_operation_done <= op_done;
+
+	displacement_filter : process(clk)
+	begin
+		if (rising_edge(clk)) then
+			for I in 0 to 6 loop
+				Vector1_input(I) <= Vector1_input(I+1);
+			end loop;
+			Vector1_input(7) <= input;
+		end if;
+	end process;
 
 	state_machine : process(clk)
 	begin
@@ -50,30 +61,35 @@ begin
 			case state is
 				when IDLE =>
 					if (new_operation_request = '1') then
-						Vector1_input(0) <= scalar_zero;
-						Vector2_input(0) <= input;
 						counter <= 1;
 						state <= LOADING;
 					end if;
 				when LOADING =>
-					Vector1_input(counter) <= scalar_zero;
-					Vector2_input(counter) <= input;
-					if(counter = 7) then
-						state <= BUSY;
-						op_request <= '1';
-					end if;
 					if(new_operation_request = '0') then
 						state <= IDLE;
+					else
+						counter <= counter + 1;
+						if(counter = 7) then
+							for I in 0 to 7 loop
+								Vector2_input(I) <= Vector1_input(I);
+							end loop;
+							state <= BUSY_1;
+							op_request <= '1';
+						end if;
 					end if;
-					counter <= counter + 1;
-				when BUSY =>
-					for I in 0 to 6 loop
-						Vector1_input(I) <= Vector1_input(I+1);
-					end loop;
-					Vector1_input(7) <= input;
-					if (op_done = '1') then
-						state <= IDLE;
+				when BUSY_1 =>
+					if(new_operation_request = '0') then
 						op_request <= '0';
+					end if;
+					if(op_done = '1') then
+						state <= BUSY_2;
+					end if;
+				when BUSY_2 =>
+					if(new_operation_request = '0') then
+						op_request <= '0';
+					end if;
+					if(op_done = '0') then
+						state <= IDLE;
 					end if;
 			end case;
 		end if;

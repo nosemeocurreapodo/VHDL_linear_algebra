@@ -66,7 +66,7 @@ begin
 					uniform(seed1, seed2, rand); -- generate random number
 					scalar_input <= to_scalar(rand);
 					
-					if(counter > 100) then
+					if(counter > 30) then
 					    state <= BUSY;
 						new_operation_request <= '0';
 					end if;
