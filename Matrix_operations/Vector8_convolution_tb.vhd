@@ -29,6 +29,7 @@ architecture rtl of Vector8_convolution_tb is
 	signal new_operation_done       : std_logic;
 	signal scalar_input             : scalar := scalar_zero;
 	signal scalar_output            : scalar;
+	signal slv_input               : std_logic_vector(scalar_size - 1 downto 0);
 	signal slv_output               : std_logic_vector(scalar_size - 1 downto 0);
 
 	type state_type is (IDLE, FEEDING, BUSY, WAITING, READY);
@@ -87,6 +88,7 @@ begin
 						severity failure;
 			end case;
 
+			slv_input <= scalar_to_std_logic_vector(scalar_input);	
 			slv_output <= scalar_to_std_logic_vector(scalar_output);			
 
 		end if;

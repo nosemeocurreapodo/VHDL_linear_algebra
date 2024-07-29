@@ -10,8 +10,6 @@ package Fixed_point_definition is
 	constant fraction_size    : integer := 20;
 
 	subtype fixed_point is signed(fixed_point_size - 1 downto 0);
-
-	constant fixed_point_zero : fixed_point := to_signed(0, fixed_point_size);
 	
 	function to_fixed_point(slv : std_logic_vector(fixed_point_size - 1 downto 0)) return fixed_point;
 	function to_fixed_point(slv : signed(fixed_point_size - 1 downto 0)) return fixed_point;
@@ -19,6 +17,8 @@ package Fixed_point_definition is
 	function to_fixed_point(float : real) return fixed_point;
 	function fixed_point_to_std_logic_vector(fp : fixed_point) return std_logic_vector;
 	function fixed_point_to_signed(fp : fixed_point) return signed;
+
+	constant fixed_point_zero : fixed_point := to_fixed_point(0.0);
 
 end package;
 

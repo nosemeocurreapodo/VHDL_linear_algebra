@@ -16,15 +16,15 @@ architecture rtl of Floating_point_unit_tb is
 	component Floating_point_unit
 		port(
 			clk         : in  std_logic;
-			FPU_BUS_in  : in  BUS_to_floating_point_unit;
-			FPU_BUS_out : out BUS_from_floating_point_unit
+			BUS_in  : in  BUS_to_floating_point_unit;
+			BUS_out : out BUS_from_floating_point_unit
 		);
 	end component;
 
 	signal clk : std_logic := '1';
 
-	signal FPU_BUS_in  : BUS_to_floating_point_unit := FPU_BUS_to_fpu_initial_state;
-	signal FPU_BUS_out : BUS_from_floating_point_unit;
+	signal BUS_in  : BUS_to_floating_point_unit := BUS_to_floating_point_unit_initial_state;
+	signal BUS_out : BUS_from_floating_point_unit;
 
 	signal correct_result_fp : floating_point;
 
@@ -32,9 +32,9 @@ begin
 
 	-- instantiate fpu
 	FPU_slow_tb_INSTANTIATION : Floating_point_unit port map(
-			clk         => clk,
-			FPU_BUS_in  => FPU_BUS_in,
-			FPU_BUS_out => FPU_BUS_out);
+			clk     => clk,
+			BUS_in  => BUS_in,
+			BUS_out => BUS_out);
 
 	---------------------------------------------------------------------------
 	-- toggle clock
@@ -54,28 +54,28 @@ begin
 	begin
 		if (rising_edge(clk)) then
 			if (not endfile(testcases_file)) then
-					FPU_BUS_in.new_request    <= '1';
+					BUS_in.new_request    <= '1';
 					--FPU_BUS_in.new_request_id <= x"00000000";
 					str_read(testcases_file, str_in);
-					FPU_BUS_in.opa <= to_floating_point(strhex_to_slv(str_in));
+					BUS_in.opa <= to_floating_point(strhex_to_slv(str_in));
 					str_read(testcases_file, str_in);
-					FPU_BUS_in.opb <= to_floating_point(strhex_to_slv(str_in));
+					BUS_in.opb <= to_floating_point(strhex_to_slv(str_in));
 					str_read(testcases_file, str_fpu_op);
-					FPU_BUS_in.fpu_op <= to_fpu_operation(to_std_logic_vector(str_fpu_op));
+					BUS_in.operation <= to_fpu_operation(to_std_logic_vector(str_fpu_op));
 					str_read(testcases_file, str_rmode);
-					FPU_BUS_in.rmode <= to_fpu_rounding_mode(to_std_logic_vector(str_rmode));
+					BUS_in.rmode <= to_fpu_rounding_mode(to_std_logic_vector(str_rmode));
 
 					str_read(testcases_file, str_in);
 					correct_result := strhex_to_slv(str_in);
-					FPU_BUS_in.new_request_id <= signed(correct_result);
+					BUS_in.new_request_id <= signed(correct_result);
 					correct_result_fp <= to_floating_point(correct_result);
 					
 					-- para que leer este??
 					str_read(testcases_file, str_in);
 
 			end if;
-			if (FPU_BUS_out.request_ready = '1') then
-				assert FPU_BUS_out.output = to_floating_point(std_logic_vector(FPU_BUS_out.request_ready_id))
+			if (BUS_out.request_ready = '1') then
+				assert BUS_out.output = to_floating_point(std_logic_vector(BUS_out.request_ready_id))
 					report "Error!!!"
 					severity failure;
 			end if;

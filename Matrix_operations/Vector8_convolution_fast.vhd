@@ -12,8 +12,8 @@ entity Vector8_convolution_fast is
 		clk                      : in  std_logic;
 		new_operation_request    : in  std_logic;
 		new_operation_done       : out std_logic;
-		input                    : in  scalar;
-		output                   : out scalar
+		input                    : in  std_logic_vector(31 downto 0);
+		output                   : out std_logic_vector(31 downto 0)
 	);
 end entity Vector8_convolution_fast;
 
@@ -24,7 +24,6 @@ architecture RTL of Vector8_convolution_fast is
 
 	signal Vector1_input : Vector8;
 	signal Vector2_input : Vector8;
-	signal scalar_input  : scalar := scalar_zero;
 	signal scalar_output : scalar;
 
 	signal op_request : std_logic := '0';
@@ -41,9 +40,7 @@ begin
 			new_operation_done       => op_done,
 			Vector1_input            => Vector1_input,
 			Vector2_input            => Vector2_input,
-			output                   => output);
-
-	new_operation_done <= op_done;
+			output                   => scalar_output);
 
 	displacement_filter : process(clk)
 	begin
@@ -51,7 +48,9 @@ begin
 			for I in 0 to 6 loop
 				Vector1_input(I) <= Vector1_input(I+1);
 			end loop;
-			Vector1_input(7) <= input;
+			Vector1_input(7) <= to_scalar(input);
+			output <= scalar_to_std_logic_vector(scalar_output);
+			new_operation_done <= op_done;
 		end if;
 	end process;
 

@@ -94,70 +94,10 @@ entity FPU_Divider is
 	);
 end entity FPU_Divider;
 
---architecture RTL of FPU_Adder is
-	
---begin
---	adder_int : Fixed_point_Adder port map(
---			clk       => clk,
---			opa       => opa,
---			opb       => opb,
---			new_op    => new_op,
---			op_id_in  => op_id_in,
---			output    => output,
---			op_id_out => op_id_out,
---			op_ready  => op_ready);
-
---end architecture RTL;
-
---architecture RTL of FPU_Substractor is
-	
---begin
---	adder_int : Fixed_point_Substractor port map(
---			clk       => clk,
---			opa       => opa,
---			opb       => opb,
---			new_op    => new_op,
---			op_id_in  => op_id_in,
---			output    => output,
---			op_id_out => op_id_out,
---			op_ready  => op_ready);
-
---end architecture RTL;
-
---architecture RTL of FPU_Multiplier is
-	
---begin
---	adder_int : Fixed_point_Multiplier port map(
---			clk       => clk,
---			opa       => opa,
---			opb       => opb,
---			new_op    => new_op,
---			op_id_in  => op_id_in,
---			output    => output,
---			op_id_out => op_id_out,
---			op_ready  => op_ready);
-
---end architecture RTL;
-
---architecture RTL of FPU_Divider is
-	
---begin
---	adder_int : Fixed_point_Divider port map(
---			clk       => clk,
---			opa       => opa,
---			opb       => opb,
---			new_op    => new_op,
---			op_id_in  => op_id_in,
---			output    => output,
---			op_id_out => op_id_out,
---			op_ready  => op_ready);
-
---end architecture RTL;
-
 architecture RTL of FPU_Adder is
 	
 begin
-	adder_int : Floating_point_Adder port map(
+	adder_int : Fixed_point_Adder port map(
 			clk       => clk,
 			opa       => opa,
 			opb       => opb,
@@ -172,7 +112,7 @@ end architecture RTL;
 architecture RTL of FPU_Substractor is
 	
 begin
-	adder_int : Floating_point_Substractor port map(
+	adder_int : Fixed_point_Substractor port map(
 			clk       => clk,
 			opa       => opa,
 			opb       => opb,
@@ -187,7 +127,7 @@ end architecture RTL;
 architecture RTL of FPU_Multiplier is
 	
 begin
-	adder_int : Floating_point_Multiplier port map(
+	adder_int : Fixed_point_Multiplier port map(
 			clk       => clk,
 			opa       => opa,
 			opb       => opb,
@@ -202,7 +142,7 @@ end architecture RTL;
 architecture RTL of FPU_Divider is
 	
 begin
-	adder_int : Floating_point_Divider port map(
+	adder_int : Fixed_point_Divider port map(
 			clk       => clk,
 			opa       => opa,
 			opb       => opb,
@@ -213,5 +153,65 @@ begin
 			op_ready  => op_ready);
 
 end architecture RTL;
+
+--architecture RTL of FPU_Adder is
+	
+--begin
+--	adder_int : Floating_point_Adder port map(
+--			clk       => clk,
+--			opa       => opa,
+--			opb       => opb,
+--			new_op    => new_op,
+--			op_id_in  => op_id_in,
+--			output    => output,
+--			op_id_out => op_id_out,
+--			op_ready  => op_ready);
+
+--end architecture RTL;
+
+--architecture RTL of FPU_Substractor is
+	
+--begin
+--	adder_int : Floating_point_Substractor port map(
+--			clk       => clk,
+--			opa       => opa,
+--			opb       => opb,
+--			new_op    => new_op,
+--			op_id_in  => op_id_in,
+--			output    => output,
+--			op_id_out => op_id_out,
+--			op_ready  => op_ready);
+
+--end architecture RTL;
+
+--architecture RTL of FPU_Multiplier is
+	
+--begin
+--	adder_int : Floating_point_Multiplier port map(
+--			clk       => clk,
+--			opa       => opa,
+--			opb       => opb,
+--			new_op    => new_op,
+--			op_id_in  => op_id_in,
+--			output    => output,
+--			op_id_out => op_id_out,
+--			op_ready  => op_ready);
+
+--end architecture RTL;
+
+--architecture RTL of FPU_Divider is
+	
+--begin
+--	adder_int : Floating_point_Divider port map(
+--			clk       => clk,
+--			opa       => opa,
+--			opb       => opb,
+--			new_op    => new_op,
+--			op_id_in  => op_id_in,
+--			output    => output,
+--			op_id_out => op_id_out,
+--			op_ready  => op_ready);
+
+--end architecture RTL;
 
 
