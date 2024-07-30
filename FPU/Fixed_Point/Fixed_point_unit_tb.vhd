@@ -53,8 +53,8 @@ begin
 		-- real
 		variable int_min : real := -2.0**((fixed_point_size-fraction_size)/2-1)+1.0;
 		variable int_max : real := 2.0**((fixed_point_size-fraction_size)/2-1)-1.0;
-		variable opa_increment : real := 2.0**8;--2.0**(-fraction_size);
-		variable opb_increment : real := 2.0**8;--2.0**(-fraction_size);
+		variable opa_increment : real := 2.0**4;--2.0**(-fraction_size);
+		variable opb_increment : real := 2.0**4;--2.0**(-fraction_size);
 		variable opa     : real := int_min;
 		variable opb     : real := int_min;
 		variable output  : real;
@@ -63,12 +63,12 @@ begin
 
 	begin
 		if (rising_edge(clk)) then
-			FPU_BUS_in.new_request <= '1';
-			FPU_BUS_in.opa         <= to_fixed_point(opa);
-			FPU_BUS_in.opb         <= to_fixed_point(opb);
+			BUS_in.new_request <= '1';
+			BUS_in.opa         <= to_fixed_point(opa);
+			BUS_in.opb         <= to_fixed_point(opb);
 			--FPU_BUS_in.opa         <= to_fixed_point(to_signed(opa, fixed_point_size));
 			--FPU_BUS_in.opb         <= to_fixed_point(to_signed(opb, fixed_point_size));
-			FPU_BUS_in.fpu_op      <= op;
+			BUS_in.operation   <= op;
 
 			case op is
 				when ADD =>
@@ -87,7 +87,7 @@ begin
 					output := opa / opb;
 			end case;
 
-			FPU_BUS_in.new_request_id <= to_fixed_point(output);
+			BUS_in.new_request_id.id <= fixed_point_to_std_logic_vector(to_fixed_point(output));
 
 			opa := opa + opa_increment;
 			if (opa > int_max) then
@@ -112,9 +112,9 @@ begin
 					end case;
 				end if;
 			end if;
-			if (FPU_BUS_out.request_ready = '1') then
-				assert FPU_BUS_out.output = FPU_BUS_out.request_ready_id
-					report "Error en el resultado"
+			if (BUS_out.request_ready = '1') then
+				assert fixed_point_to_std_logic_vector(BUS_out.output) = BUS_out.request_ready_id.id
+					report "Some error"
 					severity failure;
 			end if;
 		end if;

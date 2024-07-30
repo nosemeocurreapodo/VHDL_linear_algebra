@@ -82,7 +82,7 @@ begin
 			op_id_out => div_out_id,
 			op_ready  => div_output_ready);
 
-	BUS_out.exceptions <= excep;
+	BUS_out.exception <= excep;
 
 	-- Input process
 	input_process1 : process(clk)
@@ -91,10 +91,10 @@ begin
 			if (BUS_in.new_request = '1') then
 				opa_reg           <= BUS_in.opa;
 				opb_reg           <= BUS_in.opb;
-				op_reg            <= BUS_in.fpu_op;
+				op_reg            <= BUS_in.operation;
 				request_id_in_reg <= BUS_in.new_request_id;
 
-				case operation is
+				case BUS_in.operation is
 					when ADD =>
 						add_input_ready <= '1';
 						sub_input_ready <= '0';

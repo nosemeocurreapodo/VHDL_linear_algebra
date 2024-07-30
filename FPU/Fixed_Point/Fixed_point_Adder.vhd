@@ -39,7 +39,7 @@ begin
 				new_operation_pipelined_reg(0) <= '1';
 			else
 				output_pipelined_reg(0)        <= to_signed(0, fixed_point_size);
-				request_id_pipelined_reg(0)    <= to_signed(0, request_id_size);
+				request_id_pipelined_reg(0)    <= request_id_zero;
 				new_operation_pipelined_reg(0) <= '0';
 			end if;
 		end if;
