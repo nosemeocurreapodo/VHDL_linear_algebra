@@ -18,30 +18,29 @@ entity Fixed_point_Adder is
 end entity Fixed_point_Adder;
 
 architecture RTL of Fixed_point_Adder is
-	constant number_of_stages : integer := 1;
-	type output_pipelined is array (number_of_stages - 1 downto 0) of fixed_point;
-	signal output_pipelined_reg : output_pipelined;
-	type request_id_pipelined is array (number_of_stages - 1 downto 0) of request_id;
-	signal request_id_pipelined_reg    : request_id_pipelined;
-	signal new_operation_pipelined_reg : std_logic_vector(number_of_stages - 1 downto 0) := std_logic_vector(to_unsigned(0, number_of_stages));
+	signal opa_1           : signed(fixed_point_size - 1 downto 0);
+	signal opb_1           : signed(fixed_point_size - 1 downto 0);
+	signal request_id_1    : request_id;
+	signal new_operation_1 : std_logic;
 begin
 	process(clk)
-		variable output_aux : signed(fixed_point_size - 1 downto 0);
 	begin
 		if (rising_edge(clk)) then
-			output    <= output_pipelined_reg(number_of_stages - 1);
-			op_id_out <= request_id_pipelined_reg(number_of_stages - 1);
-			op_ready  <= new_operation_pipelined_reg(number_of_stages - 1);
+			-- stage 1
+			opa_1 <= opa;
+			opb_1 <= opb;
 			if (new_op = '1') then
-				output_aux := opa + opb;
-				output_pipelined_reg(0)        <= output_aux;
-				request_id_pipelined_reg(0)    <= op_id_in;
-				new_operation_pipelined_reg(0) <= '1';
+				request_id_1   <= op_id_in;
+				new_operation_1 <= '1';
 			else
-				output_pipelined_reg(0)        <= to_signed(0, fixed_point_size);
-				request_id_pipelined_reg(0)    <= request_id_zero;
-				new_operation_pipelined_reg(0) <= '0';
+				request_id_1   <= op_id_in;
+				new_operation_1 <= '1';
 			end if;
+
+			-- stage 2
+			output   <= opa_1 + opb_1;
+			op_id_out <= request_id_1;
+			op_ready  <= new_operation_1;
 		end if;
 	end process;
 end architecture RTL;

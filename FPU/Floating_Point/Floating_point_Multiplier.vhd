@@ -54,6 +54,13 @@ architecture RTL of Floating_Point_Multiplier is
 	signal exponent_3       : unsigned(exponent_size - 1 downto 0);
 	signal mantissa_3       : unsigned((mantissa_size + 1) * 2 - 1 downto 0);
 
+	-- stage 4
+	signal new_request_4    : std_logic;
+	signal new_request_id_4 : request_id;
+	signal sign_4           : std_logic;
+	signal exponent_4       : unsigned(exponent_size - 1 downto 0);
+	signal mantissa_4       : unsigned((mantissa_size + 1) * 2 - 1 downto 0);
+
 begin
 	process(clk)
 
@@ -105,11 +112,20 @@ begin
 			mantissa_3       <= pipe_mantissa(num_pipe_stages - 1);
 
 			-- stage 4
-			output.sign     <= sign_3;
-			output.exponent <= exponent_3 - mantissa_lz_3;
-			output.mantissa <= shift_left(mantissa_3, mantissa_lz_3 + 1)((mantissa_size + 1) * 2 - 1 downto (mantissa_size + 1) * 2 - 1 - mantissa_size + 1);
-			op_id_out       <= new_request_id_3;
-			op_ready        <= new_request_3;
+			new_request_4    <= new_request_3;
+			new_request_id_4 <= new_request_id_3;
+			sign_4           <= sign_3;
+			exponent_4       <= exponent_3 - mantissa_lz_3;
+			mantissa_4       <= shift_left(mantissa_3, mantissa_lz_3 + 1);
+			-- mantissa_4       <= mantissa_3;
+
+			-- stage 5
+			output.sign     <= sign_4;
+			output.exponent <= exponent_4;
+			output.mantissa <= mantissa_4((mantissa_size + 1) * 2 - 1 downto (mantissa_size + 1) * 2 - 1 - mantissa_size + 1);
+			-- output.mantissa <= mantissa_4((mantissa_size + 1) * 2 - 1 - mantissa_lz_3 - 1 downto (mantissa_size + 1) * 2 - 1 - mantissa_size + 1 - mantissa_lz_3 - 1);
+			op_id_out       <= new_request_id_4;
+			op_ready        <= new_request_4;
 
 		end if;
 	end process;
