@@ -17,12 +17,10 @@ package Floating_point_definition is
 	end record;
 
 	function to_floating_point(slv : std_logic_vector(floating_point_size - 1 downto 0)) return floating_point;
-	function to_floating_point(slv : signed(floating_point_size - 1 downto 0)) return floating_point;
 	function to_floating_point(int : integer) return floating_point;
 	function to_floating_point(float : real) return floating_point;
 	function floating_point_to_std_logic_vector(fp : floating_point) return std_logic_vector;
 	function floating_point_to_real(fp : floating_point) return real;
-	function floating_point_to_signed(fp : floating_point) return signed;
 
 	constant floating_point_zero : floating_point := to_floating_point(0.0);
 
@@ -40,16 +38,6 @@ package body Floating_point_definition is
 		return fp;
 	end function;
 
-	function to_floating_point(slv : signed(floating_point_size - 1 downto 0)) return floating_point is
-		variable fp  : floating_point;
-		variable aux : signed(floating_point_size - 1 downto 0);
-	begin
-		fp.sign     := slv(floating_point_size - 1);
-		fp.exponent := unsigned(slv(exponent_size + mantissa_size - 1 downto mantissa_size));
-		fp.mantissa := unsigned(slv(mantissa_size - 1 downto 0));
-		return fp;
-	end function;
-	
 	function to_floating_point(int : integer) return floating_point is
 		variable fp      : floating_point;
 		variable m       : unsigned(mantissa_size - 1 downto 0);
@@ -123,25 +111,6 @@ package body Floating_point_definition is
 			r := -(2 ** (real(to_integer(fp.exponent) - 127))) * mantissa_r2;
 		end if;
 		return r;
-	end function;
-
-	function floating_point_to_signed(fp : floating_point) return signed is
-		variable r           : real;
-		variable mantissa_r  : real;
-		variable un          : unsigned(23 downto 0);
-		variable int         : integer;
-		variable mantissa_r2 : real;
-	begin
-		un          := unsigned('1' & std_logic_vector(fp.mantissa));
-		int         := to_integer(un);
-		mantissa_r  := real(int);
-		mantissa_r2 := mantissa_r * (2 ** real(-23));
-		if (fp.sign = '0') then
-			r := (2 ** (real(to_integer(fp.exponent) - 127))) * mantissa_r2;
-		else
-			r := -(2 ** (real(to_integer(fp.exponent) - 127))) * mantissa_r2;
-		end if;
-		return to_signed(Integer(r), floating_point_size);
 	end function;
 
 --	function to_float(uint       :  unsigned) return float is

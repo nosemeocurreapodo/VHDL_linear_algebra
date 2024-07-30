@@ -10,6 +10,8 @@ package request_id_pack is
 			id : std_logic_vector(request_id_size-1 downto 0);
 		end record;
 
+		type request_id_array is array (integer range<>) of request_id;
+
 		constant request_id_zero : request_id := (id => std_logic_vector(to_signed(0, request_id_size)));
 
 end package request_id_pack;

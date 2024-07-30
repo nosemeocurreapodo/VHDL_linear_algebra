@@ -61,6 +61,7 @@ begin
 				when IDLE =>
 					if (new_operation_request = '1') then
 						counter <= 1;
+						Vector2_input(0) <= Vector1_input(0);
 						state <= LOADING;
 					end if;
 				when LOADING =>
@@ -68,10 +69,8 @@ begin
 						state <= IDLE;
 					else
 						counter <= counter + 1;
+						Vector2_input(counter) <= Vector1_input(counter);
 						if(counter = 7) then
-							for I in 0 to 7 loop
-								Vector2_input(I) <= Vector1_input(I);
-							end loop;
 							state <= BUSY_1;
 							op_request <= '1';
 						end if;

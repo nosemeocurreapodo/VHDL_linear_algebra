@@ -31,6 +31,7 @@ architecture RTL of Floating_point_Adder is
 
 	signal request_id_1      : request_id;
 	signal new_operation_1   : std_logic;
+
 	-- 2 stage
 	signal opa_sign_2        : std_logic;
 	signal opb_sign_2        : std_logic;
@@ -40,6 +41,7 @@ architecture RTL of Floating_point_Adder is
 
 	signal request_id_2      : request_id;
 	signal new_operation_2   : std_logic;
+
 	-- 3 stage
 	signal opa_sign_3        : std_logic;
 	signal opb_sign_3        : std_logic;
@@ -48,6 +50,7 @@ architecture RTL of Floating_point_Adder is
 
 	signal request_id_3      : request_id;
 	signal new_operation_3   : std_logic;
+
 	-- 4 stage
 	signal output_sign_4     : std_logic;
 	signal output_exponent_4 : unsigned(exponent_size - 1 downto 0);
@@ -61,12 +64,21 @@ architecture RTL of Floating_point_Adder is
 	signal output_exponent_5 : unsigned(exponent_size - 1 downto 0);
 	signal output_mantissa_5 : unsigned(mantissa_size + 2 downto 0);
 
+	signal output_mantissa_lz_5 : integer;
+
 	signal request_id_5    : request_id;
 	signal new_operation_5 : std_logic;
 
+	-- 6 stage
+	signal output_sign_6     : std_logic;
+	signal output_exponent_6 : unsigned(exponent_size - 1 downto 0);
+	signal output_mantissa_6 : unsigned(mantissa_size + 2 downto 0);
+
+	signal request_id_6    : request_id;
+	signal new_operation_6 : std_logic;
+
 begin
 	process(clk)
-		variable output_mantissa_4_lz : integer;
 	begin
 		if (rising_edge(clk)) then
 			-- 1 stage
@@ -156,26 +168,34 @@ begin
 			request_id_4    <= request_id_3;
 			new_operation_4 <= new_operation_3;
 
-			-- 5 sigo normalizando
+			-- 5 computo lz
 			output_sign_5        <= output_sign_4;
-			output_mantissa_4_lz := count_l_zeros(output_mantissa_4);
-			output_mantissa_5    <= shift_left(output_mantissa_4, output_mantissa_4_lz + 1);
-			if (output_exponent_4 = 0) then
-				output_exponent_5 <= output_exponent_4 - output_mantissa_4_lz;
-			else
-				output_exponent_5 <= output_exponent_4 - output_mantissa_4_lz + 2;
-			end if;
+			output_mantissa_lz_5 <= count_l_zeros(output_mantissa_4);
+			output_exponent_5 <= output_exponent_4;
+			output_mantissa_5 <= output_mantissa_4;
 
 			request_id_5    <= request_id_4;
 			new_operation_5 <= new_operation_4;
 
-			-- stage 6 salida!
-			output.sign     <= output_sign_5;
-			output.exponent <= output_exponent_5;
-			output.mantissa <= output_mantissa_5(mantissa_size + 2 downto 3);
+			-- 6 sigo normalizando
+			output_sign_6        <= output_sign_5;
+			output_mantissa_6    <= shift_left(output_mantissa_5, output_mantissa_lz_5 + 1);
+			if (output_exponent_5 = 0) then
+				output_exponent_6 <= output_exponent_5 - output_mantissa_lz_5;
+			else
+				output_exponent_6 <= output_exponent_5 - output_mantissa_lz_5 + 2;
+			end if;
 
-			op_id_out <= request_id_5;
-			op_ready  <= new_operation_5;
+			request_id_6    <= request_id_5;
+			new_operation_6 <= new_operation_5;
+
+			-- stage 6 salida!
+			output.sign     <= output_sign_6;
+			output.exponent <= output_exponent_6;
+			output.mantissa <= output_mantissa_6(mantissa_size + 2 downto 3);
+
+			op_id_out <= request_id_6;
+			op_ready  <= new_operation_6;
 		end if;
 	end process;
 end architecture RTL;

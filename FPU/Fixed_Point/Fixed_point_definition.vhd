@@ -12,31 +12,20 @@ package Fixed_point_definition is
 	subtype fixed_point is signed(fixed_point_size - 1 downto 0);
 	
 	function to_fixed_point(slv : std_logic_vector(fixed_point_size - 1 downto 0)) return fixed_point;
-	function to_fixed_point(slv : signed(fixed_point_size - 1 downto 0)) return fixed_point;
 	function to_fixed_point(int : integer) return fixed_point;
 	function to_fixed_point(float : real) return fixed_point;
 	function fixed_point_to_std_logic_vector(fp : fixed_point) return std_logic_vector;
-	function fixed_point_to_signed(fp : fixed_point) return signed;
 
 	constant fixed_point_zero : fixed_point := to_fixed_point(0.0);
 
 end package;
 
 package body Fixed_point_definition is
+
 	function to_fixed_point(slv : std_logic_vector(fixed_point_size - 1 downto 0)) return fixed_point is
 		variable fp  : fixed_point;
-		variable aux : signed(fixed_point_size - 1 downto 0);
 	begin
-		aux := signed(slv);
-		fp  := shift_left(aux, fraction_size);
-		return fp;
-	end function;
-	function to_fixed_point(slv : signed(fixed_point_size - 1 downto 0)) return fixed_point is
-		variable fp  : fixed_point;
-		variable aux : signed(fixed_point_size - 1 downto 0);
-	begin
-		aux := signed(slv);
-		fp  := shift_left(aux, fraction_size);
+		fp := signed(slv);
 		return fp;
 	end function;
 
@@ -72,11 +61,4 @@ package body Fixed_point_definition is
 		return slv;
 	end function;
 	
-	function fixed_point_to_signed(fp : fixed_point) return signed is
-		variable slv : signed(fixed_point_size - 1 downto 0);
-	begin
-		slv := shift_right(fp, fraction_size);
-		return slv;
-	end function;
-
 end package body;

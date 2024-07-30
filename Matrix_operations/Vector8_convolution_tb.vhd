@@ -18,8 +18,8 @@ architecture rtl of Vector8_convolution_tb is
 			clk                      : in  std_logic;
 			new_operation_request    : in  std_logic;
 			new_operation_done       : out std_logic;
-			input                    : in  scalar;
-			output                   : out scalar
+			input                    : in  std_logic_vector(scalar_size - 1 downto 0);
+			output                   : out std_logic_vector(scalar_size - 1 downto 0)
 		);
 	end component Vector8_convolution_fast;
 
@@ -27,10 +27,8 @@ architecture rtl of Vector8_convolution_tb is
 
 	signal new_operation_request    : std_logic := '0';
 	signal new_operation_done       : std_logic;
-	signal scalar_input             : scalar := scalar_zero;
-	signal scalar_output            : scalar;
-	signal slv_input               : std_logic_vector(scalar_size - 1 downto 0);
-	signal slv_output               : std_logic_vector(scalar_size - 1 downto 0);
+	signal scalar_input             : std_logic_vector(scalar_size - 1 downto 0) := std_logic_vector(to_unsigned(0, scalar_size));
+	signal scalar_output            : std_logic_vector(scalar_size - 1 downto 0);
 
 	type state_type is (IDLE, FEEDING, BUSY, WAITING, READY);
 	signal state : state_type := IDLE;
@@ -65,7 +63,7 @@ begin
 					end if;
 				when FEEDING =>
 					uniform(seed1, seed2, rand); -- generate random number
-					scalar_input <= to_scalar(rand);
+					scalar_input <= scalar_to_std_logic_vector(to_scalar(rand));
 					
 					if(counter > 30) then
 					    state <= BUSY;
@@ -87,10 +85,6 @@ begin
 						report "processing done!!"
 						severity failure;
 			end case;
-
-			slv_input <= scalar_to_std_logic_vector(scalar_input);	
-			slv_output <= scalar_to_std_logic_vector(scalar_output);			
-
 		end if;
 	end process verify;
 end rtl;

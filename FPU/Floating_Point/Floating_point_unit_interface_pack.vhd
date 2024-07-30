@@ -21,7 +21,7 @@ package Floating_point_unit_interface_pack is
 		                                                                               operation      => ADD,
 		                                                                               rmode          => nearest_even,
 		                                                                               new_request    => '0',
-		                                                                               new_request_id => to_signed(0, request_id_size));
+		                                                                               new_request_id => request_id_zero);
 
 	type BUS_from_floating_point_unit is record
 		request_ready    : std_logic;
@@ -31,7 +31,7 @@ package Floating_point_unit_interface_pack is
 	end record;
 
 	constant BUS_from_floating_point_unit_initial_state : BUS_from_floating_point_unit := (request_ready    => '0',
-		                                                                                   request_ready_id => to_signed(0, request_id_size),
+		                                                                                   request_ready_id => request_id_zero,
 		                                                                                   exception        => FPU_exceptions_initial_state,
 		                                                                                   output           => to_floating_point(0.0));
 
