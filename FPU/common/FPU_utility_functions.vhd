@@ -9,9 +9,20 @@ package FPU_utility_functions is
 	function count_l_zeros(signal s_vector : signed) return integer;
 	function count_l_zeros_var(s_vector : unsigned) return integer;
 
+	function get_slice(signal data : unsigned; first : integer; out_length : integer) return unsigned;
+
 end package FPU_utility_functions;
 
 package body FPU_utility_functions is
+
+	function get_slice(signal data : unsigned; first : integer; out_length : integer) return unsigned is
+		variable result : unsigned(out_length - 1 downto 0);
+	begin
+		result := data(data'length - 1 - first downto data'length - 1 - first - out_length + 1);
+		return result;
+	end function;
+
+
 	function count_l_zeros(signal s_vector : std_logic_vector) return integer is
 		variable v_count : integer := 0;
 	begin

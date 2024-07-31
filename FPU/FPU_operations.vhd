@@ -154,6 +154,8 @@ end entity FPU_Divider;
 
 --end architecture RTL;
 
+
+
 architecture RTL of FPU_Adder is
 	
 begin

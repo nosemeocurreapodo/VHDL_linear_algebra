@@ -64,8 +64,8 @@ begin
 	begin
 		if (rising_edge(clk)) then
 			BUS_in.new_request <= '1';
-			BUS_in.opa         <= to_fixed_point(opa);
-			BUS_in.opb         <= to_fixed_point(opb);
+			BUS_in.opa         <= fixed_point_to_std_logic_vector(to_fixed_point(opa));
+			BUS_in.opb         <= fixed_point_to_std_logic_vector(to_fixed_point(opb));
 			--FPU_BUS_in.opa         <= to_fixed_point(to_signed(opa, fixed_point_size));
 			--FPU_BUS_in.opb         <= to_fixed_point(to_signed(opb, fixed_point_size));
 			BUS_in.operation   <= op;
@@ -113,7 +113,7 @@ begin
 				end if;
 			end if;
 			if (BUS_out.request_ready = '1') then
-				assert fixed_point_to_std_logic_vector(BUS_out.output) = BUS_out.request_ready_id.id
+				assert BUS_out.output = BUS_out.request_ready_id.id
 					report "Some error"
 					severity failure;
 			end if;

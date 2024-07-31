@@ -34,7 +34,7 @@ begin
 				new_operation_1 <= '1';
 			else
 				request_id_1   <= op_id_in;
-				new_operation_1 <= '1';
+				new_operation_1 <= '0';
 			end if;
 
 			-- stage 2

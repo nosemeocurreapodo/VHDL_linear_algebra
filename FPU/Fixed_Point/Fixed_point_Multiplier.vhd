@@ -28,7 +28,8 @@ architecture RTL of Fixed_point_Multiplier is
 	signal opb_1 : signed(fixed_point_size - 1 downto 0);
 
 	-- multiplication pipeline stages (this is required for infering pipeline in the dsps)
-	constant num_pipe_stages : integer := 7;
+	-- 4 stages are required for 32 bit (20 bit fraction) fixed point
+	constant num_pipe_stages : integer := 4;
 	type signed_array is array (num_pipe_stages - 1 downto 0) of signed(fixed_point_size*2 - 1 downto 0);
 
 	signal pipe_request    : std_logic_vector(num_pipe_stages - 1 downto 0);

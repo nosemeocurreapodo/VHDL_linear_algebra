@@ -89,8 +89,8 @@ begin
 	begin
 		if (rising_edge(clk)) then
 			if (BUS_in.new_request = '1') then
-				opa_reg           <= BUS_in.opa;
-				opb_reg           <= BUS_in.opb;
+				opa_reg           <= to_fixed_point(BUS_in.opa);
+				opb_reg           <= to_fixed_point(BUS_in.opb);
 				op_reg            <= BUS_in.operation;
 				request_id_in_reg <= BUS_in.new_request_id;
 
@@ -135,19 +135,19 @@ begin
 	begin
 		if (rising_edge(clk)) then
 			if (add_output_ready = '1') then
-				BUS_out.output           <= add_out;
+				BUS_out.output           <= fixed_point_to_std_logic_vector(add_out);
 				BUS_out.request_ready    <= '1';
 				BUS_out.request_ready_id <= add_out_id;
 			elsif (sub_output_ready = '1') then
-				BUS_out.output           <= sub_out;
+				BUS_out.output           <= fixed_point_to_std_logic_vector(sub_out);
 				BUS_out.request_ready    <= '1';
 				BUS_out.request_ready_id <= sub_out_id;
 			elsif (mul_output_ready = '1') then
-				BUS_out.output           <= mul_out;
+				BUS_out.output           <= fixed_point_to_std_logic_vector(mul_out);
 				BUS_out.request_ready    <= '1';
 				BUS_out.request_ready_id <= mul_out_id;
 			elsif (div_output_ready = '1') then
-				BUS_out.output           <= div_out;
+				BUS_out.output           <= fixed_point_to_std_logic_vector(div_out);
 				BUS_out.request_ready    <= '1';
 				BUS_out.request_ready_id <= div_out_id;
 			else
