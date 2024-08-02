@@ -3,6 +3,7 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 use work.Floating_point_definition.all;
 use work.FPU_utility_functions.all;
+use work.Synthesis_definitions_pack.all;
 use work.request_id_pack.all;
 
 entity Floating_Point_Divider is
@@ -17,93 +18,119 @@ entity Floating_Point_Divider is
 end entity Floating_Point_Divider;
 
 architecture RTL of Floating_Point_Divider is
-	constant number_of_stages : integer := mantissa_size+2; --mantissa_size+1;
-	type output_mantissa_pipelined is array (number_of_stages - 1 downto 0) of unsigned(mantissa_size + 1 downto 0);
-	signal output_mantissa_pipelined_reg   : output_mantissa_pipelined;
-	signal output_sign_pipelined_reg       : std_logic_vector(number_of_stages - 1 downto 0);
-	signal dividend_mantissa_pipelined_reg : output_mantissa_pipelined;
-	signal divisor_mantissa_pipelined_reg  : output_mantissa_pipelined;
-	type request_id_pipelined is array (number_of_stages - 1 downto 0) of request_id;
-	signal request_id_pipelined_reg    : request_id_pipelined;
-	signal new_operation_pipelined_reg : std_logic_vector(number_of_stages - 1 downto 0) := std_logic_vector(to_unsigned(0, number_of_stages));
-	type output_exponent_pipelined is array (number_of_stages - 1 downto 0) of unsigned(exponent_size - 1 downto 0);
-	signal output_exponent_pipelined_reg : output_exponent_pipelined;
+
+	-- stage 1
+	signal opa_1 : floating_point;
+	signal opb_1 : floating_point;
+
+	signal new_request_1 : std_logic;
+	signal new_request_id_1 : request_id;
+
+	-- stage 2
+	signal sign_2 : std_logic;
+	signal exponent_2 : unsigned(exponent_size - 1 downto 0);
+	signal mantissa_2 : unsigned((mantissa_size + 1) * 2 - 1 downto 0);
+
+	signal new_request_2 : std_logic;
+	signal new_request_id_2 : request_id;
+
+	-- multiplication pipeline stages (this is required for infering pipeline in the dsps)
+	-- 3 stages (four with the one I added for readability) is needed for single presicion floating point
+	constant num_mult_pipe_stages : integer := 3;
+	type exponent_array is array (num_mult_pipe_stages - 1 downto 0) of unsigned(exponent_size - 1 downto 0);
+	type mantissa_array is array (num_mult_pipe_stages - 1 downto 0) of unsigned((mantissa_size + 1) * 2 - 1 downto 0);
+
+	signal mult_pipe_new_request    : std_logic_vector(num_mult_pipe_stages - 1 downto 0);
+	signal mult_pipe_new_request_id : request_id_array(num_mult_pipe_stages - 1 downto 0);
+	signal mult_pipe_sign           : std_logic_vector(num_mult_pipe_stages - 1 downto 0);
+	signal mult_pipe_exponent       : exponent_array;
+	signal mult_pipe_mantissa       : mantissa_array;
+
+	-- stage 3
+	signal new_request_3    : std_logic;
+	signal new_request_id_3 : request_id;
+	signal sign_3           : std_logic;
+	signal exponent_3       : unsigned(exponent_size - 1 downto 0);
+	signal mantissa_3       : unsigned((mantissa_size + 1) * 2 - 1 downto 0);
+
+	-- stage 4
+	signal new_request_4    : std_logic;
+	signal new_request_id_4 : request_id;
+	signal sign_4           : std_logic;
+	signal exponent_4       : unsigned(exponent_size - 1 downto 0);
+	signal mantissa_4       : unsigned(mantissa_size - 1 downto 0);
+	
 begin
 	process(clk)
-		variable sub_pipelined_reg        : output_mantissa_pipelined;
-		variable output_aux_pipelined_reg : output_mantissa_pipelined;
-		variable output_mantissa_zeros    : integer := 0;
 	begin
 		if (rising_edge(clk)) then
-			-- 0 stage
+			
+			-- stage 1
+			opa_1 <= opa;
+			opb_1 <= opb;
+
 			if (new_op = '1') then
-				if (opb.mantissa = 0 and opb.exponent = 0) then
-					dividend_mantissa_pipelined_reg(0) <= to_unsigned(0, mantissa_size + 2);
-					divisor_mantissa_pipelined_reg(0)  <= to_unsigned(0, mantissa_size + 2);
-					output_mantissa_pipelined_reg(0)   <= to_unsigned(0, mantissa_size + 2);
-					output_sign_pipelined_reg(0)       <= '0';
-					output_exponent_pipelined_reg(0)   <= to_unsigned(0, exponent_size);
-
-					request_id_pipelined_reg(0)    <= op_id_in;
-					new_operation_pipelined_reg(0) <= '1';
-				else
-					dividend_mantissa_pipelined_reg(0) <= unsigned("01" & std_logic_vector(opa.mantissa));
-					divisor_mantissa_pipelined_reg(0)  <= unsigned("01" & std_logic_vector(opb.mantissa));
-					output_mantissa_pipelined_reg(0)   <= to_unsigned(0, mantissa_size + 2);
-
-					output_sign_pipelined_reg(0) <= opa.sign xor opb.sign;
-
-					output_exponent_pipelined_reg(0) <= opa.exponent - opb.exponent;
-
-					request_id_pipelined_reg(0)    <= op_id_in;
-					new_operation_pipelined_reg(0) <= '1';
-
-				end if;
+				new_request_id_1 <= op_id_in;
+				new_request_1    <= '1';
 			else
-				request_id_pipelined_reg(0)    <= request_id_zero;
-				new_operation_pipelined_reg(0) <= '0';
+				new_request_id_1 <= request_id_zero;
+				new_request_1    <= '0';
 			end if;
 
-			-- stage 1 - 32  32 restas ??
+			-- stage 2
+			sign_2     <= opa_1.sign xor opb_1.sign;
+			exponent_2 <= unsigned(((signed(opa_1.exponent) - 127) - (signed(opb_1.exponent) - 127)) + 128);
+			mantissa_2 <= unsigned('1' & std_logic_vector(opa_1.mantissa)) / unsigned('1' & std_logic_vector(opb_1.mantissa)) & to_unsigned(0, mantissa_size+1);
 
-			for I in mantissa_size downto 1 loop
-				if (dividend_mantissa_pipelined_reg(I - 1) < divisor_mantissa_pipelined_reg(I - 1)) then
-					output_aux_pipelined_reg(I - 1)                              := output_mantissa_pipelined_reg(I - 1);
-					output_aux_pipelined_reg(I - 1)(mantissa_size + 1 - (I - 1)) := '0';
-					output_mantissa_pipelined_reg(I)                             <= output_aux_pipelined_reg(I - 1);
-					dividend_mantissa_pipelined_reg(I)                           <= unsigned(std_logic_vector(dividend_mantissa_pipelined_reg(I - 1)(mantissa_size downto 0)) & '0');
-				else
-					output_aux_pipelined_reg(I - 1)                              := output_mantissa_pipelined_reg(I - 1);
-					output_aux_pipelined_reg(I - 1)(mantissa_size + 1 - (I - 1)) := '1';
-					output_mantissa_pipelined_reg(I)                             <= output_aux_pipelined_reg(I - 1);
-					sub_pipelined_reg(I - 1)                                     := dividend_mantissa_pipelined_reg(I - 1) - divisor_mantissa_pipelined_reg(I - 1);
-					dividend_mantissa_pipelined_reg(I)                           <= unsigned(std_logic_vector(sub_pipelined_reg(I - 1)(mantissa_size downto 0)) & '0');
-				end if;
-				output_sign_pipelined_reg(I)      <= output_sign_pipelined_reg(I - 1);
-				output_exponent_pipelined_reg(I)  <= output_exponent_pipelined_reg(I - 1);
-				divisor_mantissa_pipelined_reg(I) <= divisor_mantissa_pipelined_reg(I - 1);
-				request_id_pipelined_reg(I)       <= request_id_pipelined_reg(I - 1);
-				new_operation_pipelined_reg(I)    <= new_operation_pipelined_reg(I - 1);
+			new_request_id_2 <= new_request_id_1;
+			new_request_2    <= new_request_1;
+
+			-- multiplication pipeline stages (required for pipeline in the dsp)
+			mult_pipe_new_request(0)    <= new_request_2;
+			mult_pipe_new_request_id(0) <= new_request_id_2;
+			mult_pipe_sign(0)           <= sign_2;
+			mult_pipe_exponent(0)       <= exponent_2;
+			mult_pipe_mantissa(0)       <= mantissa_2;
+
+			for I in num_mult_pipe_stages - 1 downto 1 loop
+				mult_pipe_new_request(I)    <= mult_pipe_new_request(I - 1);
+				mult_pipe_new_request_id(I) <= mult_pipe_new_request_id(I - 1);
+				mult_pipe_sign(I)           <= mult_pipe_sign(I - 1);
+				mult_pipe_exponent(I)       <= mult_pipe_exponent(I - 1);
+				mult_pipe_mantissa(I)       <= mult_pipe_mantissa(I - 1);
 			end loop;
 
-			-- stage 35  normalizo
-			output_mantissa_zeros                               := count_l_zeros(output_mantissa_pipelined_reg(number_of_stages - 2));
-			output_mantissa_pipelined_reg(number_of_stages - 1) <= shift_left(output_mantissa_pipelined_reg(number_of_stages - 2), output_mantissa_zeros);
-			output_exponent_pipelined_reg(number_of_stages - 1) <= output_exponent_pipelined_reg(number_of_stages - 2) - output_mantissa_zeros;
+			-- stage 3
+			new_request_3    <= mult_pipe_new_request(num_mult_pipe_stages - 1);
+			new_request_id_3 <= mult_pipe_new_request_id(num_mult_pipe_stages - 1);
+			sign_3           <= mult_pipe_sign(num_mult_pipe_stages - 1);
+			exponent_3       <= mult_pipe_exponent(num_mult_pipe_stages - 1);
+			mantissa_3       <= mult_pipe_mantissa(num_mult_pipe_stages - 1);
 
-			output_sign_pipelined_reg(number_of_stages - 1)     <= output_sign_pipelined_reg(number_of_stages - 2);
-			output_exponent_pipelined_reg(number_of_stages - 1) <= output_exponent_pipelined_reg(number_of_stages - 2);
-			request_id_pipelined_reg(number_of_stages - 1)      <= request_id_pipelined_reg(number_of_stages - 2);
-			new_operation_pipelined_reg(number_of_stages - 1)   <= new_operation_pipelined_reg(number_of_stages - 2);
+			-- stage 4
+			sign_4           <= sign_3;
+			new_request_4    <= new_request_3;
+			new_request_id_4 <= new_request_id_3;
 
-			-- stage 36 salida!
-			output.sign     <= output_sign_pipelined_reg(number_of_stages - 1);
-			output.exponent <= output_exponent_pipelined_reg(number_of_stages - 1);
-			output.mantissa <= output_mantissa_pipelined_reg(number_of_stages - 1)(mantissa_size + 1 downto 2);
+			if(mantissa_3 = to_unsigned(0, (mantissa_size + 1)*2)) then
+				exponent_4 <= to_unsigned(0, exponent_size);
+				mantissa_4 <= to_unsigned(0, mantissa_size);
+			elsif(mantissa_3(mantissa_3'length - 1) = '1') then
+				mantissa_4       <= mantissa_3(mantissa_3'length - 2 downto mantissa_3'length - 2 - mantissa_size + 1);
+				exponent_4       <= exponent_3;
+			else
+				mantissa_4       <= mantissa_3(mantissa_3'length - 3 downto mantissa_3'length - 3 - mantissa_size + 1);
+				exponent_4       <= exponent_3 - 1;
+			end if;
 
-			op_id_out <= request_id_pipelined_reg(number_of_stages - 1);
-			op_ready  <= new_operation_pipelined_reg(number_of_stages - 1);
+			-- stage output
+			output.sign     <= sign_4;
+			output.exponent <= exponent_4;
+			output.mantissa <= mantissa_4;
+			op_id_out       <= new_request_id_4;
+			op_ready        <= new_request_4;
 
 		end if;
 	end process;
 end architecture RTL;
+

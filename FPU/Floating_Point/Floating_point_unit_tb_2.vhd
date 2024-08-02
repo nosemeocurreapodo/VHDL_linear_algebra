@@ -59,7 +59,7 @@ begin
 		variable opb     : real := int_min;
 		variable output  : real;
 
-		variable op : FPU_operation := MUL;
+		variable op : FPU_operation := DIV;
 
 	begin
 		if (rising_edge(clk)) then
@@ -101,7 +101,7 @@ begin
 						when SUB =>
 							op := MUL;
 						when MUL =>
-							op := ADD;
+							op := DIV;
 						when DIV =>
 							op := ADD;
 							--assert false
