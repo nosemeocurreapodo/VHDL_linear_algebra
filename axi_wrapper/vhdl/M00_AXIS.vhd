@@ -17,6 +17,9 @@ entity M00_AXIS is
 	port (
 		-- Users to add ports here
 
+		data_in_ok : in std_logic;
+		data_in    : in std_logic_vector(C_M_AXIS_TDATA_WIDTH-1 downto 0);
+
 		-- User ports ends
 		-- Do not modify the ports beyond this line
 

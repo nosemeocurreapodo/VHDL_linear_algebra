@@ -15,6 +15,9 @@ entity S00_AXIS is
 	port (
 		-- Users to add ports here
 
+		data_out_ok : out std_logic;
+		data_out    : out std_logic_vector(C_S_AXIS_TDATA_WIDTH-1 downto 0);
+
 		-- User ports ends
 		-- Do not modify the ports beyond this line
 
@@ -150,25 +153,37 @@ begin
 	  end if;
 	end process;
 
-	-- FIFO write enable generation
-	fifo_wren <= S_AXIS_TVALID and axis_tready;
+	data_out_ok <= S_AXIS_TVALID and axis_tready;
 
-	-- FIFO Implementation
-	 FIFO_GEN: for byte_index in 0 to (C_S_AXIS_TDATA_WIDTH/8-1) generate
-
-	 signal stream_data_fifo : BYTE_FIFO_TYPE;
-	 begin   
-	  -- Streaming input data is stored in FIFO
-	  process(S_AXIS_ACLK)
+	process(S_AXIS_ACLK)
 	  begin
 	    if (rising_edge (S_AXIS_ACLK)) then
-	      if (fifo_wren = '1') then
-	        stream_data_fifo(write_pointer) <= S_AXIS_TDATA((byte_index*8+7) downto (byte_index*8));
-	      end if;  
+	      if (data_out_ok = '1') then
+			data_out    <= S_AXIS_TDATA(C_S_AXIS_TDATA_WIDTH - 1 downto 0);
+		  end if;  
 	    end  if;
 	  end process;
 
-	end generate FIFO_GEN;
+
+	-- FIFO write enable generation
+	-- fifo_wren <= S_AXIS_TVALID and axis_tready;
+
+	-- FIFO Implementation
+	-- FIFO_GEN: for byte_index in 0 to (C_S_AXIS_TDATA_WIDTH/8-1) generate
+
+	-- signal stream_data_fifo : BYTE_FIFO_TYPE;
+	-- begin   
+	  -- Streaming input data is stored in FIFO
+	--  process(S_AXIS_ACLK)
+	--  begin
+	--    if (rising_edge (S_AXIS_ACLK)) then
+	--      if (fifo_wren = '1') then
+	--        stream_data_fifo(write_pointer) <= S_AXIS_TDATA((byte_index*8+7) downto (byte_index*8));
+	--      end if;  
+	--    end  if;
+	--  end process;
+
+	--end generate FIFO_GEN;
 
 	-- Add user logic here
 

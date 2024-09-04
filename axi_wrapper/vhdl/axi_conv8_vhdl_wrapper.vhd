@@ -1,10 +1,17 @@
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
+use work.request_id_pack.all;
 
-entity axi_vhdl_wrapper is
+use work.FPU_definitions_pack.all;
+use work.Matrix_definition_pack.all;
+use work.Matrix_component_pack.all;
+
+entity axi_conv8_vhdl_wrapper is
 	generic (
 		-- Users to add parameters here
+
+		DISP_FILTER_WIDTH	: integer	:= 32;
 
 		-- User parameters ends
 		-- Do not modify the parameters beyond this line
@@ -69,9 +76,9 @@ entity axi_vhdl_wrapper is
 		m00_axis_tlast	: out std_logic;
 		m00_axis_tready	: in std_logic
 	);
-end axi_vhdl_wrapper;
+end axi_conv8_vhdl_wrapper;
 
-architecture arch_imp of axi_vhdl_wrapper is
+architecture arch_imp of axi_conv8_vhdl_wrapper is
 
 	-- component declaration
 	component S00_AXI is
@@ -135,6 +142,14 @@ architecture arch_imp of axi_vhdl_wrapper is
 		);
 	end component M00_AXIS;
 
+	signal displacement_filter : scalar_array(DISP_FILTER_WIDTH - 1 downto 0);
+	signal conv_coeff          : scalar_array(7 downto 0);
+	signal conv_output         : scalar;
+	signal conv_op_done        : std_logic;
+
+	signal conv_data_in_ok     : std_logic;
+	signal conv_data_in        : scalar;
+
 begin
 
 -- Instantiation of Axi Bus Interface S00_AXI
@@ -174,6 +189,8 @@ S00_AXIS_inst : S00_AXIS
 	)
 	port map (
 		S_AXIS_ACLK	=> s00_axis_aclk,
+		data_out_ok => con_data_in_ok,
+		data_out    => con_data_in,
 		S_AXIS_ARESETN	=> s00_axis_aresetn,
 		S_AXIS_TREADY	=> s00_axis_tready,
 		S_AXIS_TDATA	=> s00_axis_tdata,
@@ -199,6 +216,29 @@ M00_AXIS_inst : M00_AXIS
 	);
 
 	-- Add user logic here
+
+	Vector8_dot_fast_instantiation : Vector8_dot_fast 
+	port map(
+		clk                      => s00_axis_aclk,
+		new_operation_request    => conv_data_in_ok,
+		new_operation_request_id => request_id_zero,
+		new_operation_done       => conv_op_done,
+		Vector1_input            => displacement_filter(DISP_FILTER_WIDTH - 1 downto DISP_FILTER_WIDTH - 9),
+		Vector2_input            => conv_coeff,
+		output                   => conv_output
+	);
+
+	displacement_filter_process : process(s00_axis_aclk)
+	begin
+		if (rising_edge(s00_axis_aclk)) then
+			for I in 0 to DISP_FILTER_WIDTH - 2 loop
+				displacement_filter(I) <= displacement_filter(I+1);
+			end loop;
+			displacement_filter(DISP_FILTER_WIDTH - 1) <= to_scalar(conv_data_in);
+			-- output <= scalar_to_std_logic_vector(scalar_output);
+			-- new_operation_done <= op_done;
+		end if;
+	end process;
 
 	-- User logic ends
 

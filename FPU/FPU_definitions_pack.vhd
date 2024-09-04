@@ -28,6 +28,8 @@ package FPU_definitions_pack is
 	subtype BUS_to_FPU is BUS_to_floating_point_unit;
 	subtype BUS_from_FPU is BUS_from_floating_point_unit;
 
+	type scalar_array is array (integer range<>) of scalar;
+
 	function to_scalar(slv : std_logic_vector(scalar_size - 1 downto 0)) return scalar;
 	function to_scalar(int : integer) return scalar;
 	function to_scalar(float : real) return scalar;
