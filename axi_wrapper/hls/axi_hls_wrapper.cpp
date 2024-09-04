@@ -17,14 +17,24 @@
 
 #include "axi_hls_wrapper.h"
 
+
 struct vec8
 {
-	void shift_down()
+	vec8()
+	{
+		for(int i = 0; i < 8; i++)
+		{
+			data[i] = 0;
+		}	
+	}
+
+	void shift_down(int val = 0)
 	{
 		for(int i = 0; i < 7; i++)
 		{
-			conv8_in_1[i] = conv8_in_1[i+1];
+			data[i] = data[i+1];
 		}
+		data[7] = val;
 	}
 
 	int dot(vec8 &a)
@@ -53,8 +63,7 @@ int axi_hsl_wrapper(hls::stream<int> &s_in, hls::stream<int> &s_out)
 	{
 		int val = s_in.read();
 
-		val_in_1.shift_down();
-		val_in_1.data[7] = val;
+		val_in_1.shift_down(val);
 
 		int conv_out = val_in_1.dot(val_in_2);
 
