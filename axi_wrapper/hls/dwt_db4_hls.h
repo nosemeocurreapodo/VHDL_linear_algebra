@@ -20,8 +20,8 @@
 #include "hls_stream.h"
 #include <iostream>
 
-#define DWT_LEVELS 2
+#define DWT_LEVELS 3
 
-extern int dwt_db4_hls(hls::stream<float> &s_in, hls::stream<float> coeff[DWT_LEVELS], int size);
+extern int dwt_db4_hls(hls::stream<float> &s_in,  hls::stream<float> &coeff_lo, hls::stream<float> coeff_hi[DWT_LEVELS], int size);
 
 #endif

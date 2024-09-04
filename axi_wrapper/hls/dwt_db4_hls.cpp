@@ -163,8 +163,7 @@ struct vec16
 	type data[16];
 };
 
-int dwt_db4_hls(hls::stream<float> &s_in, hls::stream<float> coeff[DWT_LEVELS],
-				int size)
+int dwt_db4_hls(hls::stream<float> &s_in,  hls::stream<float> &coeff_lo, hls::stream<float> coeff_hi[DWT_LEVELS], int size)
 {
 #pragma HLS INTERFACE axis port = s_in
 #pragma HLS INTERFACE axis port = coeff
@@ -264,9 +263,12 @@ int dwt_db4_hls(hls::stream<float> &s_in, hls::stream<float> coeff[DWT_LEVELS],
 			float lo_out = shift_reg[lvl].dot(lo_filter, 6);
 			if (downsampler[lvl])
 			{
-				shift_reg[lvl + 1].shift_down(hi_out);
+				shift_reg[lvl + 1].shift_down(lo_out);
                 indexes[lvl + 1]++;
-				coeff[lvl].write(lo_out);
+                if(lvl == 0)
+                    coeff_lo.write(lo_out);
+				coeff_hi[lvl].write(hi_out);
+
 			}
 			downsampler[lvl] = !downsampler[lvl];
 		}
