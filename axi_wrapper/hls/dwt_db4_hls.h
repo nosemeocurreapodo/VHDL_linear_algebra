@@ -20,6 +20,8 @@
 #include "hls_stream.h"
 #include <iostream>
 
-extern int axi_hls_wrapper(hls::stream<int> &s_in, hls::stream<int> &s_out);
+#define DWT_LEVELS 2
+
+extern int dwt_db4_hls(hls::stream<float> &s_in, hls::stream<float> coeff[DWT_LEVELS], int size);
 
 #endif
