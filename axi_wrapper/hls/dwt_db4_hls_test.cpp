@@ -16,20 +16,24 @@
  */
 #include "dwt_db4_hls.h"
 
-int main() {
+int main()
+{
   hls::stream<float> s_in;
   hls::stream<float> coeff_lo;
   hls::stream<float> coeff_hi[DWT_LEVELS];
 
-  int size = 64;
+  int size = 8;
 
   int dwt_levels_size[DWT_LEVELS];
-  dwt_levels_size[0] = size;
-  for (int i = 1; i < DWT_LEVELS; i++) {
-    dwt_levels_size[i] = dwt_levels_size[i - 1] / 2;
+  dwt_levels_size[0] = ((size + 8 - 1) / 2);
+
+  for (int i = 1; i < DWT_LEVELS; i++)
+  {
+    dwt_levels_size[i] = ((dwt_levels_size[i - 1] + 8 - 1) / 2);
   }
 
-  for (int i = 0; i < size; i++) {
+  for (int i = 0; i < size; i++)
+  {
     s_in.write(i);
   }
 
@@ -37,13 +41,18 @@ int main() {
 
   std::cout << "ret = " << ret << std::endl;
 
-  for (unsigned i = 0; i < DWT_LEVELS; i++) {
-    std::cout << "dwt level " << i << std::endl;
-    for (int j = 0; j < dwt_levels_size[i]; j++) {
-      if (i == 0)
-        std::cout << coeff_lo.read() << std::endl;
-    }
-    for (int j = 0; j < dwt_levels_size[i]; j++) {
+  std::cout << "dwt approximation coeffs " << std::endl;
+
+  for (int j = 0; j < dwt_levels_size[0]; j++)
+  {
+    std::cout << coeff_lo.read() << std::endl;
+  }
+
+  for (unsigned i = 0; i < DWT_LEVELS; i++)
+  {
+    std::cout << "dwt detail coeffs level " << i << std::endl;
+    for (int j = 0; j < dwt_levels_size[i]; j++)
+    {
       std::cout << coeff_hi[i].read() << std::endl;
     }
   }
