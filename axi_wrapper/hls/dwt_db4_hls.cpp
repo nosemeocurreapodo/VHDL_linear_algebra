@@ -219,6 +219,7 @@ struct vec16
 
 	type dot_v3(vec8<type> a, int start_index)
 	{
+#pragma HLS INLINE
 		type mul0 = data[start_index + 0] * a.data[0];
 		type mul1 = data[start_index + 1] * a.data[1];
 		type mul2 = data[start_index + 2] * a.data[2];
@@ -273,12 +274,12 @@ int dwt_db4_hls(hls::stream<float> &s_in, hls::stream<float> &coeff_lo, hls::str
 
 	vec8<float> hi_filter_array[DWT_LEVELS];
 #pragma HLS ARRAY_PARTITION variable = hi_filter_array complete dim = 0
-#pragma HLS ARRAY_PARTITION variable = hi_filter_array[0].data complete dim = 0
-#pragma HLS ARRAY_PARTITION variable = hi_filter_array[1].data complete dim = 0
-#pragma HLS ARRAY_PARTITION variable = hi_filter_array[2].data complete dim = 0
-#pragma HLS ARRAY_PARTITION variable = hi_filter_array[3].data complete dim = 0
-#pragma HLS ARRAY_PARTITION variable = hi_filter_array[4].data complete dim = 0
-#pragma HLS ARRAY_PARTITION variable = hi_filter_array[5].data complete dim = 0
+//#pragma HLS ARRAY_PARTITION variable = hi_filter_array[0].data complete dim = 0
+//#pragma HLS ARRAY_PARTITION variable = hi_filter_array[1].data complete dim = 0
+//#pragma HLS ARRAY_PARTITION variable = hi_filter_array[2].data complete dim = 0
+//#pragma HLS ARRAY_PARTITION variable = hi_filter_array[3].data complete dim = 0
+//#pragma HLS ARRAY_PARTITION variable = hi_filter_array[4].data complete dim = 0
+//#pragma HLS ARRAY_PARTITION variable = hi_filter_array[5].data complete dim = 0
 	for (int lvl = 0; lvl < DWT_LEVELS; lvl++)
 		hi_filter_array[lvl] = hi_filter;
 
@@ -293,12 +294,12 @@ int dwt_db4_hls(hls::stream<float> &s_in, hls::stream<float> &coeff_lo, hls::str
 
 	vec8<float> lo_filter_array[DWT_LEVELS];
 #pragma HLS ARRAY_PARTITION variable = lo_filter_array complete dim = 0
-#pragma HLS ARRAY_PARTITION variable = lo_filter_array[0].data complete dim = 0
-#pragma HLS ARRAY_PARTITION variable = lo_filter_array[1].data complete dim = 0
-#pragma HLS ARRAY_PARTITION variable = lo_filter_array[2].data complete dim = 0
-#pragma HLS ARRAY_PARTITION variable = lo_filter_array[3].data complete dim = 0
-#pragma HLS ARRAY_PARTITION variable = lo_filter_array[4].data complete dim = 0
-#pragma HLS ARRAY_PARTITION variable = lo_filter_array[5].data complete dim = 0
+//#pragma HLS ARRAY_PARTITION variable = lo_filter_array[0].data complete dim = 0
+//#pragma HLS ARRAY_PARTITION variable = lo_filter_array[1].data complete dim = 0
+//#pragma HLS ARRAY_PARTITION variable = lo_filter_array[2].data complete dim = 0
+//#pragma HLS ARRAY_PARTITION variable = lo_filter_array[3].data complete dim = 0
+//#pragma HLS ARRAY_PARTITION variable = lo_filter_array[4].data complete dim = 0
+//#pragma HLS ARRAY_PARTITION variable = lo_filter_array[5].data complete dim = 0
 	for (int lvl = 0; lvl < DWT_LEVELS; lvl++)
 		lo_filter_array[lvl] = lo_filter;
 
@@ -309,13 +310,13 @@ int dwt_db4_hls(hls::stream<float> &s_in, hls::stream<float> &coeff_lo, hls::str
 
 	vec16<float> shift_reg[DWT_LEVELS + 1];
 #pragma HLS ARRAY_PARTITION variable = shift_reg complete dim = 0
-#pragma HLS ARRAY_PARTITION variable = shift_reg[0].data complete dim = 0
-#pragma HLS ARRAY_PARTITION variable = shift_reg[1].data complete dim = 0
-#pragma HLS ARRAY_PARTITION variable = shift_reg[2].data complete dim = 0
-#pragma HLS ARRAY_PARTITION variable = shift_reg[3].data complete dim = 0
-#pragma HLS ARRAY_PARTITION variable = shift_reg[4].data complete dim = 0
-#pragma HLS ARRAY_PARTITION variable = shift_reg[5].data complete dim = 0
-#pragma HLS ARRAY_PARTITION variable = shift_reg[6].data complete dim = 0
+//#pragma HLS ARRAY_PARTITION variable = shift_reg[0].data complete dim = 0
+//#pragma HLS ARRAY_PARTITION variable = shift_reg[1].data complete dim = 0
+//#pragma HLS ARRAY_PARTITION variable = shift_reg[2].data complete dim = 0
+//#pragma HLS ARRAY_PARTITION variable = shift_reg[3].data complete dim = 0
+//#pragma HLS ARRAY_PARTITION variable = shift_reg[4].data complete dim = 0
+//#pragma HLS ARRAY_PARTITION variable = shift_reg[5].data complete dim = 0
+//#pragma HLS ARRAY_PARTITION variable = shift_reg[6].data complete dim = 0
 	// #pragma HLS ARRAY_PARTITION variable=shift_reg[7].data complete dim=0
 
 	bool downsampler[DWT_LEVELS];
