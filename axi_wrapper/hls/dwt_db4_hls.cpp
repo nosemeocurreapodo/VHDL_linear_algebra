@@ -249,7 +249,7 @@ int dwt_db4_hls(hls::stream<float> &s_in, hls::stream<float> &coeff_lo, hls::str
 #pragma HLS INTERFACE axis port = s_in
 #pragma HLS INTERFACE axis port = coeff_lo
 #pragma HLS INTERFACE axis port = coeff_hi
-// #pragma HLS INTERFACE s_axilite port = levels
+#pragma HLS INTERFACE s_axilite port = size
 #pragma HLS INTERFACE s_axilite port = return
 
 	// from what I can read in the pywt implementation
