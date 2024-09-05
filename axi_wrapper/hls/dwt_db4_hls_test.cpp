@@ -22,7 +22,7 @@ int main()
   hls::stream<float> coeff_lo;
   hls::stream<float> coeff_hi[DWT_LEVELS];
 
-  int size = 8;
+  int size = 32;
 
   int dwt_levels_size[DWT_LEVELS];
   dwt_levels_size[0] = ((size + 8 - 1) / 2);
@@ -43,7 +43,7 @@ int main()
 
   std::cout << "dwt approximation coeffs " << std::endl;
 
-  for (int j = 0; j < dwt_levels_size[0]; j++)
+  for (int j = 0; j < dwt_levels_size[DWT_LEVELS-1]; j++)
   {
     std::cout << coeff_lo.read() << std::endl;
   }
