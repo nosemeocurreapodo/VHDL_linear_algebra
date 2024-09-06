@@ -11,7 +11,7 @@ entity axi_conv8_vhdl_wrapper is
 	generic (
 		-- Users to add parameters here
 
-		DISP_FILTER_WIDTH	: integer	:= 32;
+		DISP_FILTER_WIDTH	: integer	:= 16;
 
 		-- User parameters ends
 		-- Do not modify the parameters beyond this line
@@ -149,6 +149,10 @@ architecture arch_imp of axi_conv8_vhdl_wrapper is
 
 	signal conv_data_in_ok     : std_logic;
 	signal conv_data_in        : scalar;
+	signal conv_data_in_len    : unsigned(31 downto 0);
+
+	signal conv_has_new_data   : std_logic              := '0';
+	signal conv_data_count     : unsigned(31 downto 0)  := 0;
 
 begin
 
@@ -159,6 +163,7 @@ S00_AXI_inst : S00_AXI
 		C_S_AXI_ADDR_WIDTH	=> C_S00_AXI_ADDR_WIDTH
 	)
 	port map (
+		data_len    => con_data_in_len,
 		S_AXI_ACLK	=> s00_axi_aclk,
 		S_AXI_ARESETN	=> s00_axi_aresetn,
 		S_AXI_AWADDR	=> s00_axi_awaddr,
@@ -188,9 +193,9 @@ S00_AXIS_inst : S00_AXIS
 		C_S_AXIS_TDATA_WIDTH	=> C_S00_AXIS_TDATA_WIDTH
 	)
 	port map (
+		data_out_ok => conv_data_in_ok,
+		data_out    => conv_data_in,
 		S_AXIS_ACLK	=> s00_axis_aclk,
-		data_out_ok => con_data_in_ok,
-		data_out    => con_data_in,
 		S_AXIS_ARESETN	=> s00_axis_aresetn,
 		S_AXIS_TREADY	=> s00_axis_tready,
 		S_AXIS_TDATA	=> s00_axis_tdata,
@@ -206,6 +211,9 @@ M00_AXIS_inst : M00_AXIS
 		C_M_START_COUNT	=> C_M00_AXIS_START_COUNT
 	)
 	port map (
+		data_in_ok      => conv_op_done,
+		data_in         => conv_output,
+		data_in_len     => 
 		M_AXIS_ACLK	=> m00_axis_aclk,
 		M_AXIS_ARESETN	=> m00_axis_aresetn,
 		M_AXIS_TVALID	=> m00_axis_tvalid,
@@ -230,11 +238,13 @@ M00_AXIS_inst : M00_AXIS
 
 	displacement_filter_process : process(s00_axis_aclk)
 	begin
-		if (rising_edge(s00_axis_aclk)) then
+		if (rising_edge(s00_axis_aclk) and conv_data_in_ok == '1') then
 			for I in 0 to DISP_FILTER_WIDTH - 2 loop
 				displacement_filter(I) <= displacement_filter(I+1);
 			end loop;
 			displacement_filter(DISP_FILTER_WIDTH - 1) <= to_scalar(conv_data_in);
+			conv_has_new_data <= '1';
+			conv_data_count <= conv_data_count + 1;
 			-- output <= scalar_to_std_logic_vector(scalar_output);
 			-- new_operation_done <= op_done;
 		end if;

@@ -17,8 +17,9 @@ entity M00_AXIS is
 	port (
 		-- Users to add ports here
 
-		data_in_ok : in std_logic;
-		data_in    : in std_logic_vector(C_M_AXIS_TDATA_WIDTH-1 downto 0);
+		data_in_ok  : in std_logic;
+		data_in     : in std_logic_vector(C_M_AXIS_TDATA_WIDTH-1 downto 0);
+		data_in_len : in unsigned(31 downto 0);
 
 		-- User ports ends
 		-- Do not modify the ports beyond this line
@@ -168,8 +169,9 @@ begin
 	--tvalid generation
 	--axis_tvalid is asserted when the control state machine's state is SEND_STREAM and
 	--number of output streaming data is less than the NUMBER_OF_OUTPUT_WORDS.
-	axis_tvalid <= '1' when ((mst_exec_state = SEND_STREAM) and (read_pointer < NUMBER_OF_OUTPUT_WORDS)) else '0';
-	                                                                                               
+	--axis_tvalid <= '1' when ((mst_exec_state = SEND_STREAM) and (read_pointer < NUMBER_OF_OUTPUT_WORDS)) else '0';
+	axis_tvalid <= '1' when ((mst_exec_state = SEND_STREAM) and (data_in_ok = '1')) else '0';
+
 	-- AXI tlast generation                                                                        
 	-- axis_tlast is asserted number of output streaming data is NUMBER_OF_OUTPUT_WORDS-1          
 	-- (0 to NUMBER_OF_OUTPUT_WORDS-1)                                                             
@@ -193,28 +195,28 @@ begin
 
 	--read_pointer pointer
 
-	process(M_AXIS_ACLK)                                                       
-	begin                                                                            
-	  if (rising_edge (M_AXIS_ACLK)) then                                            
-	    if(M_AXIS_ARESETN = '0') then                                                
-	      read_pointer <= 0;                                                         
-	      tx_done  <= '0';                                                           
-	    else                                                                         
-	      if (read_pointer <= NUMBER_OF_OUTPUT_WORDS-1) then                         
-	        if (tx_en = '1') then                                                    
-	          -- read pointer is incremented after every read from the FIFO          
-	          -- when FIFO read signal is enabled.                                   
-	          read_pointer <= read_pointer + 1;                                      
-	          tx_done <= '0';                                                        
-	        end if;                                                                  
-	      elsif (read_pointer = NUMBER_OF_OUTPUT_WORDS) then                         
-	        -- tx_done is asserted when NUMBER_OF_OUTPUT_WORDS numbers of streaming data
-	        -- has been out.                                                         
-	        tx_done <= '1';                                                          
-	      end  if;                                                                   
-	    end  if;                                                                     
-	  end  if;                                                                       
-	end process;                                                                     
+	--process(M_AXIS_ACLK)                                                       
+	--begin                                                                            
+	--  if (rising_edge (M_AXIS_ACLK)) then                                            
+	--    if(M_AXIS_ARESETN = '0') then                                                
+	--      read_pointer <= 0;                                                         
+	--      tx_done  <= '0';                                                           
+	--    else                                                                         
+	--      if (read_pointer <= NUMBER_OF_OUTPUT_WORDS-1) then                         
+	--        if (tx_en = '1') then                                                    
+	--          -- read pointer is incremented after every read from the FIFO          
+	--          -- when FIFO read signal is enabled.                                   
+	--          read_pointer <= read_pointer + 1;                                      
+	--          tx_done <= '0';                                                        
+	--        end if;                                                                  
+	--      elsif (read_pointer = NUMBER_OF_OUTPUT_WORDS) then                         
+	--        -- tx_done is asserted when NUMBER_OF_OUTPUT_WORDS numbers of streaming data
+	--        -- has been out.                                                         
+	--        tx_done <= '1';                                                          
+	--      end  if;                                                                   
+	--    end  if;                                                                     
+	--  end  if;                                                                       
+	--end process;                                                                     
 
 
 	--FIFO read enable generation 
@@ -230,8 +232,10 @@ begin
 	    if (rising_edge (M_AXIS_ACLK)) then                                         
 	      if(M_AXIS_ARESETN = '0') then                                             
 	    	stream_data_out <= std_logic_vector(to_unsigned(sig_one,C_M_AXIS_TDATA_WIDTH));  
-	      elsif (tx_en = '1') then -- && M_AXIS_TSTRB(byte_index)                   
-	        stream_data_out <= std_logic_vector( to_unsigned(read_pointer,C_M_AXIS_TDATA_WIDTH) + to_unsigned(sig_one,C_M_AXIS_TDATA_WIDTH));
+	      --elsif (tx_en = '1') then -- && M_AXIS_TSTRB(byte_index)                   
+	      --  stream_data_out <= std_logic_vector( to_unsigned(read_pointer,C_M_AXIS_TDATA_WIDTH) + to_unsigned(sig_one,C_M_AXIS_TDATA_WIDTH));
+		  elsif (data_in_ok = '1') then
+			stream_data_out <= data_in;
 	      end if;                                                                   
 	     end if;                                                                    
 	   end process;                                                                 

@@ -154,15 +154,16 @@ begin
 	end process;
 
 	data_out_ok <= S_AXIS_TVALID and axis_tready;
+	data_out    <= S_AXIS_TDATA(C_S_AXIS_TDATA_WIDTH - 1 downto 0);
 
-	process(S_AXIS_ACLK)
-	  begin
-	    if (rising_edge (S_AXIS_ACLK)) then
-	      if (data_out_ok = '1') then
-			data_out    <= S_AXIS_TDATA(C_S_AXIS_TDATA_WIDTH - 1 downto 0);
-		  end if;  
-	    end  if;
-	  end process;
+	--process(S_AXIS_ACLK)
+	--  begin
+	--    if (rising_edge (S_AXIS_ACLK)) then
+	--      if (data_out_ok = '1') then
+	--		data_out    <= S_AXIS_TDATA(C_S_AXIS_TDATA_WIDTH - 1 downto 0);
+	--	  end if;  
+	--    end  if;
+	--  end process;
 
 
 	-- FIFO write enable generation

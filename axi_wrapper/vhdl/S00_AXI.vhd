@@ -17,6 +17,8 @@ entity S00_AXI is
 	port (
 		-- Users to add ports here
 
+		data_in_len : out unsinged(31 downto 0);
+
 		-- User ports ends
 		-- Do not modify the ports beyond this line
 
@@ -385,7 +387,7 @@ begin
 
 
 	-- Add user logic here
-
+	data_in_len <= slv_reg3;
 	-- User logic ends
 
 end arch_imp;
