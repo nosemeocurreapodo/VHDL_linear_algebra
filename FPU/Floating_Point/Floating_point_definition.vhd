@@ -39,19 +39,38 @@ package body Floating_point_definition is
 	end function;
 
 	function to_floating_point(int : integer) return floating_point is
-		variable fp      : floating_point;
 		variable m       : unsigned(mantissa_size - 1 downto 0);
 		variable m_zeros : integer;
+		variable fp        : floating_point;
+		variable abs_int   : integer;
+		--variable exponent  : real;
+		--variable mantissa  : real;
+		--variable quotient  : real;
+
 	begin
 		if (int >= 0) then
 			fp.sign := '0';
 		else
 			fp.sign := '1';
 		end if;
-		m           := to_unsigned(int, mantissa_size);
-		m_zeros     := count_l_zeros_var(m);
-		fp.mantissa := shift_left(m, m_zeros + 1);
-		fp.exponent := to_unsigned(128, exponent_size) - m_zeros;
+	
+		abs_int := abs(int);
+		
+		if( abs_int = 0) then
+			fp.exponent := to_unsigned(0, exponent_size);
+			fp.mantissa := to_unsigned(0, mantissa_size);
+		else
+			m           := to_unsigned(abs_int, mantissa_size);
+			m_zeros     := count_l_zeros_var(m);
+			fp.mantissa := shift_left(m, m_zeros + 1);
+			fp.exponent := to_unsigned(128, exponent_size) - m_zeros;
+			--exponent := floor(log2(abs_int));
+			--quotient := 2.0 ** exponent;
+			--mantissa := abs_int / quotient;
+			
+			--fp.exponent := to_unsigned(natural(127.0+exponent), exponent_size);
+			--fp.mantissa := to_unsigned(natural(round(mantissa*(2.0**(mantissa_size)))), mantissa_size);
+		end if;
 		return fp;
 	end function;
 	
