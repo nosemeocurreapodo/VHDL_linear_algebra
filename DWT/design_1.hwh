@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<EDKSYSTEM EDWVERSION="1.2" TIMESTAMP="Fri Sep  6 09:45:21 2024" VIVADOVERSION="2023.2">
+<EDKSYSTEM EDWVERSION="1.2" TIMESTAMP="Tue Sep 10 10:29:11 2024" VIVADOVERSION="2023.2">
 
   <SYSTEMINFO ARCH="zynq" BOARD="tul.com.tw:pynq-z2:part0:1.0" DEVICE="7z020" NAME="design_1" PACKAGE="clg400" SPEEDGRADE="-1"/>
 
@@ -1208,6 +1208,16 @@
             <CONNECTION INSTANCE="rgb2yuv_Y_0" PORT="ch1_in_TDATA"/>
           </CONNECTIONS>
         </PORT>
+        <PORT DIR="O" LEFT="3" NAME="m_axis_mm2s_tkeep" RIGHT="0" SIGIS="undef" SIGNAME="axi_dma_0_m_axis_mm2s_tkeep">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="rgb2yuv_Y_0" PORT="ch1_in_TKEEP"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="O" NAME="m_axis_mm2s_tlast" SIGIS="undef" SIGNAME="axi_dma_0_m_axis_mm2s_tlast">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="rgb2yuv_Y_0" PORT="ch1_in_TLAST"/>
+          </CONNECTIONS>
+        </PORT>
         <PORT DIR="I" NAME="m_axis_mm2s_tready" SIGIS="undef" SIGNAME="axi_dma_0_m_axis_mm2s_tready">
           <CONNECTIONS>
             <CONNECTION INSTANCE="rgb2yuv_Y_0" PORT="ch1_in_TREADY"/>
@@ -1310,6 +1320,16 @@
         <PORT DIR="I" LEFT="31" NAME="s_axis_s2mm_tdata" RIGHT="0" SIGIS="undef" SIGNAME="axi_dma_0_s_axis_s2mm_tdata">
           <CONNECTIONS>
             <CONNECTION INSTANCE="yuv2rgb_0" PORT="ch1_out_TDATA"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="I" LEFT="3" NAME="s_axis_s2mm_tkeep" RIGHT="0" SIGIS="undef" SIGNAME="axi_dma_0_s_axis_s2mm_tkeep">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="yuv2rgb_0" PORT="ch1_out_TKEEP"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="I" NAME="s_axis_s2mm_tlast" SIGIS="undef" SIGNAME="axi_dma_0_s_axis_s2mm_tlast">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="yuv2rgb_0" PORT="ch1_out_TLAST"/>
           </CONNECTIONS>
         </PORT>
         <PORT DIR="O" NAME="s_axis_s2mm_tready" SIGIS="undef" SIGNAME="axi_dma_0_s_axis_s2mm_tready">
@@ -1491,6 +1511,8 @@
           <PARAMETER NAME="TUSER_WIDTH" VALUE="0"/>
           <PORTMAPS>
             <PORTMAP LOGICAL="TDATA" PHYSICAL="m_axis_mm2s_tdata"/>
+            <PORTMAP LOGICAL="TKEEP" PHYSICAL="m_axis_mm2s_tkeep"/>
+            <PORTMAP LOGICAL="TLAST" PHYSICAL="m_axis_mm2s_tlast"/>
             <PORTMAP LOGICAL="TREADY" PHYSICAL="m_axis_mm2s_tready"/>
             <PORTMAP LOGICAL="TVALID" PHYSICAL="m_axis_mm2s_tvalid"/>
           </PORTMAPS>
@@ -1511,6 +1533,8 @@
           <PARAMETER NAME="TUSER_WIDTH" VALUE="0"/>
           <PORTMAPS>
             <PORTMAP LOGICAL="TDATA" PHYSICAL="s_axis_s2mm_tdata"/>
+            <PORTMAP LOGICAL="TKEEP" PHYSICAL="s_axis_s2mm_tkeep"/>
+            <PORTMAP LOGICAL="TLAST" PHYSICAL="s_axis_s2mm_tlast"/>
             <PORTMAP LOGICAL="TREADY" PHYSICAL="s_axis_s2mm_tready"/>
             <PORTMAP LOGICAL="TVALID" PHYSICAL="s_axis_s2mm_tvalid"/>
           </PORTMAPS>
@@ -2574,6 +2598,16 @@
             <CONNECTION INSTANCE="rgb2yuv_Y_0" PORT="ch2_in_TDATA"/>
           </CONNECTIONS>
         </PORT>
+        <PORT DIR="O" LEFT="3" NAME="m_axis_mm2s_tkeep" RIGHT="0" SIGIS="undef" SIGNAME="axi_dma_1_m_axis_mm2s_tkeep">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="rgb2yuv_Y_0" PORT="ch2_in_TKEEP"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="O" NAME="m_axis_mm2s_tlast" SIGIS="undef" SIGNAME="axi_dma_1_m_axis_mm2s_tlast">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="rgb2yuv_Y_0" PORT="ch2_in_TLAST"/>
+          </CONNECTIONS>
+        </PORT>
         <PORT DIR="I" NAME="m_axis_mm2s_tready" SIGIS="undef" SIGNAME="axi_dma_1_m_axis_mm2s_tready">
           <CONNECTIONS>
             <CONNECTION INSTANCE="rgb2yuv_Y_0" PORT="ch2_in_TREADY"/>
@@ -2676,6 +2710,16 @@
         <PORT DIR="I" LEFT="31" NAME="s_axis_s2mm_tdata" RIGHT="0" SIGIS="undef" SIGNAME="axi_dma_1_s_axis_s2mm_tdata">
           <CONNECTIONS>
             <CONNECTION INSTANCE="yuv2rgb_0" PORT="ch2_out_TDATA"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="I" LEFT="3" NAME="s_axis_s2mm_tkeep" RIGHT="0" SIGIS="undef" SIGNAME="axi_dma_1_s_axis_s2mm_tkeep">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="yuv2rgb_0" PORT="ch2_out_TKEEP"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="I" NAME="s_axis_s2mm_tlast" SIGIS="undef" SIGNAME="axi_dma_1_s_axis_s2mm_tlast">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="yuv2rgb_0" PORT="ch2_out_TLAST"/>
           </CONNECTIONS>
         </PORT>
         <PORT DIR="O" NAME="s_axis_s2mm_tready" SIGIS="undef" SIGNAME="axi_dma_1_s_axis_s2mm_tready">
@@ -2857,6 +2901,8 @@
           <PARAMETER NAME="TUSER_WIDTH" VALUE="0"/>
           <PORTMAPS>
             <PORTMAP LOGICAL="TDATA" PHYSICAL="m_axis_mm2s_tdata"/>
+            <PORTMAP LOGICAL="TKEEP" PHYSICAL="m_axis_mm2s_tkeep"/>
+            <PORTMAP LOGICAL="TLAST" PHYSICAL="m_axis_mm2s_tlast"/>
             <PORTMAP LOGICAL="TREADY" PHYSICAL="m_axis_mm2s_tready"/>
             <PORTMAP LOGICAL="TVALID" PHYSICAL="m_axis_mm2s_tvalid"/>
           </PORTMAPS>
@@ -2877,6 +2923,8 @@
           <PARAMETER NAME="TUSER_WIDTH" VALUE="0"/>
           <PORTMAPS>
             <PORTMAP LOGICAL="TDATA" PHYSICAL="s_axis_s2mm_tdata"/>
+            <PORTMAP LOGICAL="TKEEP" PHYSICAL="s_axis_s2mm_tkeep"/>
+            <PORTMAP LOGICAL="TLAST" PHYSICAL="s_axis_s2mm_tlast"/>
             <PORTMAP LOGICAL="TREADY" PHYSICAL="s_axis_s2mm_tready"/>
             <PORTMAP LOGICAL="TVALID" PHYSICAL="s_axis_s2mm_tvalid"/>
           </PORTMAPS>
@@ -3940,6 +3988,16 @@
             <CONNECTION INSTANCE="rgb2yuv_Y_0" PORT="ch3_in_TDATA"/>
           </CONNECTIONS>
         </PORT>
+        <PORT DIR="O" LEFT="3" NAME="m_axis_mm2s_tkeep" RIGHT="0" SIGIS="undef" SIGNAME="axi_dma_2_m_axis_mm2s_tkeep">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="rgb2yuv_Y_0" PORT="ch3_in_TKEEP"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="O" NAME="m_axis_mm2s_tlast" SIGIS="undef" SIGNAME="axi_dma_2_m_axis_mm2s_tlast">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="rgb2yuv_Y_0" PORT="ch3_in_TLAST"/>
+          </CONNECTIONS>
+        </PORT>
         <PORT DIR="I" NAME="m_axis_mm2s_tready" SIGIS="undef" SIGNAME="axi_dma_2_m_axis_mm2s_tready">
           <CONNECTIONS>
             <CONNECTION INSTANCE="rgb2yuv_Y_0" PORT="ch3_in_TREADY"/>
@@ -4042,6 +4100,16 @@
         <PORT DIR="I" LEFT="31" NAME="s_axis_s2mm_tdata" RIGHT="0" SIGIS="undef" SIGNAME="axi_dma_2_s_axis_s2mm_tdata">
           <CONNECTIONS>
             <CONNECTION INSTANCE="yuv2rgb_0" PORT="ch3_out_TDATA"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="I" LEFT="3" NAME="s_axis_s2mm_tkeep" RIGHT="0" SIGIS="undef" SIGNAME="axi_dma_2_s_axis_s2mm_tkeep">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="yuv2rgb_0" PORT="ch3_out_TKEEP"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="I" NAME="s_axis_s2mm_tlast" SIGIS="undef" SIGNAME="axi_dma_2_s_axis_s2mm_tlast">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="yuv2rgb_0" PORT="ch3_out_TLAST"/>
           </CONNECTIONS>
         </PORT>
         <PORT DIR="O" NAME="s_axis_s2mm_tready" SIGIS="undef" SIGNAME="axi_dma_2_s_axis_s2mm_tready">
@@ -4223,6 +4291,8 @@
           <PARAMETER NAME="TUSER_WIDTH" VALUE="0"/>
           <PORTMAPS>
             <PORTMAP LOGICAL="TDATA" PHYSICAL="m_axis_mm2s_tdata"/>
+            <PORTMAP LOGICAL="TKEEP" PHYSICAL="m_axis_mm2s_tkeep"/>
+            <PORTMAP LOGICAL="TLAST" PHYSICAL="m_axis_mm2s_tlast"/>
             <PORTMAP LOGICAL="TREADY" PHYSICAL="m_axis_mm2s_tready"/>
             <PORTMAP LOGICAL="TVALID" PHYSICAL="m_axis_mm2s_tvalid"/>
           </PORTMAPS>
@@ -4243,6 +4313,8 @@
           <PARAMETER NAME="TUSER_WIDTH" VALUE="0"/>
           <PORTMAPS>
             <PORTMAP LOGICAL="TDATA" PHYSICAL="s_axis_s2mm_tdata"/>
+            <PORTMAP LOGICAL="TKEEP" PHYSICAL="s_axis_s2mm_tkeep"/>
+            <PORTMAP LOGICAL="TLAST" PHYSICAL="s_axis_s2mm_tlast"/>
             <PORTMAP LOGICAL="TREADY" PHYSICAL="s_axis_s2mm_tready"/>
             <PORTMAP LOGICAL="TVALID" PHYSICAL="s_axis_s2mm_tvalid"/>
           </PORTMAPS>
@@ -12832,14 +12904,9 @@
             <CONNECTION INSTANCE="axi_mem_intercon" PORT="S06_ACLK"/>
             <CONNECTION INSTANCE="axi_dma_2" PORT="s_axi_lite_aclk"/>
             <CONNECTION INSTANCE="ps7_0_axi_periph" PORT="M03_ACLK"/>
-            <CONNECTION INSTANCE="rgb2yuv_Y_0" PORT="ap_clk"/>
             <CONNECTION INSTANCE="ps7_0_axi_periph" PORT="M04_ACLK"/>
-            <CONNECTION INSTANCE="yuv2rgb_0" PORT="ap_clk"/>
-            <CONNECTION INSTANCE="scale_y_0" PORT="ap_clk"/>
             <CONNECTION INSTANCE="ps7_0_axi_periph" PORT="M05_ACLK"/>
-            <CONNECTION INSTANCE="scale_y_1" PORT="ap_clk"/>
             <CONNECTION INSTANCE="ps7_0_axi_periph" PORT="M06_ACLK"/>
-            <CONNECTION INSTANCE="scale_y_2" PORT="ap_clk"/>
             <CONNECTION INSTANCE="ps7_0_axi_periph" PORT="M07_ACLK"/>
             <CONNECTION INSTANCE="conv8_axi_0" PORT="s00_axi_aclk"/>
             <CONNECTION INSTANCE="ps7_0_axi_periph" PORT="M08_ACLK"/>
@@ -12868,6 +12935,11 @@
             <CONNECTION INSTANCE="ps7_0_axi_periph" PORT="M16_ACLK"/>
             <CONNECTION INSTANCE="ps7_0_axi_periph" PORT="M17_ACLK"/>
             <CONNECTION INSTANCE="dwt_db4_hls_0" PORT="ap_clk"/>
+            <CONNECTION INSTANCE="rgb2yuv_Y_0" PORT="ap_clk"/>
+            <CONNECTION INSTANCE="yuv2rgb_0" PORT="ap_clk"/>
+            <CONNECTION INSTANCE="scale_y_0" PORT="ap_clk"/>
+            <CONNECTION INSTANCE="scale_y_1" PORT="ap_clk"/>
+            <CONNECTION INSTANCE="scale_y_2" PORT="ap_clk"/>
           </CONNECTIONS>
         </PORT>
         <PORT DIR="O" NAME="FCLK_RESET0_N" POLARITY="ACTIVE_LOW" SIGIS="rst" SIGNAME="processing_system7_0_FCLK_RESET0_N">
@@ -15244,21 +15316,37 @@
           </CONNECTIONS>
         </PORT>
         <PORT DIR="O" NAME="M16_AXI_araddr" SIGIS="undef"/>
+        <PORT DIR="O" NAME="M16_AXI_arburst" SIGIS="undef"/>
+        <PORT DIR="O" NAME="M16_AXI_arcache" SIGIS="undef"/>
+        <PORT DIR="O" NAME="M16_AXI_arlen" SIGIS="undef"/>
+        <PORT DIR="O" NAME="M16_AXI_arlock" SIGIS="undef"/>
         <PORT DIR="O" NAME="M16_AXI_arprot" SIGIS="undef"/>
+        <PORT DIR="O" NAME="M16_AXI_arqos" SIGIS="undef"/>
         <PORT DIR="I" NAME="M16_AXI_arready" SIGIS="undef"/>
+        <PORT DIR="O" NAME="M16_AXI_arregion" SIGIS="undef"/>
+        <PORT DIR="O" NAME="M16_AXI_arsize" SIGIS="undef"/>
         <PORT DIR="O" NAME="M16_AXI_arvalid" SIGIS="undef"/>
         <PORT DIR="O" NAME="M16_AXI_awaddr" SIGIS="undef"/>
+        <PORT DIR="O" NAME="M16_AXI_awburst" SIGIS="undef"/>
+        <PORT DIR="O" NAME="M16_AXI_awcache" SIGIS="undef"/>
+        <PORT DIR="O" NAME="M16_AXI_awlen" SIGIS="undef"/>
+        <PORT DIR="O" NAME="M16_AXI_awlock" SIGIS="undef"/>
         <PORT DIR="O" NAME="M16_AXI_awprot" SIGIS="undef"/>
+        <PORT DIR="O" NAME="M16_AXI_awqos" SIGIS="undef"/>
         <PORT DIR="I" NAME="M16_AXI_awready" SIGIS="undef"/>
+        <PORT DIR="O" NAME="M16_AXI_awregion" SIGIS="undef"/>
+        <PORT DIR="O" NAME="M16_AXI_awsize" SIGIS="undef"/>
         <PORT DIR="O" NAME="M16_AXI_awvalid" SIGIS="undef"/>
         <PORT DIR="O" NAME="M16_AXI_bready" SIGIS="undef"/>
         <PORT DIR="I" NAME="M16_AXI_bresp" SIGIS="undef"/>
         <PORT DIR="I" NAME="M16_AXI_bvalid" SIGIS="undef"/>
         <PORT DIR="I" NAME="M16_AXI_rdata" SIGIS="undef"/>
+        <PORT DIR="I" NAME="M16_AXI_rlast" SIGIS="undef"/>
         <PORT DIR="O" NAME="M16_AXI_rready" SIGIS="undef"/>
         <PORT DIR="I" NAME="M16_AXI_rresp" SIGIS="undef"/>
         <PORT DIR="I" NAME="M16_AXI_rvalid" SIGIS="undef"/>
         <PORT DIR="O" NAME="M16_AXI_wdata" SIGIS="undef"/>
+        <PORT DIR="O" NAME="M16_AXI_wlast" SIGIS="undef"/>
         <PORT DIR="I" NAME="M16_AXI_wready" SIGIS="undef"/>
         <PORT DIR="O" NAME="M16_AXI_wstrb" SIGIS="undef"/>
         <PORT DIR="O" NAME="M16_AXI_wvalid" SIGIS="undef"/>
@@ -15273,21 +15361,37 @@
           </CONNECTIONS>
         </PORT>
         <PORT DIR="O" NAME="M17_AXI_araddr" SIGIS="undef"/>
+        <PORT DIR="O" NAME="M17_AXI_arburst" SIGIS="undef"/>
+        <PORT DIR="O" NAME="M17_AXI_arcache" SIGIS="undef"/>
+        <PORT DIR="O" NAME="M17_AXI_arlen" SIGIS="undef"/>
+        <PORT DIR="O" NAME="M17_AXI_arlock" SIGIS="undef"/>
         <PORT DIR="O" NAME="M17_AXI_arprot" SIGIS="undef"/>
+        <PORT DIR="O" NAME="M17_AXI_arqos" SIGIS="undef"/>
         <PORT DIR="I" NAME="M17_AXI_arready" SIGIS="undef"/>
+        <PORT DIR="O" NAME="M17_AXI_arregion" SIGIS="undef"/>
+        <PORT DIR="O" NAME="M17_AXI_arsize" SIGIS="undef"/>
         <PORT DIR="O" NAME="M17_AXI_arvalid" SIGIS="undef"/>
         <PORT DIR="O" NAME="M17_AXI_awaddr" SIGIS="undef"/>
+        <PORT DIR="O" NAME="M17_AXI_awburst" SIGIS="undef"/>
+        <PORT DIR="O" NAME="M17_AXI_awcache" SIGIS="undef"/>
+        <PORT DIR="O" NAME="M17_AXI_awlen" SIGIS="undef"/>
+        <PORT DIR="O" NAME="M17_AXI_awlock" SIGIS="undef"/>
         <PORT DIR="O" NAME="M17_AXI_awprot" SIGIS="undef"/>
+        <PORT DIR="O" NAME="M17_AXI_awqos" SIGIS="undef"/>
         <PORT DIR="I" NAME="M17_AXI_awready" SIGIS="undef"/>
+        <PORT DIR="O" NAME="M17_AXI_awregion" SIGIS="undef"/>
+        <PORT DIR="O" NAME="M17_AXI_awsize" SIGIS="undef"/>
         <PORT DIR="O" NAME="M17_AXI_awvalid" SIGIS="undef"/>
         <PORT DIR="O" NAME="M17_AXI_bready" SIGIS="undef"/>
         <PORT DIR="I" NAME="M17_AXI_bresp" SIGIS="undef"/>
         <PORT DIR="I" NAME="M17_AXI_bvalid" SIGIS="undef"/>
         <PORT DIR="I" NAME="M17_AXI_rdata" SIGIS="undef"/>
+        <PORT DIR="I" NAME="M17_AXI_rlast" SIGIS="undef"/>
         <PORT DIR="O" NAME="M17_AXI_rready" SIGIS="undef"/>
         <PORT DIR="I" NAME="M17_AXI_rresp" SIGIS="undef"/>
         <PORT DIR="I" NAME="M17_AXI_rvalid" SIGIS="undef"/>
         <PORT DIR="O" NAME="M17_AXI_wdata" SIGIS="undef"/>
+        <PORT DIR="O" NAME="M17_AXI_wlast" SIGIS="undef"/>
         <PORT DIR="I" NAME="M17_AXI_wready" SIGIS="undef"/>
         <PORT DIR="O" NAME="M17_AXI_wstrb" SIGIS="undef"/>
         <PORT DIR="O" NAME="M17_AXI_wvalid" SIGIS="undef"/>
@@ -15873,21 +15977,37 @@
         <BUSINTERFACE BUSNAME="__NOC__" NAME="M16_AXI" TYPE="MASTER" VLNV="xilinx.com:interface:aximm:1.0">
           <PORTMAPS>
             <PORTMAP LOGICAL="ARADDR" PHYSICAL="M16_AXI_araddr"/>
+            <PORTMAP LOGICAL="ARBURST" PHYSICAL="M16_AXI_arburst"/>
+            <PORTMAP LOGICAL="ARCACHE" PHYSICAL="M16_AXI_arcache"/>
+            <PORTMAP LOGICAL="ARLEN" PHYSICAL="M16_AXI_arlen"/>
+            <PORTMAP LOGICAL="ARLOCK" PHYSICAL="M16_AXI_arlock"/>
             <PORTMAP LOGICAL="ARPROT" PHYSICAL="M16_AXI_arprot"/>
+            <PORTMAP LOGICAL="ARQOS" PHYSICAL="M16_AXI_arqos"/>
             <PORTMAP LOGICAL="ARREADY" PHYSICAL="M16_AXI_arready"/>
+            <PORTMAP LOGICAL="ARREGION" PHYSICAL="M16_AXI_arregion"/>
+            <PORTMAP LOGICAL="ARSIZE" PHYSICAL="M16_AXI_arsize"/>
             <PORTMAP LOGICAL="ARVALID" PHYSICAL="M16_AXI_arvalid"/>
             <PORTMAP LOGICAL="AWADDR" PHYSICAL="M16_AXI_awaddr"/>
+            <PORTMAP LOGICAL="AWBURST" PHYSICAL="M16_AXI_awburst"/>
+            <PORTMAP LOGICAL="AWCACHE" PHYSICAL="M16_AXI_awcache"/>
+            <PORTMAP LOGICAL="AWLEN" PHYSICAL="M16_AXI_awlen"/>
+            <PORTMAP LOGICAL="AWLOCK" PHYSICAL="M16_AXI_awlock"/>
             <PORTMAP LOGICAL="AWPROT" PHYSICAL="M16_AXI_awprot"/>
+            <PORTMAP LOGICAL="AWQOS" PHYSICAL="M16_AXI_awqos"/>
             <PORTMAP LOGICAL="AWREADY" PHYSICAL="M16_AXI_awready"/>
+            <PORTMAP LOGICAL="AWREGION" PHYSICAL="M16_AXI_awregion"/>
+            <PORTMAP LOGICAL="AWSIZE" PHYSICAL="M16_AXI_awsize"/>
             <PORTMAP LOGICAL="AWVALID" PHYSICAL="M16_AXI_awvalid"/>
             <PORTMAP LOGICAL="BREADY" PHYSICAL="M16_AXI_bready"/>
             <PORTMAP LOGICAL="BRESP" PHYSICAL="M16_AXI_bresp"/>
             <PORTMAP LOGICAL="BVALID" PHYSICAL="M16_AXI_bvalid"/>
             <PORTMAP LOGICAL="RDATA" PHYSICAL="M16_AXI_rdata"/>
+            <PORTMAP LOGICAL="RLAST" PHYSICAL="M16_AXI_rlast"/>
             <PORTMAP LOGICAL="RREADY" PHYSICAL="M16_AXI_rready"/>
             <PORTMAP LOGICAL="RRESP" PHYSICAL="M16_AXI_rresp"/>
             <PORTMAP LOGICAL="RVALID" PHYSICAL="M16_AXI_rvalid"/>
             <PORTMAP LOGICAL="WDATA" PHYSICAL="M16_AXI_wdata"/>
+            <PORTMAP LOGICAL="WLAST" PHYSICAL="M16_AXI_wlast"/>
             <PORTMAP LOGICAL="WREADY" PHYSICAL="M16_AXI_wready"/>
             <PORTMAP LOGICAL="WSTRB" PHYSICAL="M16_AXI_wstrb"/>
             <PORTMAP LOGICAL="WVALID" PHYSICAL="M16_AXI_wvalid"/>
@@ -15896,21 +16016,37 @@
         <BUSINTERFACE BUSNAME="__NOC__" NAME="M17_AXI" TYPE="MASTER" VLNV="xilinx.com:interface:aximm:1.0">
           <PORTMAPS>
             <PORTMAP LOGICAL="ARADDR" PHYSICAL="M17_AXI_araddr"/>
+            <PORTMAP LOGICAL="ARBURST" PHYSICAL="M17_AXI_arburst"/>
+            <PORTMAP LOGICAL="ARCACHE" PHYSICAL="M17_AXI_arcache"/>
+            <PORTMAP LOGICAL="ARLEN" PHYSICAL="M17_AXI_arlen"/>
+            <PORTMAP LOGICAL="ARLOCK" PHYSICAL="M17_AXI_arlock"/>
             <PORTMAP LOGICAL="ARPROT" PHYSICAL="M17_AXI_arprot"/>
+            <PORTMAP LOGICAL="ARQOS" PHYSICAL="M17_AXI_arqos"/>
             <PORTMAP LOGICAL="ARREADY" PHYSICAL="M17_AXI_arready"/>
+            <PORTMAP LOGICAL="ARREGION" PHYSICAL="M17_AXI_arregion"/>
+            <PORTMAP LOGICAL="ARSIZE" PHYSICAL="M17_AXI_arsize"/>
             <PORTMAP LOGICAL="ARVALID" PHYSICAL="M17_AXI_arvalid"/>
             <PORTMAP LOGICAL="AWADDR" PHYSICAL="M17_AXI_awaddr"/>
+            <PORTMAP LOGICAL="AWBURST" PHYSICAL="M17_AXI_awburst"/>
+            <PORTMAP LOGICAL="AWCACHE" PHYSICAL="M17_AXI_awcache"/>
+            <PORTMAP LOGICAL="AWLEN" PHYSICAL="M17_AXI_awlen"/>
+            <PORTMAP LOGICAL="AWLOCK" PHYSICAL="M17_AXI_awlock"/>
             <PORTMAP LOGICAL="AWPROT" PHYSICAL="M17_AXI_awprot"/>
+            <PORTMAP LOGICAL="AWQOS" PHYSICAL="M17_AXI_awqos"/>
             <PORTMAP LOGICAL="AWREADY" PHYSICAL="M17_AXI_awready"/>
+            <PORTMAP LOGICAL="AWREGION" PHYSICAL="M17_AXI_awregion"/>
+            <PORTMAP LOGICAL="AWSIZE" PHYSICAL="M17_AXI_awsize"/>
             <PORTMAP LOGICAL="AWVALID" PHYSICAL="M17_AXI_awvalid"/>
             <PORTMAP LOGICAL="BREADY" PHYSICAL="M17_AXI_bready"/>
             <PORTMAP LOGICAL="BRESP" PHYSICAL="M17_AXI_bresp"/>
             <PORTMAP LOGICAL="BVALID" PHYSICAL="M17_AXI_bvalid"/>
             <PORTMAP LOGICAL="RDATA" PHYSICAL="M17_AXI_rdata"/>
+            <PORTMAP LOGICAL="RLAST" PHYSICAL="M17_AXI_rlast"/>
             <PORTMAP LOGICAL="RREADY" PHYSICAL="M17_AXI_rready"/>
             <PORTMAP LOGICAL="RRESP" PHYSICAL="M17_AXI_rresp"/>
             <PORTMAP LOGICAL="RVALID" PHYSICAL="M17_AXI_rvalid"/>
             <PORTMAP LOGICAL="WDATA" PHYSICAL="M17_AXI_wdata"/>
+            <PORTMAP LOGICAL="WLAST" PHYSICAL="M17_AXI_wlast"/>
             <PORTMAP LOGICAL="WREADY" PHYSICAL="M17_AXI_wready"/>
             <PORTMAP LOGICAL="WSTRB" PHYSICAL="M17_AXI_wstrb"/>
             <PORTMAP LOGICAL="WVALID" PHYSICAL="M17_AXI_wvalid"/>
@@ -15918,7 +16054,7 @@
         </BUSINTERFACE>
       </BUSINTERFACES>
     </MODULE>
-    <MODULE COREREVISION="2113718637" FULLNAME="/rgb2yuv_Y_0" HWVERSION="1.0" INSTANCE="rgb2yuv_Y_0" IPTYPE="PERIPHERAL" IS_ENABLE="1" MODCLASS="PERIPHERAL" MODTYPE="rgb2yuv_Y" VLNV="xilinx.com:hls:rgb2yuv_Y:1.0">
+    <MODULE COREREVISION="2113728434" FULLNAME="/rgb2yuv_Y_0" HWVERSION="1.0" INSTANCE="rgb2yuv_Y_0" IPTYPE="PERIPHERAL" IS_ENABLE="1" MODCLASS="PERIPHERAL" MODTYPE="rgb2yuv_Y" VLNV="xilinx.com:hls:rgb2yuv_Y:1.0">
       <DOCUMENTS/>
       <ADDRESSBLOCKS>
         <ADDRESSBLOCK ACCESS="read-write" INTERFACE="s_axi_BUS_A" NAME="Reg" RANGE="65536" USAGE="register">
@@ -16185,6 +16321,16 @@
             <CONNECTION INSTANCE="axi_dma_0" PORT="m_axis_mm2s_tdata"/>
           </CONNECTIONS>
         </PORT>
+        <PORT DIR="I" LEFT="3" NAME="ch1_in_TKEEP" RIGHT="0" SIGIS="undef" SIGNAME="axi_dma_0_m_axis_mm2s_tkeep">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="axi_dma_0" PORT="m_axis_mm2s_tkeep"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="I" LEFT="0" NAME="ch1_in_TLAST" RIGHT="0" SIGIS="undef" SIGNAME="axi_dma_0_m_axis_mm2s_tlast">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="axi_dma_0" PORT="m_axis_mm2s_tlast"/>
+          </CONNECTIONS>
+        </PORT>
         <PORT DIR="O" NAME="ch1_in_TREADY" SIGIS="undef" SIGNAME="axi_dma_0_m_axis_mm2s_tready">
           <CONNECTIONS>
             <CONNECTION INSTANCE="axi_dma_0" PORT="m_axis_mm2s_tready"/>
@@ -16200,9 +16346,39 @@
             <CONNECTION INSTANCE="scale_y_0" PORT="A_TDATA"/>
           </CONNECTIONS>
         </PORT>
+        <PORT DIR="O" LEFT="0" NAME="ch1_out_TDEST" RIGHT="0" SIGIS="undef" SIGNAME="rgb2yuv_Y_0_ch1_out_TDEST">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="scale_y_0" PORT="A_TDEST"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="O" LEFT="0" NAME="ch1_out_TID" RIGHT="0" SIGIS="undef" SIGNAME="rgb2yuv_Y_0_ch1_out_TID">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="scale_y_0" PORT="A_TID"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="O" LEFT="3" NAME="ch1_out_TKEEP" RIGHT="0" SIGIS="undef" SIGNAME="rgb2yuv_Y_0_ch1_out_TKEEP">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="scale_y_0" PORT="A_TKEEP"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="O" LEFT="0" NAME="ch1_out_TLAST" RIGHT="0" SIGIS="undef" SIGNAME="rgb2yuv_Y_0_ch1_out_TLAST">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="scale_y_0" PORT="A_TLAST"/>
+          </CONNECTIONS>
+        </PORT>
         <PORT DIR="I" NAME="ch1_out_TREADY" SIGIS="undef" SIGNAME="rgb2yuv_Y_0_ch1_out_TREADY">
           <CONNECTIONS>
             <CONNECTION INSTANCE="scale_y_0" PORT="A_TREADY"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="O" LEFT="3" NAME="ch1_out_TSTRB" RIGHT="0" SIGIS="undef" SIGNAME="rgb2yuv_Y_0_ch1_out_TSTRB">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="scale_y_0" PORT="A_TSTRB"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="O" LEFT="0" NAME="ch1_out_TUSER" RIGHT="0" SIGIS="undef" SIGNAME="rgb2yuv_Y_0_ch1_out_TUSER">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="scale_y_0" PORT="A_TUSER"/>
           </CONNECTIONS>
         </PORT>
         <PORT DIR="O" NAME="ch1_out_TVALID" SIGIS="undef" SIGNAME="rgb2yuv_Y_0_ch1_out_TVALID">
@@ -16213,6 +16389,16 @@
         <PORT DIR="I" LEFT="31" NAME="ch2_in_TDATA" RIGHT="0" SIGIS="undef" SIGNAME="axi_dma_1_m_axis_mm2s_tdata">
           <CONNECTIONS>
             <CONNECTION INSTANCE="axi_dma_1" PORT="m_axis_mm2s_tdata"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="I" LEFT="3" NAME="ch2_in_TKEEP" RIGHT="0" SIGIS="undef" SIGNAME="axi_dma_1_m_axis_mm2s_tkeep">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="axi_dma_1" PORT="m_axis_mm2s_tkeep"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="I" LEFT="0" NAME="ch2_in_TLAST" RIGHT="0" SIGIS="undef" SIGNAME="axi_dma_1_m_axis_mm2s_tlast">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="axi_dma_1" PORT="m_axis_mm2s_tlast"/>
           </CONNECTIONS>
         </PORT>
         <PORT DIR="O" NAME="ch2_in_TREADY" SIGIS="undef" SIGNAME="axi_dma_1_m_axis_mm2s_tready">
@@ -16230,9 +16416,39 @@
             <CONNECTION INSTANCE="scale_y_1" PORT="A_TDATA"/>
           </CONNECTIONS>
         </PORT>
+        <PORT DIR="O" LEFT="0" NAME="ch2_out_TDEST" RIGHT="0" SIGIS="undef" SIGNAME="rgb2yuv_Y_0_ch2_out_TDEST">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="scale_y_1" PORT="A_TDEST"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="O" LEFT="0" NAME="ch2_out_TID" RIGHT="0" SIGIS="undef" SIGNAME="rgb2yuv_Y_0_ch2_out_TID">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="scale_y_1" PORT="A_TID"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="O" LEFT="3" NAME="ch2_out_TKEEP" RIGHT="0" SIGIS="undef" SIGNAME="rgb2yuv_Y_0_ch2_out_TKEEP">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="scale_y_1" PORT="A_TKEEP"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="O" LEFT="0" NAME="ch2_out_TLAST" RIGHT="0" SIGIS="undef" SIGNAME="rgb2yuv_Y_0_ch2_out_TLAST">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="scale_y_1" PORT="A_TLAST"/>
+          </CONNECTIONS>
+        </PORT>
         <PORT DIR="I" NAME="ch2_out_TREADY" SIGIS="undef" SIGNAME="rgb2yuv_Y_0_ch2_out_TREADY">
           <CONNECTIONS>
             <CONNECTION INSTANCE="scale_y_1" PORT="A_TREADY"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="O" LEFT="3" NAME="ch2_out_TSTRB" RIGHT="0" SIGIS="undef" SIGNAME="rgb2yuv_Y_0_ch2_out_TSTRB">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="scale_y_1" PORT="A_TSTRB"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="O" LEFT="0" NAME="ch2_out_TUSER" RIGHT="0" SIGIS="undef" SIGNAME="rgb2yuv_Y_0_ch2_out_TUSER">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="scale_y_1" PORT="A_TUSER"/>
           </CONNECTIONS>
         </PORT>
         <PORT DIR="O" NAME="ch2_out_TVALID" SIGIS="undef" SIGNAME="rgb2yuv_Y_0_ch2_out_TVALID">
@@ -16243,6 +16459,16 @@
         <PORT DIR="I" LEFT="31" NAME="ch3_in_TDATA" RIGHT="0" SIGIS="undef" SIGNAME="axi_dma_2_m_axis_mm2s_tdata">
           <CONNECTIONS>
             <CONNECTION INSTANCE="axi_dma_2" PORT="m_axis_mm2s_tdata"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="I" LEFT="3" NAME="ch3_in_TKEEP" RIGHT="0" SIGIS="undef" SIGNAME="axi_dma_2_m_axis_mm2s_tkeep">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="axi_dma_2" PORT="m_axis_mm2s_tkeep"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="I" LEFT="0" NAME="ch3_in_TLAST" RIGHT="0" SIGIS="undef" SIGNAME="axi_dma_2_m_axis_mm2s_tlast">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="axi_dma_2" PORT="m_axis_mm2s_tlast"/>
           </CONNECTIONS>
         </PORT>
         <PORT DIR="O" NAME="ch3_in_TREADY" SIGIS="undef" SIGNAME="axi_dma_2_m_axis_mm2s_tready">
@@ -16260,9 +16486,39 @@
             <CONNECTION INSTANCE="scale_y_2" PORT="A_TDATA"/>
           </CONNECTIONS>
         </PORT>
+        <PORT DIR="O" LEFT="0" NAME="ch3_out_TDEST" RIGHT="0" SIGIS="undef" SIGNAME="rgb2yuv_Y_0_ch3_out_TDEST">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="scale_y_2" PORT="A_TDEST"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="O" LEFT="0" NAME="ch3_out_TID" RIGHT="0" SIGIS="undef" SIGNAME="rgb2yuv_Y_0_ch3_out_TID">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="scale_y_2" PORT="A_TID"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="O" LEFT="3" NAME="ch3_out_TKEEP" RIGHT="0" SIGIS="undef" SIGNAME="rgb2yuv_Y_0_ch3_out_TKEEP">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="scale_y_2" PORT="A_TKEEP"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="O" LEFT="0" NAME="ch3_out_TLAST" RIGHT="0" SIGIS="undef" SIGNAME="rgb2yuv_Y_0_ch3_out_TLAST">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="scale_y_2" PORT="A_TLAST"/>
+          </CONNECTIONS>
+        </PORT>
         <PORT DIR="I" NAME="ch3_out_TREADY" SIGIS="undef" SIGNAME="rgb2yuv_Y_0_ch3_out_TREADY">
           <CONNECTIONS>
             <CONNECTION INSTANCE="scale_y_2" PORT="A_TREADY"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="O" LEFT="3" NAME="ch3_out_TSTRB" RIGHT="0" SIGIS="undef" SIGNAME="rgb2yuv_Y_0_ch3_out_TSTRB">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="scale_y_2" PORT="A_TSTRB"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="O" LEFT="0" NAME="ch3_out_TUSER" RIGHT="0" SIGIS="undef" SIGNAME="rgb2yuv_Y_0_ch3_out_TUSER">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="scale_y_2" PORT="A_TUSER"/>
           </CONNECTIONS>
         </PORT>
         <PORT DIR="O" NAME="ch3_out_TVALID" SIGIS="undef" SIGNAME="rgb2yuv_Y_0_ch3_out_TVALID">
@@ -16410,82 +16666,24 @@
             <PORTMAP LOGICAL="WVALID" PHYSICAL="s_axi_BUS_A_WVALID"/>
           </PORTMAPS>
         </BUSINTERFACE>
-        <BUSINTERFACE BUSNAME="rgb2yuv_Y_0_ch1_out" NAME="ch1_out" TYPE="INITIATOR" VLNV="xilinx.com:interface:axis:1.0">
-          <PARAMETER NAME="CLK_DOMAIN" VALUE="design_1_processing_system7_0_0_FCLK_CLK0"/>
-          <PARAMETER NAME="FREQ_HZ" VALUE="100000000"/>
-          <PARAMETER NAME="HAS_TKEEP" VALUE="0"/>
-          <PARAMETER NAME="HAS_TLAST" VALUE="0"/>
-          <PARAMETER NAME="HAS_TREADY" VALUE="1"/>
-          <PARAMETER NAME="HAS_TSTRB" VALUE="0"/>
-          <PARAMETER NAME="INSERT_VIP" VALUE="0"/>
-          <PARAMETER NAME="LAYERED_METADATA"/>
-          <PARAMETER NAME="PHASE" VALUE="0.0"/>
-          <PARAMETER NAME="TDATA_NUM_BYTES" VALUE="4"/>
-          <PARAMETER NAME="TDEST_WIDTH" VALUE="0"/>
-          <PARAMETER NAME="TID_WIDTH" VALUE="0"/>
-          <PARAMETER NAME="TUSER_WIDTH" VALUE="0"/>
-          <PORTMAPS>
-            <PORTMAP LOGICAL="TDATA" PHYSICAL="ch1_out_TDATA"/>
-            <PORTMAP LOGICAL="TREADY" PHYSICAL="ch1_out_TREADY"/>
-            <PORTMAP LOGICAL="TVALID" PHYSICAL="ch1_out_TVALID"/>
-          </PORTMAPS>
-        </BUSINTERFACE>
-        <BUSINTERFACE BUSNAME="rgb2yuv_Y_0_ch2_out" NAME="ch2_out" TYPE="INITIATOR" VLNV="xilinx.com:interface:axis:1.0">
-          <PARAMETER NAME="CLK_DOMAIN" VALUE="design_1_processing_system7_0_0_FCLK_CLK0"/>
-          <PARAMETER NAME="FREQ_HZ" VALUE="100000000"/>
-          <PARAMETER NAME="HAS_TKEEP" VALUE="0"/>
-          <PARAMETER NAME="HAS_TLAST" VALUE="0"/>
-          <PARAMETER NAME="HAS_TREADY" VALUE="1"/>
-          <PARAMETER NAME="HAS_TSTRB" VALUE="0"/>
-          <PARAMETER NAME="INSERT_VIP" VALUE="0"/>
-          <PARAMETER NAME="LAYERED_METADATA"/>
-          <PARAMETER NAME="PHASE" VALUE="0.0"/>
-          <PARAMETER NAME="TDATA_NUM_BYTES" VALUE="4"/>
-          <PARAMETER NAME="TDEST_WIDTH" VALUE="0"/>
-          <PARAMETER NAME="TID_WIDTH" VALUE="0"/>
-          <PARAMETER NAME="TUSER_WIDTH" VALUE="0"/>
-          <PORTMAPS>
-            <PORTMAP LOGICAL="TDATA" PHYSICAL="ch2_out_TDATA"/>
-            <PORTMAP LOGICAL="TREADY" PHYSICAL="ch2_out_TREADY"/>
-            <PORTMAP LOGICAL="TVALID" PHYSICAL="ch2_out_TVALID"/>
-          </PORTMAPS>
-        </BUSINTERFACE>
-        <BUSINTERFACE BUSNAME="rgb2yuv_Y_0_ch3_out" NAME="ch3_out" TYPE="INITIATOR" VLNV="xilinx.com:interface:axis:1.0">
-          <PARAMETER NAME="CLK_DOMAIN" VALUE="design_1_processing_system7_0_0_FCLK_CLK0"/>
-          <PARAMETER NAME="FREQ_HZ" VALUE="100000000"/>
-          <PARAMETER NAME="HAS_TKEEP" VALUE="0"/>
-          <PARAMETER NAME="HAS_TLAST" VALUE="0"/>
-          <PARAMETER NAME="HAS_TREADY" VALUE="1"/>
-          <PARAMETER NAME="HAS_TSTRB" VALUE="0"/>
-          <PARAMETER NAME="INSERT_VIP" VALUE="0"/>
-          <PARAMETER NAME="LAYERED_METADATA"/>
-          <PARAMETER NAME="PHASE" VALUE="0.0"/>
-          <PARAMETER NAME="TDATA_NUM_BYTES" VALUE="4"/>
-          <PARAMETER NAME="TDEST_WIDTH" VALUE="0"/>
-          <PARAMETER NAME="TID_WIDTH" VALUE="0"/>
-          <PARAMETER NAME="TUSER_WIDTH" VALUE="0"/>
-          <PORTMAPS>
-            <PORTMAP LOGICAL="TDATA" PHYSICAL="ch3_out_TDATA"/>
-            <PORTMAP LOGICAL="TREADY" PHYSICAL="ch3_out_TREADY"/>
-            <PORTMAP LOGICAL="TVALID" PHYSICAL="ch3_out_TVALID"/>
-          </PORTMAPS>
-        </BUSINTERFACE>
         <BUSINTERFACE BUSNAME="axi_dma_0_M_AXIS_MM2S" NAME="ch1_in" TYPE="TARGET" VLNV="xilinx.com:interface:axis:1.0">
           <PARAMETER NAME="CLK_DOMAIN" VALUE="design_1_processing_system7_0_0_FCLK_CLK0"/>
           <PARAMETER NAME="FREQ_HZ" VALUE="100000000"/>
-          <PARAMETER NAME="HAS_TKEEP" VALUE="0"/>
-          <PARAMETER NAME="HAS_TLAST" VALUE="0"/>
+          <PARAMETER NAME="HAS_TKEEP" VALUE="1"/>
+          <PARAMETER NAME="HAS_TLAST" VALUE="1"/>
           <PARAMETER NAME="HAS_TREADY" VALUE="1"/>
-          <PARAMETER NAME="HAS_TSTRB" VALUE="0"/>
+          <PARAMETER NAME="HAS_TSTRB" VALUE="1"/>
           <PARAMETER NAME="INSERT_VIP" VALUE="0"/>
           <PARAMETER NAME="LAYERED_METADATA"/>
           <PARAMETER NAME="PHASE" VALUE="0.0"/>
           <PARAMETER NAME="TDATA_NUM_BYTES" VALUE="4"/>
-          <PARAMETER NAME="TDEST_WIDTH" VALUE="0"/>
-          <PARAMETER NAME="TID_WIDTH" VALUE="0"/>
-          <PARAMETER NAME="TUSER_WIDTH" VALUE="0"/>
+          <PARAMETER NAME="TDEST_WIDTH" VALUE="1"/>
+          <PARAMETER NAME="TID_WIDTH" VALUE="1"/>
+          <PARAMETER NAME="TUSER_WIDTH" VALUE="1"/>
           <PORTMAPS>
             <PORTMAP LOGICAL="TDATA" PHYSICAL="ch1_in_TDATA"/>
+            <PORTMAP LOGICAL="TKEEP" PHYSICAL="ch1_in_TKEEP"/>
+            <PORTMAP LOGICAL="TLAST" PHYSICAL="ch1_in_TLAST"/>
             <PORTMAP LOGICAL="TREADY" PHYSICAL="ch1_in_TREADY"/>
             <PORTMAP LOGICAL="TVALID" PHYSICAL="ch1_in_TVALID"/>
           </PORTMAPS>
@@ -16493,19 +16691,21 @@
         <BUSINTERFACE BUSNAME="axi_dma_1_M_AXIS_MM2S" NAME="ch2_in" TYPE="TARGET" VLNV="xilinx.com:interface:axis:1.0">
           <PARAMETER NAME="CLK_DOMAIN" VALUE="design_1_processing_system7_0_0_FCLK_CLK0"/>
           <PARAMETER NAME="FREQ_HZ" VALUE="100000000"/>
-          <PARAMETER NAME="HAS_TKEEP" VALUE="0"/>
-          <PARAMETER NAME="HAS_TLAST" VALUE="0"/>
+          <PARAMETER NAME="HAS_TKEEP" VALUE="1"/>
+          <PARAMETER NAME="HAS_TLAST" VALUE="1"/>
           <PARAMETER NAME="HAS_TREADY" VALUE="1"/>
-          <PARAMETER NAME="HAS_TSTRB" VALUE="0"/>
+          <PARAMETER NAME="HAS_TSTRB" VALUE="1"/>
           <PARAMETER NAME="INSERT_VIP" VALUE="0"/>
           <PARAMETER NAME="LAYERED_METADATA"/>
           <PARAMETER NAME="PHASE" VALUE="0.0"/>
           <PARAMETER NAME="TDATA_NUM_BYTES" VALUE="4"/>
-          <PARAMETER NAME="TDEST_WIDTH" VALUE="0"/>
-          <PARAMETER NAME="TID_WIDTH" VALUE="0"/>
-          <PARAMETER NAME="TUSER_WIDTH" VALUE="0"/>
+          <PARAMETER NAME="TDEST_WIDTH" VALUE="1"/>
+          <PARAMETER NAME="TID_WIDTH" VALUE="1"/>
+          <PARAMETER NAME="TUSER_WIDTH" VALUE="1"/>
           <PORTMAPS>
             <PORTMAP LOGICAL="TDATA" PHYSICAL="ch2_in_TDATA"/>
+            <PORTMAP LOGICAL="TKEEP" PHYSICAL="ch2_in_TKEEP"/>
+            <PORTMAP LOGICAL="TLAST" PHYSICAL="ch2_in_TLAST"/>
             <PORTMAP LOGICAL="TREADY" PHYSICAL="ch2_in_TREADY"/>
             <PORTMAP LOGICAL="TVALID" PHYSICAL="ch2_in_TVALID"/>
           </PORTMAPS>
@@ -16513,21 +16713,101 @@
         <BUSINTERFACE BUSNAME="axi_dma_2_M_AXIS_MM2S" NAME="ch3_in" TYPE="TARGET" VLNV="xilinx.com:interface:axis:1.0">
           <PARAMETER NAME="CLK_DOMAIN" VALUE="design_1_processing_system7_0_0_FCLK_CLK0"/>
           <PARAMETER NAME="FREQ_HZ" VALUE="100000000"/>
-          <PARAMETER NAME="HAS_TKEEP" VALUE="0"/>
-          <PARAMETER NAME="HAS_TLAST" VALUE="0"/>
+          <PARAMETER NAME="HAS_TKEEP" VALUE="1"/>
+          <PARAMETER NAME="HAS_TLAST" VALUE="1"/>
           <PARAMETER NAME="HAS_TREADY" VALUE="1"/>
-          <PARAMETER NAME="HAS_TSTRB" VALUE="0"/>
+          <PARAMETER NAME="HAS_TSTRB" VALUE="1"/>
           <PARAMETER NAME="INSERT_VIP" VALUE="0"/>
           <PARAMETER NAME="LAYERED_METADATA"/>
           <PARAMETER NAME="PHASE" VALUE="0.0"/>
           <PARAMETER NAME="TDATA_NUM_BYTES" VALUE="4"/>
-          <PARAMETER NAME="TDEST_WIDTH" VALUE="0"/>
-          <PARAMETER NAME="TID_WIDTH" VALUE="0"/>
-          <PARAMETER NAME="TUSER_WIDTH" VALUE="0"/>
+          <PARAMETER NAME="TDEST_WIDTH" VALUE="1"/>
+          <PARAMETER NAME="TID_WIDTH" VALUE="1"/>
+          <PARAMETER NAME="TUSER_WIDTH" VALUE="1"/>
           <PORTMAPS>
             <PORTMAP LOGICAL="TDATA" PHYSICAL="ch3_in_TDATA"/>
+            <PORTMAP LOGICAL="TKEEP" PHYSICAL="ch3_in_TKEEP"/>
+            <PORTMAP LOGICAL="TLAST" PHYSICAL="ch3_in_TLAST"/>
             <PORTMAP LOGICAL="TREADY" PHYSICAL="ch3_in_TREADY"/>
             <PORTMAP LOGICAL="TVALID" PHYSICAL="ch3_in_TVALID"/>
+          </PORTMAPS>
+        </BUSINTERFACE>
+        <BUSINTERFACE BUSNAME="rgb2yuv_Y_0_ch1_out" NAME="ch1_out" TYPE="INITIATOR" VLNV="xilinx.com:interface:axis:1.0">
+          <PARAMETER NAME="CLK_DOMAIN" VALUE="design_1_processing_system7_0_0_FCLK_CLK0"/>
+          <PARAMETER NAME="FREQ_HZ" VALUE="100000000"/>
+          <PARAMETER NAME="HAS_TKEEP" VALUE="1"/>
+          <PARAMETER NAME="HAS_TLAST" VALUE="1"/>
+          <PARAMETER NAME="HAS_TREADY" VALUE="1"/>
+          <PARAMETER NAME="HAS_TSTRB" VALUE="1"/>
+          <PARAMETER NAME="INSERT_VIP" VALUE="0"/>
+          <PARAMETER NAME="LAYERED_METADATA"/>
+          <PARAMETER NAME="PHASE" VALUE="0.0"/>
+          <PARAMETER NAME="TDATA_NUM_BYTES" VALUE="4"/>
+          <PARAMETER NAME="TDEST_WIDTH" VALUE="1"/>
+          <PARAMETER NAME="TID_WIDTH" VALUE="1"/>
+          <PARAMETER NAME="TUSER_WIDTH" VALUE="1"/>
+          <PORTMAPS>
+            <PORTMAP LOGICAL="TDATA" PHYSICAL="ch1_out_TDATA"/>
+            <PORTMAP LOGICAL="TDEST" PHYSICAL="ch1_out_TDEST"/>
+            <PORTMAP LOGICAL="TID" PHYSICAL="ch1_out_TID"/>
+            <PORTMAP LOGICAL="TKEEP" PHYSICAL="ch1_out_TKEEP"/>
+            <PORTMAP LOGICAL="TLAST" PHYSICAL="ch1_out_TLAST"/>
+            <PORTMAP LOGICAL="TREADY" PHYSICAL="ch1_out_TREADY"/>
+            <PORTMAP LOGICAL="TSTRB" PHYSICAL="ch1_out_TSTRB"/>
+            <PORTMAP LOGICAL="TUSER" PHYSICAL="ch1_out_TUSER"/>
+            <PORTMAP LOGICAL="TVALID" PHYSICAL="ch1_out_TVALID"/>
+          </PORTMAPS>
+        </BUSINTERFACE>
+        <BUSINTERFACE BUSNAME="rgb2yuv_Y_0_ch2_out" NAME="ch2_out" TYPE="INITIATOR" VLNV="xilinx.com:interface:axis:1.0">
+          <PARAMETER NAME="CLK_DOMAIN" VALUE="design_1_processing_system7_0_0_FCLK_CLK0"/>
+          <PARAMETER NAME="FREQ_HZ" VALUE="100000000"/>
+          <PARAMETER NAME="HAS_TKEEP" VALUE="1"/>
+          <PARAMETER NAME="HAS_TLAST" VALUE="1"/>
+          <PARAMETER NAME="HAS_TREADY" VALUE="1"/>
+          <PARAMETER NAME="HAS_TSTRB" VALUE="1"/>
+          <PARAMETER NAME="INSERT_VIP" VALUE="0"/>
+          <PARAMETER NAME="LAYERED_METADATA"/>
+          <PARAMETER NAME="PHASE" VALUE="0.0"/>
+          <PARAMETER NAME="TDATA_NUM_BYTES" VALUE="4"/>
+          <PARAMETER NAME="TDEST_WIDTH" VALUE="1"/>
+          <PARAMETER NAME="TID_WIDTH" VALUE="1"/>
+          <PARAMETER NAME="TUSER_WIDTH" VALUE="1"/>
+          <PORTMAPS>
+            <PORTMAP LOGICAL="TDATA" PHYSICAL="ch2_out_TDATA"/>
+            <PORTMAP LOGICAL="TDEST" PHYSICAL="ch2_out_TDEST"/>
+            <PORTMAP LOGICAL="TID" PHYSICAL="ch2_out_TID"/>
+            <PORTMAP LOGICAL="TKEEP" PHYSICAL="ch2_out_TKEEP"/>
+            <PORTMAP LOGICAL="TLAST" PHYSICAL="ch2_out_TLAST"/>
+            <PORTMAP LOGICAL="TREADY" PHYSICAL="ch2_out_TREADY"/>
+            <PORTMAP LOGICAL="TSTRB" PHYSICAL="ch2_out_TSTRB"/>
+            <PORTMAP LOGICAL="TUSER" PHYSICAL="ch2_out_TUSER"/>
+            <PORTMAP LOGICAL="TVALID" PHYSICAL="ch2_out_TVALID"/>
+          </PORTMAPS>
+        </BUSINTERFACE>
+        <BUSINTERFACE BUSNAME="rgb2yuv_Y_0_ch3_out" NAME="ch3_out" TYPE="INITIATOR" VLNV="xilinx.com:interface:axis:1.0">
+          <PARAMETER NAME="CLK_DOMAIN" VALUE="design_1_processing_system7_0_0_FCLK_CLK0"/>
+          <PARAMETER NAME="FREQ_HZ" VALUE="100000000"/>
+          <PARAMETER NAME="HAS_TKEEP" VALUE="1"/>
+          <PARAMETER NAME="HAS_TLAST" VALUE="1"/>
+          <PARAMETER NAME="HAS_TREADY" VALUE="1"/>
+          <PARAMETER NAME="HAS_TSTRB" VALUE="1"/>
+          <PARAMETER NAME="INSERT_VIP" VALUE="0"/>
+          <PARAMETER NAME="LAYERED_METADATA"/>
+          <PARAMETER NAME="PHASE" VALUE="0.0"/>
+          <PARAMETER NAME="TDATA_NUM_BYTES" VALUE="4"/>
+          <PARAMETER NAME="TDEST_WIDTH" VALUE="1"/>
+          <PARAMETER NAME="TID_WIDTH" VALUE="1"/>
+          <PARAMETER NAME="TUSER_WIDTH" VALUE="1"/>
+          <PORTMAPS>
+            <PORTMAP LOGICAL="TDATA" PHYSICAL="ch3_out_TDATA"/>
+            <PORTMAP LOGICAL="TDEST" PHYSICAL="ch3_out_TDEST"/>
+            <PORTMAP LOGICAL="TID" PHYSICAL="ch3_out_TID"/>
+            <PORTMAP LOGICAL="TKEEP" PHYSICAL="ch3_out_TKEEP"/>
+            <PORTMAP LOGICAL="TLAST" PHYSICAL="ch3_out_TLAST"/>
+            <PORTMAP LOGICAL="TREADY" PHYSICAL="ch3_out_TREADY"/>
+            <PORTMAP LOGICAL="TSTRB" PHYSICAL="ch3_out_TSTRB"/>
+            <PORTMAP LOGICAL="TUSER" PHYSICAL="ch3_out_TUSER"/>
+            <PORTMAP LOGICAL="TVALID" PHYSICAL="ch3_out_TVALID"/>
           </PORTMAPS>
         </BUSINTERFACE>
       </BUSINTERFACES>
@@ -16583,14 +16863,9 @@
             <CONNECTION INSTANCE="axi_mem_intercon" PORT="S06_ARESETN"/>
             <CONNECTION INSTANCE="axi_dma_2" PORT="axi_resetn"/>
             <CONNECTION INSTANCE="ps7_0_axi_periph" PORT="M03_ARESETN"/>
-            <CONNECTION INSTANCE="rgb2yuv_Y_0" PORT="ap_rst_n"/>
             <CONNECTION INSTANCE="ps7_0_axi_periph" PORT="M04_ARESETN"/>
-            <CONNECTION INSTANCE="yuv2rgb_0" PORT="ap_rst_n"/>
-            <CONNECTION INSTANCE="scale_y_0" PORT="ap_rst_n"/>
             <CONNECTION INSTANCE="ps7_0_axi_periph" PORT="M05_ARESETN"/>
-            <CONNECTION INSTANCE="scale_y_1" PORT="ap_rst_n"/>
             <CONNECTION INSTANCE="ps7_0_axi_periph" PORT="M06_ARESETN"/>
-            <CONNECTION INSTANCE="scale_y_2" PORT="ap_rst_n"/>
             <CONNECTION INSTANCE="ps7_0_axi_periph" PORT="M07_ARESETN"/>
             <CONNECTION INSTANCE="conv8_axi_0" PORT="s00_axi_aresetn"/>
             <CONNECTION INSTANCE="ps7_0_axi_periph" PORT="M08_ARESETN"/>
@@ -16614,6 +16889,11 @@
             <CONNECTION INSTANCE="ps7_0_axi_periph" PORT="M16_ARESETN"/>
             <CONNECTION INSTANCE="ps7_0_axi_periph" PORT="M17_ARESETN"/>
             <CONNECTION INSTANCE="dwt_db4_hls_0" PORT="ap_rst_n"/>
+            <CONNECTION INSTANCE="rgb2yuv_Y_0" PORT="ap_rst_n"/>
+            <CONNECTION INSTANCE="yuv2rgb_0" PORT="ap_rst_n"/>
+            <CONNECTION INSTANCE="scale_y_0" PORT="ap_rst_n"/>
+            <CONNECTION INSTANCE="scale_y_1" PORT="ap_rst_n"/>
+            <CONNECTION INSTANCE="scale_y_2" PORT="ap_rst_n"/>
           </CONNECTIONS>
         </PORT>
         <PORT DIR="O" LEFT="0" NAME="peripheral_reset" POLARITY="ACTIVE_HIGH" RIGHT="0" SIGIS="rst"/>
@@ -16625,7 +16905,7 @@
       </PORTS>
       <BUSINTERFACES/>
     </MODULE>
-    <MODULE COREREVISION="2113718739" FULLNAME="/scale_y_0" HWVERSION="1.0" INSTANCE="scale_y_0" IPTYPE="PERIPHERAL" IS_ENABLE="1" MODCLASS="PERIPHERAL" MODTYPE="scale_y" VLNV="xilinx.com:hls:scale_y:1.0">
+    <MODULE COREREVISION="2113728447" FULLNAME="/scale_y_0" HWVERSION="1.0" INSTANCE="scale_y_0" IPTYPE="PERIPHERAL" IS_ENABLE="1" MODCLASS="PERIPHERAL" MODTYPE="scale_y" VLNV="xilinx.com:hls:scale_y:1.0">
       <DOCUMENTS/>
       <ADDRESSBLOCKS>
         <ADDRESSBLOCK ACCESS="read-write" INTERFACE="s_axi_control" NAME="Reg" RANGE="65536" USAGE="register">
@@ -16882,9 +17162,39 @@
             <CONNECTION INSTANCE="rgb2yuv_Y_0" PORT="ch1_out_TDATA"/>
           </CONNECTIONS>
         </PORT>
+        <PORT DIR="I" LEFT="0" NAME="A_TDEST" RIGHT="0" SIGIS="undef" SIGNAME="rgb2yuv_Y_0_ch1_out_TDEST">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="rgb2yuv_Y_0" PORT="ch1_out_TDEST"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="I" LEFT="0" NAME="A_TID" RIGHT="0" SIGIS="undef" SIGNAME="rgb2yuv_Y_0_ch1_out_TID">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="rgb2yuv_Y_0" PORT="ch1_out_TID"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="I" LEFT="3" NAME="A_TKEEP" RIGHT="0" SIGIS="undef" SIGNAME="rgb2yuv_Y_0_ch1_out_TKEEP">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="rgb2yuv_Y_0" PORT="ch1_out_TKEEP"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="I" LEFT="0" NAME="A_TLAST" RIGHT="0" SIGIS="undef" SIGNAME="rgb2yuv_Y_0_ch1_out_TLAST">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="rgb2yuv_Y_0" PORT="ch1_out_TLAST"/>
+          </CONNECTIONS>
+        </PORT>
         <PORT DIR="O" NAME="A_TREADY" SIGIS="undef" SIGNAME="rgb2yuv_Y_0_ch1_out_TREADY">
           <CONNECTIONS>
             <CONNECTION INSTANCE="rgb2yuv_Y_0" PORT="ch1_out_TREADY"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="I" LEFT="3" NAME="A_TSTRB" RIGHT="0" SIGIS="undef" SIGNAME="rgb2yuv_Y_0_ch1_out_TSTRB">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="rgb2yuv_Y_0" PORT="ch1_out_TSTRB"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="I" LEFT="0" NAME="A_TUSER" RIGHT="0" SIGIS="undef" SIGNAME="rgb2yuv_Y_0_ch1_out_TUSER">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="rgb2yuv_Y_0" PORT="ch1_out_TUSER"/>
           </CONNECTIONS>
         </PORT>
         <PORT DIR="I" NAME="A_TVALID" SIGIS="undef" SIGNAME="rgb2yuv_Y_0_ch1_out_TVALID">
@@ -16897,9 +17207,39 @@
             <CONNECTION INSTANCE="yuv2rgb_0" PORT="ch1_in_TDATA"/>
           </CONNECTIONS>
         </PORT>
+        <PORT DIR="O" LEFT="0" NAME="B_TDEST" RIGHT="0" SIGIS="undef" SIGNAME="scale_y_0_B_TDEST">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="yuv2rgb_0" PORT="ch1_in_TDEST"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="O" LEFT="0" NAME="B_TID" RIGHT="0" SIGIS="undef" SIGNAME="scale_y_0_B_TID">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="yuv2rgb_0" PORT="ch1_in_TID"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="O" LEFT="3" NAME="B_TKEEP" RIGHT="0" SIGIS="undef" SIGNAME="scale_y_0_B_TKEEP">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="yuv2rgb_0" PORT="ch1_in_TKEEP"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="O" LEFT="0" NAME="B_TLAST" RIGHT="0" SIGIS="undef" SIGNAME="scale_y_0_B_TLAST">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="yuv2rgb_0" PORT="ch1_in_TLAST"/>
+          </CONNECTIONS>
+        </PORT>
         <PORT DIR="I" NAME="B_TREADY" SIGIS="undef" SIGNAME="scale_y_0_B_TREADY">
           <CONNECTIONS>
             <CONNECTION INSTANCE="yuv2rgb_0" PORT="ch1_in_TREADY"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="O" LEFT="3" NAME="B_TSTRB" RIGHT="0" SIGIS="undef" SIGNAME="scale_y_0_B_TSTRB">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="yuv2rgb_0" PORT="ch1_in_TSTRB"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="O" LEFT="0" NAME="B_TUSER" RIGHT="0" SIGIS="undef" SIGNAME="scale_y_0_B_TUSER">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="yuv2rgb_0" PORT="ch1_in_TUSER"/>
           </CONNECTIONS>
         </PORT>
         <PORT DIR="O" NAME="B_TVALID" SIGIS="undef" SIGNAME="scale_y_0_B_TVALID">
@@ -17060,46 +17400,58 @@
         <BUSINTERFACE BUSNAME="rgb2yuv_Y_0_ch1_out" NAME="A" TYPE="TARGET" VLNV="xilinx.com:interface:axis:1.0">
           <PARAMETER NAME="CLK_DOMAIN" VALUE="design_1_processing_system7_0_0_FCLK_CLK0"/>
           <PARAMETER NAME="FREQ_HZ" VALUE="100000000"/>
-          <PARAMETER NAME="HAS_TKEEP" VALUE="0"/>
-          <PARAMETER NAME="HAS_TLAST" VALUE="0"/>
+          <PARAMETER NAME="HAS_TKEEP" VALUE="1"/>
+          <PARAMETER NAME="HAS_TLAST" VALUE="1"/>
           <PARAMETER NAME="HAS_TREADY" VALUE="1"/>
-          <PARAMETER NAME="HAS_TSTRB" VALUE="0"/>
+          <PARAMETER NAME="HAS_TSTRB" VALUE="1"/>
           <PARAMETER NAME="INSERT_VIP" VALUE="0"/>
           <PARAMETER NAME="LAYERED_METADATA"/>
           <PARAMETER NAME="PHASE" VALUE="0.0"/>
           <PARAMETER NAME="TDATA_NUM_BYTES" VALUE="4"/>
-          <PARAMETER NAME="TDEST_WIDTH" VALUE="0"/>
-          <PARAMETER NAME="TID_WIDTH" VALUE="0"/>
-          <PARAMETER NAME="TUSER_WIDTH" VALUE="0"/>
+          <PARAMETER NAME="TDEST_WIDTH" VALUE="1"/>
+          <PARAMETER NAME="TID_WIDTH" VALUE="1"/>
+          <PARAMETER NAME="TUSER_WIDTH" VALUE="1"/>
           <PORTMAPS>
             <PORTMAP LOGICAL="TDATA" PHYSICAL="A_TDATA"/>
+            <PORTMAP LOGICAL="TDEST" PHYSICAL="A_TDEST"/>
+            <PORTMAP LOGICAL="TID" PHYSICAL="A_TID"/>
+            <PORTMAP LOGICAL="TKEEP" PHYSICAL="A_TKEEP"/>
+            <PORTMAP LOGICAL="TLAST" PHYSICAL="A_TLAST"/>
             <PORTMAP LOGICAL="TREADY" PHYSICAL="A_TREADY"/>
+            <PORTMAP LOGICAL="TSTRB" PHYSICAL="A_TSTRB"/>
+            <PORTMAP LOGICAL="TUSER" PHYSICAL="A_TUSER"/>
             <PORTMAP LOGICAL="TVALID" PHYSICAL="A_TVALID"/>
           </PORTMAPS>
         </BUSINTERFACE>
         <BUSINTERFACE BUSNAME="scale_y_0_B" NAME="B" TYPE="INITIATOR" VLNV="xilinx.com:interface:axis:1.0">
           <PARAMETER NAME="CLK_DOMAIN" VALUE="design_1_processing_system7_0_0_FCLK_CLK0"/>
           <PARAMETER NAME="FREQ_HZ" VALUE="100000000"/>
-          <PARAMETER NAME="HAS_TKEEP" VALUE="0"/>
-          <PARAMETER NAME="HAS_TLAST" VALUE="0"/>
+          <PARAMETER NAME="HAS_TKEEP" VALUE="1"/>
+          <PARAMETER NAME="HAS_TLAST" VALUE="1"/>
           <PARAMETER NAME="HAS_TREADY" VALUE="1"/>
-          <PARAMETER NAME="HAS_TSTRB" VALUE="0"/>
+          <PARAMETER NAME="HAS_TSTRB" VALUE="1"/>
           <PARAMETER NAME="INSERT_VIP" VALUE="0"/>
           <PARAMETER NAME="LAYERED_METADATA"/>
           <PARAMETER NAME="PHASE" VALUE="0.0"/>
           <PARAMETER NAME="TDATA_NUM_BYTES" VALUE="4"/>
-          <PARAMETER NAME="TDEST_WIDTH" VALUE="0"/>
-          <PARAMETER NAME="TID_WIDTH" VALUE="0"/>
-          <PARAMETER NAME="TUSER_WIDTH" VALUE="0"/>
+          <PARAMETER NAME="TDEST_WIDTH" VALUE="1"/>
+          <PARAMETER NAME="TID_WIDTH" VALUE="1"/>
+          <PARAMETER NAME="TUSER_WIDTH" VALUE="1"/>
           <PORTMAPS>
             <PORTMAP LOGICAL="TDATA" PHYSICAL="B_TDATA"/>
+            <PORTMAP LOGICAL="TDEST" PHYSICAL="B_TDEST"/>
+            <PORTMAP LOGICAL="TID" PHYSICAL="B_TID"/>
+            <PORTMAP LOGICAL="TKEEP" PHYSICAL="B_TKEEP"/>
+            <PORTMAP LOGICAL="TLAST" PHYSICAL="B_TLAST"/>
             <PORTMAP LOGICAL="TREADY" PHYSICAL="B_TREADY"/>
+            <PORTMAP LOGICAL="TSTRB" PHYSICAL="B_TSTRB"/>
+            <PORTMAP LOGICAL="TUSER" PHYSICAL="B_TUSER"/>
             <PORTMAP LOGICAL="TVALID" PHYSICAL="B_TVALID"/>
           </PORTMAPS>
         </BUSINTERFACE>
       </BUSINTERFACES>
     </MODULE>
-    <MODULE COREREVISION="2113718739" FULLNAME="/scale_y_1" HWVERSION="1.0" INSTANCE="scale_y_1" IPTYPE="PERIPHERAL" IS_ENABLE="1" MODCLASS="PERIPHERAL" MODTYPE="scale_y" VLNV="xilinx.com:hls:scale_y:1.0">
+    <MODULE COREREVISION="2113728447" FULLNAME="/scale_y_1" HWVERSION="1.0" INSTANCE="scale_y_1" IPTYPE="PERIPHERAL" IS_ENABLE="1" MODCLASS="PERIPHERAL" MODTYPE="scale_y" VLNV="xilinx.com:hls:scale_y:1.0">
       <DOCUMENTS/>
       <ADDRESSBLOCKS>
         <ADDRESSBLOCK ACCESS="read-write" INTERFACE="s_axi_control" NAME="Reg" RANGE="65536" USAGE="register">
@@ -17356,9 +17708,39 @@
             <CONNECTION INSTANCE="rgb2yuv_Y_0" PORT="ch2_out_TDATA"/>
           </CONNECTIONS>
         </PORT>
+        <PORT DIR="I" LEFT="0" NAME="A_TDEST" RIGHT="0" SIGIS="undef" SIGNAME="rgb2yuv_Y_0_ch2_out_TDEST">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="rgb2yuv_Y_0" PORT="ch2_out_TDEST"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="I" LEFT="0" NAME="A_TID" RIGHT="0" SIGIS="undef" SIGNAME="rgb2yuv_Y_0_ch2_out_TID">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="rgb2yuv_Y_0" PORT="ch2_out_TID"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="I" LEFT="3" NAME="A_TKEEP" RIGHT="0" SIGIS="undef" SIGNAME="rgb2yuv_Y_0_ch2_out_TKEEP">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="rgb2yuv_Y_0" PORT="ch2_out_TKEEP"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="I" LEFT="0" NAME="A_TLAST" RIGHT="0" SIGIS="undef" SIGNAME="rgb2yuv_Y_0_ch2_out_TLAST">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="rgb2yuv_Y_0" PORT="ch2_out_TLAST"/>
+          </CONNECTIONS>
+        </PORT>
         <PORT DIR="O" NAME="A_TREADY" SIGIS="undef" SIGNAME="rgb2yuv_Y_0_ch2_out_TREADY">
           <CONNECTIONS>
             <CONNECTION INSTANCE="rgb2yuv_Y_0" PORT="ch2_out_TREADY"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="I" LEFT="3" NAME="A_TSTRB" RIGHT="0" SIGIS="undef" SIGNAME="rgb2yuv_Y_0_ch2_out_TSTRB">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="rgb2yuv_Y_0" PORT="ch2_out_TSTRB"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="I" LEFT="0" NAME="A_TUSER" RIGHT="0" SIGIS="undef" SIGNAME="rgb2yuv_Y_0_ch2_out_TUSER">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="rgb2yuv_Y_0" PORT="ch2_out_TUSER"/>
           </CONNECTIONS>
         </PORT>
         <PORT DIR="I" NAME="A_TVALID" SIGIS="undef" SIGNAME="rgb2yuv_Y_0_ch2_out_TVALID">
@@ -17371,9 +17753,39 @@
             <CONNECTION INSTANCE="yuv2rgb_0" PORT="ch2_in_TDATA"/>
           </CONNECTIONS>
         </PORT>
+        <PORT DIR="O" LEFT="0" NAME="B_TDEST" RIGHT="0" SIGIS="undef" SIGNAME="scale_y_1_B_TDEST">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="yuv2rgb_0" PORT="ch2_in_TDEST"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="O" LEFT="0" NAME="B_TID" RIGHT="0" SIGIS="undef" SIGNAME="scale_y_1_B_TID">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="yuv2rgb_0" PORT="ch2_in_TID"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="O" LEFT="3" NAME="B_TKEEP" RIGHT="0" SIGIS="undef" SIGNAME="scale_y_1_B_TKEEP">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="yuv2rgb_0" PORT="ch2_in_TKEEP"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="O" LEFT="0" NAME="B_TLAST" RIGHT="0" SIGIS="undef" SIGNAME="scale_y_1_B_TLAST">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="yuv2rgb_0" PORT="ch2_in_TLAST"/>
+          </CONNECTIONS>
+        </PORT>
         <PORT DIR="I" NAME="B_TREADY" SIGIS="undef" SIGNAME="scale_y_1_B_TREADY">
           <CONNECTIONS>
             <CONNECTION INSTANCE="yuv2rgb_0" PORT="ch2_in_TREADY"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="O" LEFT="3" NAME="B_TSTRB" RIGHT="0" SIGIS="undef" SIGNAME="scale_y_1_B_TSTRB">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="yuv2rgb_0" PORT="ch2_in_TSTRB"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="O" LEFT="0" NAME="B_TUSER" RIGHT="0" SIGIS="undef" SIGNAME="scale_y_1_B_TUSER">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="yuv2rgb_0" PORT="ch2_in_TUSER"/>
           </CONNECTIONS>
         </PORT>
         <PORT DIR="O" NAME="B_TVALID" SIGIS="undef" SIGNAME="scale_y_1_B_TVALID">
@@ -17534,46 +17946,58 @@
         <BUSINTERFACE BUSNAME="rgb2yuv_Y_0_ch2_out" NAME="A" TYPE="TARGET" VLNV="xilinx.com:interface:axis:1.0">
           <PARAMETER NAME="CLK_DOMAIN" VALUE="design_1_processing_system7_0_0_FCLK_CLK0"/>
           <PARAMETER NAME="FREQ_HZ" VALUE="100000000"/>
-          <PARAMETER NAME="HAS_TKEEP" VALUE="0"/>
-          <PARAMETER NAME="HAS_TLAST" VALUE="0"/>
+          <PARAMETER NAME="HAS_TKEEP" VALUE="1"/>
+          <PARAMETER NAME="HAS_TLAST" VALUE="1"/>
           <PARAMETER NAME="HAS_TREADY" VALUE="1"/>
-          <PARAMETER NAME="HAS_TSTRB" VALUE="0"/>
+          <PARAMETER NAME="HAS_TSTRB" VALUE="1"/>
           <PARAMETER NAME="INSERT_VIP" VALUE="0"/>
           <PARAMETER NAME="LAYERED_METADATA"/>
           <PARAMETER NAME="PHASE" VALUE="0.0"/>
           <PARAMETER NAME="TDATA_NUM_BYTES" VALUE="4"/>
-          <PARAMETER NAME="TDEST_WIDTH" VALUE="0"/>
-          <PARAMETER NAME="TID_WIDTH" VALUE="0"/>
-          <PARAMETER NAME="TUSER_WIDTH" VALUE="0"/>
+          <PARAMETER NAME="TDEST_WIDTH" VALUE="1"/>
+          <PARAMETER NAME="TID_WIDTH" VALUE="1"/>
+          <PARAMETER NAME="TUSER_WIDTH" VALUE="1"/>
           <PORTMAPS>
             <PORTMAP LOGICAL="TDATA" PHYSICAL="A_TDATA"/>
+            <PORTMAP LOGICAL="TDEST" PHYSICAL="A_TDEST"/>
+            <PORTMAP LOGICAL="TID" PHYSICAL="A_TID"/>
+            <PORTMAP LOGICAL="TKEEP" PHYSICAL="A_TKEEP"/>
+            <PORTMAP LOGICAL="TLAST" PHYSICAL="A_TLAST"/>
             <PORTMAP LOGICAL="TREADY" PHYSICAL="A_TREADY"/>
+            <PORTMAP LOGICAL="TSTRB" PHYSICAL="A_TSTRB"/>
+            <PORTMAP LOGICAL="TUSER" PHYSICAL="A_TUSER"/>
             <PORTMAP LOGICAL="TVALID" PHYSICAL="A_TVALID"/>
           </PORTMAPS>
         </BUSINTERFACE>
         <BUSINTERFACE BUSNAME="scale_y_1_B" NAME="B" TYPE="INITIATOR" VLNV="xilinx.com:interface:axis:1.0">
           <PARAMETER NAME="CLK_DOMAIN" VALUE="design_1_processing_system7_0_0_FCLK_CLK0"/>
           <PARAMETER NAME="FREQ_HZ" VALUE="100000000"/>
-          <PARAMETER NAME="HAS_TKEEP" VALUE="0"/>
-          <PARAMETER NAME="HAS_TLAST" VALUE="0"/>
+          <PARAMETER NAME="HAS_TKEEP" VALUE="1"/>
+          <PARAMETER NAME="HAS_TLAST" VALUE="1"/>
           <PARAMETER NAME="HAS_TREADY" VALUE="1"/>
-          <PARAMETER NAME="HAS_TSTRB" VALUE="0"/>
+          <PARAMETER NAME="HAS_TSTRB" VALUE="1"/>
           <PARAMETER NAME="INSERT_VIP" VALUE="0"/>
           <PARAMETER NAME="LAYERED_METADATA"/>
           <PARAMETER NAME="PHASE" VALUE="0.0"/>
           <PARAMETER NAME="TDATA_NUM_BYTES" VALUE="4"/>
-          <PARAMETER NAME="TDEST_WIDTH" VALUE="0"/>
-          <PARAMETER NAME="TID_WIDTH" VALUE="0"/>
-          <PARAMETER NAME="TUSER_WIDTH" VALUE="0"/>
+          <PARAMETER NAME="TDEST_WIDTH" VALUE="1"/>
+          <PARAMETER NAME="TID_WIDTH" VALUE="1"/>
+          <PARAMETER NAME="TUSER_WIDTH" VALUE="1"/>
           <PORTMAPS>
             <PORTMAP LOGICAL="TDATA" PHYSICAL="B_TDATA"/>
+            <PORTMAP LOGICAL="TDEST" PHYSICAL="B_TDEST"/>
+            <PORTMAP LOGICAL="TID" PHYSICAL="B_TID"/>
+            <PORTMAP LOGICAL="TKEEP" PHYSICAL="B_TKEEP"/>
+            <PORTMAP LOGICAL="TLAST" PHYSICAL="B_TLAST"/>
             <PORTMAP LOGICAL="TREADY" PHYSICAL="B_TREADY"/>
+            <PORTMAP LOGICAL="TSTRB" PHYSICAL="B_TSTRB"/>
+            <PORTMAP LOGICAL="TUSER" PHYSICAL="B_TUSER"/>
             <PORTMAP LOGICAL="TVALID" PHYSICAL="B_TVALID"/>
           </PORTMAPS>
         </BUSINTERFACE>
       </BUSINTERFACES>
     </MODULE>
-    <MODULE COREREVISION="2113718739" FULLNAME="/scale_y_2" HWVERSION="1.0" INSTANCE="scale_y_2" IPTYPE="PERIPHERAL" IS_ENABLE="1" MODCLASS="PERIPHERAL" MODTYPE="scale_y" VLNV="xilinx.com:hls:scale_y:1.0">
+    <MODULE COREREVISION="2113728447" FULLNAME="/scale_y_2" HWVERSION="1.0" INSTANCE="scale_y_2" IPTYPE="PERIPHERAL" IS_ENABLE="1" MODCLASS="PERIPHERAL" MODTYPE="scale_y" VLNV="xilinx.com:hls:scale_y:1.0">
       <DOCUMENTS/>
       <ADDRESSBLOCKS>
         <ADDRESSBLOCK ACCESS="read-write" INTERFACE="s_axi_control" NAME="Reg" RANGE="65536" USAGE="register">
@@ -17830,9 +18254,39 @@
             <CONNECTION INSTANCE="rgb2yuv_Y_0" PORT="ch3_out_TDATA"/>
           </CONNECTIONS>
         </PORT>
+        <PORT DIR="I" LEFT="0" NAME="A_TDEST" RIGHT="0" SIGIS="undef" SIGNAME="rgb2yuv_Y_0_ch3_out_TDEST">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="rgb2yuv_Y_0" PORT="ch3_out_TDEST"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="I" LEFT="0" NAME="A_TID" RIGHT="0" SIGIS="undef" SIGNAME="rgb2yuv_Y_0_ch3_out_TID">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="rgb2yuv_Y_0" PORT="ch3_out_TID"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="I" LEFT="3" NAME="A_TKEEP" RIGHT="0" SIGIS="undef" SIGNAME="rgb2yuv_Y_0_ch3_out_TKEEP">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="rgb2yuv_Y_0" PORT="ch3_out_TKEEP"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="I" LEFT="0" NAME="A_TLAST" RIGHT="0" SIGIS="undef" SIGNAME="rgb2yuv_Y_0_ch3_out_TLAST">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="rgb2yuv_Y_0" PORT="ch3_out_TLAST"/>
+          </CONNECTIONS>
+        </PORT>
         <PORT DIR="O" NAME="A_TREADY" SIGIS="undef" SIGNAME="rgb2yuv_Y_0_ch3_out_TREADY">
           <CONNECTIONS>
             <CONNECTION INSTANCE="rgb2yuv_Y_0" PORT="ch3_out_TREADY"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="I" LEFT="3" NAME="A_TSTRB" RIGHT="0" SIGIS="undef" SIGNAME="rgb2yuv_Y_0_ch3_out_TSTRB">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="rgb2yuv_Y_0" PORT="ch3_out_TSTRB"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="I" LEFT="0" NAME="A_TUSER" RIGHT="0" SIGIS="undef" SIGNAME="rgb2yuv_Y_0_ch3_out_TUSER">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="rgb2yuv_Y_0" PORT="ch3_out_TUSER"/>
           </CONNECTIONS>
         </PORT>
         <PORT DIR="I" NAME="A_TVALID" SIGIS="undef" SIGNAME="rgb2yuv_Y_0_ch3_out_TVALID">
@@ -17845,9 +18299,39 @@
             <CONNECTION INSTANCE="yuv2rgb_0" PORT="ch3_in_TDATA"/>
           </CONNECTIONS>
         </PORT>
+        <PORT DIR="O" LEFT="0" NAME="B_TDEST" RIGHT="0" SIGIS="undef" SIGNAME="scale_y_2_B_TDEST">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="yuv2rgb_0" PORT="ch3_in_TDEST"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="O" LEFT="0" NAME="B_TID" RIGHT="0" SIGIS="undef" SIGNAME="scale_y_2_B_TID">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="yuv2rgb_0" PORT="ch3_in_TID"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="O" LEFT="3" NAME="B_TKEEP" RIGHT="0" SIGIS="undef" SIGNAME="scale_y_2_B_TKEEP">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="yuv2rgb_0" PORT="ch3_in_TKEEP"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="O" LEFT="0" NAME="B_TLAST" RIGHT="0" SIGIS="undef" SIGNAME="scale_y_2_B_TLAST">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="yuv2rgb_0" PORT="ch3_in_TLAST"/>
+          </CONNECTIONS>
+        </PORT>
         <PORT DIR="I" NAME="B_TREADY" SIGIS="undef" SIGNAME="scale_y_2_B_TREADY">
           <CONNECTIONS>
             <CONNECTION INSTANCE="yuv2rgb_0" PORT="ch3_in_TREADY"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="O" LEFT="3" NAME="B_TSTRB" RIGHT="0" SIGIS="undef" SIGNAME="scale_y_2_B_TSTRB">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="yuv2rgb_0" PORT="ch3_in_TSTRB"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="O" LEFT="0" NAME="B_TUSER" RIGHT="0" SIGIS="undef" SIGNAME="scale_y_2_B_TUSER">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="yuv2rgb_0" PORT="ch3_in_TUSER"/>
           </CONNECTIONS>
         </PORT>
         <PORT DIR="O" NAME="B_TVALID" SIGIS="undef" SIGNAME="scale_y_2_B_TVALID">
@@ -18008,46 +18492,58 @@
         <BUSINTERFACE BUSNAME="rgb2yuv_Y_0_ch3_out" NAME="A" TYPE="TARGET" VLNV="xilinx.com:interface:axis:1.0">
           <PARAMETER NAME="CLK_DOMAIN" VALUE="design_1_processing_system7_0_0_FCLK_CLK0"/>
           <PARAMETER NAME="FREQ_HZ" VALUE="100000000"/>
-          <PARAMETER NAME="HAS_TKEEP" VALUE="0"/>
-          <PARAMETER NAME="HAS_TLAST" VALUE="0"/>
+          <PARAMETER NAME="HAS_TKEEP" VALUE="1"/>
+          <PARAMETER NAME="HAS_TLAST" VALUE="1"/>
           <PARAMETER NAME="HAS_TREADY" VALUE="1"/>
-          <PARAMETER NAME="HAS_TSTRB" VALUE="0"/>
+          <PARAMETER NAME="HAS_TSTRB" VALUE="1"/>
           <PARAMETER NAME="INSERT_VIP" VALUE="0"/>
           <PARAMETER NAME="LAYERED_METADATA"/>
           <PARAMETER NAME="PHASE" VALUE="0.0"/>
           <PARAMETER NAME="TDATA_NUM_BYTES" VALUE="4"/>
-          <PARAMETER NAME="TDEST_WIDTH" VALUE="0"/>
-          <PARAMETER NAME="TID_WIDTH" VALUE="0"/>
-          <PARAMETER NAME="TUSER_WIDTH" VALUE="0"/>
+          <PARAMETER NAME="TDEST_WIDTH" VALUE="1"/>
+          <PARAMETER NAME="TID_WIDTH" VALUE="1"/>
+          <PARAMETER NAME="TUSER_WIDTH" VALUE="1"/>
           <PORTMAPS>
             <PORTMAP LOGICAL="TDATA" PHYSICAL="A_TDATA"/>
+            <PORTMAP LOGICAL="TDEST" PHYSICAL="A_TDEST"/>
+            <PORTMAP LOGICAL="TID" PHYSICAL="A_TID"/>
+            <PORTMAP LOGICAL="TKEEP" PHYSICAL="A_TKEEP"/>
+            <PORTMAP LOGICAL="TLAST" PHYSICAL="A_TLAST"/>
             <PORTMAP LOGICAL="TREADY" PHYSICAL="A_TREADY"/>
+            <PORTMAP LOGICAL="TSTRB" PHYSICAL="A_TSTRB"/>
+            <PORTMAP LOGICAL="TUSER" PHYSICAL="A_TUSER"/>
             <PORTMAP LOGICAL="TVALID" PHYSICAL="A_TVALID"/>
           </PORTMAPS>
         </BUSINTERFACE>
         <BUSINTERFACE BUSNAME="scale_y_2_B" NAME="B" TYPE="INITIATOR" VLNV="xilinx.com:interface:axis:1.0">
           <PARAMETER NAME="CLK_DOMAIN" VALUE="design_1_processing_system7_0_0_FCLK_CLK0"/>
           <PARAMETER NAME="FREQ_HZ" VALUE="100000000"/>
-          <PARAMETER NAME="HAS_TKEEP" VALUE="0"/>
-          <PARAMETER NAME="HAS_TLAST" VALUE="0"/>
+          <PARAMETER NAME="HAS_TKEEP" VALUE="1"/>
+          <PARAMETER NAME="HAS_TLAST" VALUE="1"/>
           <PARAMETER NAME="HAS_TREADY" VALUE="1"/>
-          <PARAMETER NAME="HAS_TSTRB" VALUE="0"/>
+          <PARAMETER NAME="HAS_TSTRB" VALUE="1"/>
           <PARAMETER NAME="INSERT_VIP" VALUE="0"/>
           <PARAMETER NAME="LAYERED_METADATA"/>
           <PARAMETER NAME="PHASE" VALUE="0.0"/>
           <PARAMETER NAME="TDATA_NUM_BYTES" VALUE="4"/>
-          <PARAMETER NAME="TDEST_WIDTH" VALUE="0"/>
-          <PARAMETER NAME="TID_WIDTH" VALUE="0"/>
-          <PARAMETER NAME="TUSER_WIDTH" VALUE="0"/>
+          <PARAMETER NAME="TDEST_WIDTH" VALUE="1"/>
+          <PARAMETER NAME="TID_WIDTH" VALUE="1"/>
+          <PARAMETER NAME="TUSER_WIDTH" VALUE="1"/>
           <PORTMAPS>
             <PORTMAP LOGICAL="TDATA" PHYSICAL="B_TDATA"/>
+            <PORTMAP LOGICAL="TDEST" PHYSICAL="B_TDEST"/>
+            <PORTMAP LOGICAL="TID" PHYSICAL="B_TID"/>
+            <PORTMAP LOGICAL="TKEEP" PHYSICAL="B_TKEEP"/>
+            <PORTMAP LOGICAL="TLAST" PHYSICAL="B_TLAST"/>
             <PORTMAP LOGICAL="TREADY" PHYSICAL="B_TREADY"/>
+            <PORTMAP LOGICAL="TSTRB" PHYSICAL="B_TSTRB"/>
+            <PORTMAP LOGICAL="TUSER" PHYSICAL="B_TUSER"/>
             <PORTMAP LOGICAL="TVALID" PHYSICAL="B_TVALID"/>
           </PORTMAPS>
         </BUSINTERFACE>
       </BUSINTERFACES>
     </MODULE>
-    <MODULE COREREVISION="2113718745" FULLNAME="/yuv2rgb_0" HWVERSION="1.0" INSTANCE="yuv2rgb_0" IPTYPE="PERIPHERAL" IS_ENABLE="1" MODCLASS="PERIPHERAL" MODTYPE="yuv2rgb" VLNV="xilinx.com:hls:yuv2rgb:1.0">
+    <MODULE COREREVISION="2113728444" FULLNAME="/yuv2rgb_0" HWVERSION="1.0" INSTANCE="yuv2rgb_0" IPTYPE="PERIPHERAL" IS_ENABLE="1" MODCLASS="PERIPHERAL" MODTYPE="yuv2rgb" VLNV="xilinx.com:hls:yuv2rgb:1.0">
       <DOCUMENTS/>
       <ADDRESSBLOCKS>
         <ADDRESSBLOCK ACCESS="read-write" INTERFACE="s_axi_BUS_A" NAME="Reg" RANGE="65536" USAGE="register">
@@ -18294,9 +18790,39 @@
             <CONNECTION INSTANCE="scale_y_0" PORT="B_TDATA"/>
           </CONNECTIONS>
         </PORT>
+        <PORT DIR="I" LEFT="0" NAME="ch1_in_TDEST" RIGHT="0" SIGIS="undef" SIGNAME="scale_y_0_B_TDEST">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="scale_y_0" PORT="B_TDEST"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="I" LEFT="0" NAME="ch1_in_TID" RIGHT="0" SIGIS="undef" SIGNAME="scale_y_0_B_TID">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="scale_y_0" PORT="B_TID"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="I" LEFT="3" NAME="ch1_in_TKEEP" RIGHT="0" SIGIS="undef" SIGNAME="scale_y_0_B_TKEEP">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="scale_y_0" PORT="B_TKEEP"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="I" LEFT="0" NAME="ch1_in_TLAST" RIGHT="0" SIGIS="undef" SIGNAME="scale_y_0_B_TLAST">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="scale_y_0" PORT="B_TLAST"/>
+          </CONNECTIONS>
+        </PORT>
         <PORT DIR="O" NAME="ch1_in_TREADY" SIGIS="undef" SIGNAME="scale_y_0_B_TREADY">
           <CONNECTIONS>
             <CONNECTION INSTANCE="scale_y_0" PORT="B_TREADY"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="I" LEFT="3" NAME="ch1_in_TSTRB" RIGHT="0" SIGIS="undef" SIGNAME="scale_y_0_B_TSTRB">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="scale_y_0" PORT="B_TSTRB"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="I" LEFT="0" NAME="ch1_in_TUSER" RIGHT="0" SIGIS="undef" SIGNAME="scale_y_0_B_TUSER">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="scale_y_0" PORT="B_TUSER"/>
           </CONNECTIONS>
         </PORT>
         <PORT DIR="I" NAME="ch1_in_TVALID" SIGIS="undef" SIGNAME="scale_y_0_B_TVALID">
@@ -18307,6 +18833,16 @@
         <PORT DIR="O" LEFT="31" NAME="ch1_out_TDATA" RIGHT="0" SIGIS="undef" SIGNAME="axi_dma_0_s_axis_s2mm_tdata">
           <CONNECTIONS>
             <CONNECTION INSTANCE="axi_dma_0" PORT="s_axis_s2mm_tdata"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="O" LEFT="3" NAME="ch1_out_TKEEP" RIGHT="0" SIGIS="undef" SIGNAME="axi_dma_0_s_axis_s2mm_tkeep">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="axi_dma_0" PORT="s_axis_s2mm_tkeep"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="O" LEFT="0" NAME="ch1_out_TLAST" RIGHT="0" SIGIS="undef" SIGNAME="axi_dma_0_s_axis_s2mm_tlast">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="axi_dma_0" PORT="s_axis_s2mm_tlast"/>
           </CONNECTIONS>
         </PORT>
         <PORT DIR="I" NAME="ch1_out_TREADY" SIGIS="undef" SIGNAME="axi_dma_0_s_axis_s2mm_tready">
@@ -18324,9 +18860,39 @@
             <CONNECTION INSTANCE="scale_y_1" PORT="B_TDATA"/>
           </CONNECTIONS>
         </PORT>
+        <PORT DIR="I" LEFT="0" NAME="ch2_in_TDEST" RIGHT="0" SIGIS="undef" SIGNAME="scale_y_1_B_TDEST">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="scale_y_1" PORT="B_TDEST"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="I" LEFT="0" NAME="ch2_in_TID" RIGHT="0" SIGIS="undef" SIGNAME="scale_y_1_B_TID">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="scale_y_1" PORT="B_TID"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="I" LEFT="3" NAME="ch2_in_TKEEP" RIGHT="0" SIGIS="undef" SIGNAME="scale_y_1_B_TKEEP">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="scale_y_1" PORT="B_TKEEP"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="I" LEFT="0" NAME="ch2_in_TLAST" RIGHT="0" SIGIS="undef" SIGNAME="scale_y_1_B_TLAST">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="scale_y_1" PORT="B_TLAST"/>
+          </CONNECTIONS>
+        </PORT>
         <PORT DIR="O" NAME="ch2_in_TREADY" SIGIS="undef" SIGNAME="scale_y_1_B_TREADY">
           <CONNECTIONS>
             <CONNECTION INSTANCE="scale_y_1" PORT="B_TREADY"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="I" LEFT="3" NAME="ch2_in_TSTRB" RIGHT="0" SIGIS="undef" SIGNAME="scale_y_1_B_TSTRB">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="scale_y_1" PORT="B_TSTRB"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="I" LEFT="0" NAME="ch2_in_TUSER" RIGHT="0" SIGIS="undef" SIGNAME="scale_y_1_B_TUSER">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="scale_y_1" PORT="B_TUSER"/>
           </CONNECTIONS>
         </PORT>
         <PORT DIR="I" NAME="ch2_in_TVALID" SIGIS="undef" SIGNAME="scale_y_1_B_TVALID">
@@ -18337,6 +18903,16 @@
         <PORT DIR="O" LEFT="31" NAME="ch2_out_TDATA" RIGHT="0" SIGIS="undef" SIGNAME="axi_dma_1_s_axis_s2mm_tdata">
           <CONNECTIONS>
             <CONNECTION INSTANCE="axi_dma_1" PORT="s_axis_s2mm_tdata"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="O" LEFT="3" NAME="ch2_out_TKEEP" RIGHT="0" SIGIS="undef" SIGNAME="axi_dma_1_s_axis_s2mm_tkeep">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="axi_dma_1" PORT="s_axis_s2mm_tkeep"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="O" LEFT="0" NAME="ch2_out_TLAST" RIGHT="0" SIGIS="undef" SIGNAME="axi_dma_1_s_axis_s2mm_tlast">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="axi_dma_1" PORT="s_axis_s2mm_tlast"/>
           </CONNECTIONS>
         </PORT>
         <PORT DIR="I" NAME="ch2_out_TREADY" SIGIS="undef" SIGNAME="axi_dma_1_s_axis_s2mm_tready">
@@ -18354,9 +18930,39 @@
             <CONNECTION INSTANCE="scale_y_2" PORT="B_TDATA"/>
           </CONNECTIONS>
         </PORT>
+        <PORT DIR="I" LEFT="0" NAME="ch3_in_TDEST" RIGHT="0" SIGIS="undef" SIGNAME="scale_y_2_B_TDEST">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="scale_y_2" PORT="B_TDEST"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="I" LEFT="0" NAME="ch3_in_TID" RIGHT="0" SIGIS="undef" SIGNAME="scale_y_2_B_TID">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="scale_y_2" PORT="B_TID"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="I" LEFT="3" NAME="ch3_in_TKEEP" RIGHT="0" SIGIS="undef" SIGNAME="scale_y_2_B_TKEEP">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="scale_y_2" PORT="B_TKEEP"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="I" LEFT="0" NAME="ch3_in_TLAST" RIGHT="0" SIGIS="undef" SIGNAME="scale_y_2_B_TLAST">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="scale_y_2" PORT="B_TLAST"/>
+          </CONNECTIONS>
+        </PORT>
         <PORT DIR="O" NAME="ch3_in_TREADY" SIGIS="undef" SIGNAME="scale_y_2_B_TREADY">
           <CONNECTIONS>
             <CONNECTION INSTANCE="scale_y_2" PORT="B_TREADY"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="I" LEFT="3" NAME="ch3_in_TSTRB" RIGHT="0" SIGIS="undef" SIGNAME="scale_y_2_B_TSTRB">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="scale_y_2" PORT="B_TSTRB"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="I" LEFT="0" NAME="ch3_in_TUSER" RIGHT="0" SIGIS="undef" SIGNAME="scale_y_2_B_TUSER">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="scale_y_2" PORT="B_TUSER"/>
           </CONNECTIONS>
         </PORT>
         <PORT DIR="I" NAME="ch3_in_TVALID" SIGIS="undef" SIGNAME="scale_y_2_B_TVALID">
@@ -18367,6 +18973,16 @@
         <PORT DIR="O" LEFT="31" NAME="ch3_out_TDATA" RIGHT="0" SIGIS="undef" SIGNAME="axi_dma_2_s_axis_s2mm_tdata">
           <CONNECTIONS>
             <CONNECTION INSTANCE="axi_dma_2" PORT="s_axis_s2mm_tdata"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="O" LEFT="3" NAME="ch3_out_TKEEP" RIGHT="0" SIGIS="undef" SIGNAME="axi_dma_2_s_axis_s2mm_tkeep">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="axi_dma_2" PORT="s_axis_s2mm_tkeep"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="O" LEFT="0" NAME="ch3_out_TLAST" RIGHT="0" SIGIS="undef" SIGNAME="axi_dma_2_s_axis_s2mm_tlast">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="axi_dma_2" PORT="s_axis_s2mm_tlast"/>
           </CONNECTIONS>
         </PORT>
         <PORT DIR="I" NAME="ch3_out_TREADY" SIGIS="undef" SIGNAME="axi_dma_2_s_axis_s2mm_tready">
@@ -18519,22 +19135,102 @@
             <PORTMAP LOGICAL="WVALID" PHYSICAL="s_axi_BUS_A_WVALID"/>
           </PORTMAPS>
         </BUSINTERFACE>
-        <BUSINTERFACE BUSNAME="yuv2rgb_0_ch1_out" NAME="ch1_out" TYPE="INITIATOR" VLNV="xilinx.com:interface:axis:1.0">
+        <BUSINTERFACE BUSNAME="scale_y_0_B" NAME="ch1_in" TYPE="TARGET" VLNV="xilinx.com:interface:axis:1.0">
           <PARAMETER NAME="CLK_DOMAIN" VALUE="design_1_processing_system7_0_0_FCLK_CLK0"/>
           <PARAMETER NAME="FREQ_HZ" VALUE="100000000"/>
-          <PARAMETER NAME="HAS_TKEEP" VALUE="0"/>
-          <PARAMETER NAME="HAS_TLAST" VALUE="0"/>
+          <PARAMETER NAME="HAS_TKEEP" VALUE="1"/>
+          <PARAMETER NAME="HAS_TLAST" VALUE="1"/>
           <PARAMETER NAME="HAS_TREADY" VALUE="1"/>
-          <PARAMETER NAME="HAS_TSTRB" VALUE="0"/>
+          <PARAMETER NAME="HAS_TSTRB" VALUE="1"/>
           <PARAMETER NAME="INSERT_VIP" VALUE="0"/>
           <PARAMETER NAME="LAYERED_METADATA"/>
           <PARAMETER NAME="PHASE" VALUE="0.0"/>
           <PARAMETER NAME="TDATA_NUM_BYTES" VALUE="4"/>
-          <PARAMETER NAME="TDEST_WIDTH" VALUE="0"/>
-          <PARAMETER NAME="TID_WIDTH" VALUE="0"/>
-          <PARAMETER NAME="TUSER_WIDTH" VALUE="0"/>
+          <PARAMETER NAME="TDEST_WIDTH" VALUE="1"/>
+          <PARAMETER NAME="TID_WIDTH" VALUE="1"/>
+          <PARAMETER NAME="TUSER_WIDTH" VALUE="1"/>
+          <PORTMAPS>
+            <PORTMAP LOGICAL="TDATA" PHYSICAL="ch1_in_TDATA"/>
+            <PORTMAP LOGICAL="TDEST" PHYSICAL="ch1_in_TDEST"/>
+            <PORTMAP LOGICAL="TID" PHYSICAL="ch1_in_TID"/>
+            <PORTMAP LOGICAL="TKEEP" PHYSICAL="ch1_in_TKEEP"/>
+            <PORTMAP LOGICAL="TLAST" PHYSICAL="ch1_in_TLAST"/>
+            <PORTMAP LOGICAL="TREADY" PHYSICAL="ch1_in_TREADY"/>
+            <PORTMAP LOGICAL="TSTRB" PHYSICAL="ch1_in_TSTRB"/>
+            <PORTMAP LOGICAL="TUSER" PHYSICAL="ch1_in_TUSER"/>
+            <PORTMAP LOGICAL="TVALID" PHYSICAL="ch1_in_TVALID"/>
+          </PORTMAPS>
+        </BUSINTERFACE>
+        <BUSINTERFACE BUSNAME="scale_y_1_B" NAME="ch2_in" TYPE="TARGET" VLNV="xilinx.com:interface:axis:1.0">
+          <PARAMETER NAME="CLK_DOMAIN" VALUE="design_1_processing_system7_0_0_FCLK_CLK0"/>
+          <PARAMETER NAME="FREQ_HZ" VALUE="100000000"/>
+          <PARAMETER NAME="HAS_TKEEP" VALUE="1"/>
+          <PARAMETER NAME="HAS_TLAST" VALUE="1"/>
+          <PARAMETER NAME="HAS_TREADY" VALUE="1"/>
+          <PARAMETER NAME="HAS_TSTRB" VALUE="1"/>
+          <PARAMETER NAME="INSERT_VIP" VALUE="0"/>
+          <PARAMETER NAME="LAYERED_METADATA"/>
+          <PARAMETER NAME="PHASE" VALUE="0.0"/>
+          <PARAMETER NAME="TDATA_NUM_BYTES" VALUE="4"/>
+          <PARAMETER NAME="TDEST_WIDTH" VALUE="1"/>
+          <PARAMETER NAME="TID_WIDTH" VALUE="1"/>
+          <PARAMETER NAME="TUSER_WIDTH" VALUE="1"/>
+          <PORTMAPS>
+            <PORTMAP LOGICAL="TDATA" PHYSICAL="ch2_in_TDATA"/>
+            <PORTMAP LOGICAL="TDEST" PHYSICAL="ch2_in_TDEST"/>
+            <PORTMAP LOGICAL="TID" PHYSICAL="ch2_in_TID"/>
+            <PORTMAP LOGICAL="TKEEP" PHYSICAL="ch2_in_TKEEP"/>
+            <PORTMAP LOGICAL="TLAST" PHYSICAL="ch2_in_TLAST"/>
+            <PORTMAP LOGICAL="TREADY" PHYSICAL="ch2_in_TREADY"/>
+            <PORTMAP LOGICAL="TSTRB" PHYSICAL="ch2_in_TSTRB"/>
+            <PORTMAP LOGICAL="TUSER" PHYSICAL="ch2_in_TUSER"/>
+            <PORTMAP LOGICAL="TVALID" PHYSICAL="ch2_in_TVALID"/>
+          </PORTMAPS>
+        </BUSINTERFACE>
+        <BUSINTERFACE BUSNAME="scale_y_2_B" NAME="ch3_in" TYPE="TARGET" VLNV="xilinx.com:interface:axis:1.0">
+          <PARAMETER NAME="CLK_DOMAIN" VALUE="design_1_processing_system7_0_0_FCLK_CLK0"/>
+          <PARAMETER NAME="FREQ_HZ" VALUE="100000000"/>
+          <PARAMETER NAME="HAS_TKEEP" VALUE="1"/>
+          <PARAMETER NAME="HAS_TLAST" VALUE="1"/>
+          <PARAMETER NAME="HAS_TREADY" VALUE="1"/>
+          <PARAMETER NAME="HAS_TSTRB" VALUE="1"/>
+          <PARAMETER NAME="INSERT_VIP" VALUE="0"/>
+          <PARAMETER NAME="LAYERED_METADATA"/>
+          <PARAMETER NAME="PHASE" VALUE="0.0"/>
+          <PARAMETER NAME="TDATA_NUM_BYTES" VALUE="4"/>
+          <PARAMETER NAME="TDEST_WIDTH" VALUE="1"/>
+          <PARAMETER NAME="TID_WIDTH" VALUE="1"/>
+          <PARAMETER NAME="TUSER_WIDTH" VALUE="1"/>
+          <PORTMAPS>
+            <PORTMAP LOGICAL="TDATA" PHYSICAL="ch3_in_TDATA"/>
+            <PORTMAP LOGICAL="TDEST" PHYSICAL="ch3_in_TDEST"/>
+            <PORTMAP LOGICAL="TID" PHYSICAL="ch3_in_TID"/>
+            <PORTMAP LOGICAL="TKEEP" PHYSICAL="ch3_in_TKEEP"/>
+            <PORTMAP LOGICAL="TLAST" PHYSICAL="ch3_in_TLAST"/>
+            <PORTMAP LOGICAL="TREADY" PHYSICAL="ch3_in_TREADY"/>
+            <PORTMAP LOGICAL="TSTRB" PHYSICAL="ch3_in_TSTRB"/>
+            <PORTMAP LOGICAL="TUSER" PHYSICAL="ch3_in_TUSER"/>
+            <PORTMAP LOGICAL="TVALID" PHYSICAL="ch3_in_TVALID"/>
+          </PORTMAPS>
+        </BUSINTERFACE>
+        <BUSINTERFACE BUSNAME="yuv2rgb_0_ch1_out" NAME="ch1_out" TYPE="INITIATOR" VLNV="xilinx.com:interface:axis:1.0">
+          <PARAMETER NAME="CLK_DOMAIN" VALUE="design_1_processing_system7_0_0_FCLK_CLK0"/>
+          <PARAMETER NAME="FREQ_HZ" VALUE="100000000"/>
+          <PARAMETER NAME="HAS_TKEEP" VALUE="1"/>
+          <PARAMETER NAME="HAS_TLAST" VALUE="1"/>
+          <PARAMETER NAME="HAS_TREADY" VALUE="1"/>
+          <PARAMETER NAME="HAS_TSTRB" VALUE="1"/>
+          <PARAMETER NAME="INSERT_VIP" VALUE="0"/>
+          <PARAMETER NAME="LAYERED_METADATA"/>
+          <PARAMETER NAME="PHASE" VALUE="0.0"/>
+          <PARAMETER NAME="TDATA_NUM_BYTES" VALUE="4"/>
+          <PARAMETER NAME="TDEST_WIDTH" VALUE="1"/>
+          <PARAMETER NAME="TID_WIDTH" VALUE="1"/>
+          <PARAMETER NAME="TUSER_WIDTH" VALUE="1"/>
           <PORTMAPS>
             <PORTMAP LOGICAL="TDATA" PHYSICAL="ch1_out_TDATA"/>
+            <PORTMAP LOGICAL="TKEEP" PHYSICAL="ch1_out_TKEEP"/>
+            <PORTMAP LOGICAL="TLAST" PHYSICAL="ch1_out_TLAST"/>
             <PORTMAP LOGICAL="TREADY" PHYSICAL="ch1_out_TREADY"/>
             <PORTMAP LOGICAL="TVALID" PHYSICAL="ch1_out_TVALID"/>
           </PORTMAPS>
@@ -18542,19 +19238,21 @@
         <BUSINTERFACE BUSNAME="yuv2rgb_0_ch2_out" NAME="ch2_out" TYPE="INITIATOR" VLNV="xilinx.com:interface:axis:1.0">
           <PARAMETER NAME="CLK_DOMAIN" VALUE="design_1_processing_system7_0_0_FCLK_CLK0"/>
           <PARAMETER NAME="FREQ_HZ" VALUE="100000000"/>
-          <PARAMETER NAME="HAS_TKEEP" VALUE="0"/>
-          <PARAMETER NAME="HAS_TLAST" VALUE="0"/>
+          <PARAMETER NAME="HAS_TKEEP" VALUE="1"/>
+          <PARAMETER NAME="HAS_TLAST" VALUE="1"/>
           <PARAMETER NAME="HAS_TREADY" VALUE="1"/>
-          <PARAMETER NAME="HAS_TSTRB" VALUE="0"/>
+          <PARAMETER NAME="HAS_TSTRB" VALUE="1"/>
           <PARAMETER NAME="INSERT_VIP" VALUE="0"/>
           <PARAMETER NAME="LAYERED_METADATA"/>
           <PARAMETER NAME="PHASE" VALUE="0.0"/>
           <PARAMETER NAME="TDATA_NUM_BYTES" VALUE="4"/>
-          <PARAMETER NAME="TDEST_WIDTH" VALUE="0"/>
-          <PARAMETER NAME="TID_WIDTH" VALUE="0"/>
-          <PARAMETER NAME="TUSER_WIDTH" VALUE="0"/>
+          <PARAMETER NAME="TDEST_WIDTH" VALUE="1"/>
+          <PARAMETER NAME="TID_WIDTH" VALUE="1"/>
+          <PARAMETER NAME="TUSER_WIDTH" VALUE="1"/>
           <PORTMAPS>
             <PORTMAP LOGICAL="TDATA" PHYSICAL="ch2_out_TDATA"/>
+            <PORTMAP LOGICAL="TKEEP" PHYSICAL="ch2_out_TKEEP"/>
+            <PORTMAP LOGICAL="TLAST" PHYSICAL="ch2_out_TLAST"/>
             <PORTMAP LOGICAL="TREADY" PHYSICAL="ch2_out_TREADY"/>
             <PORTMAP LOGICAL="TVALID" PHYSICAL="ch2_out_TVALID"/>
           </PORTMAPS>
@@ -18562,81 +19260,23 @@
         <BUSINTERFACE BUSNAME="yuv2rgb_0_ch3_out" NAME="ch3_out" TYPE="INITIATOR" VLNV="xilinx.com:interface:axis:1.0">
           <PARAMETER NAME="CLK_DOMAIN" VALUE="design_1_processing_system7_0_0_FCLK_CLK0"/>
           <PARAMETER NAME="FREQ_HZ" VALUE="100000000"/>
-          <PARAMETER NAME="HAS_TKEEP" VALUE="0"/>
-          <PARAMETER NAME="HAS_TLAST" VALUE="0"/>
+          <PARAMETER NAME="HAS_TKEEP" VALUE="1"/>
+          <PARAMETER NAME="HAS_TLAST" VALUE="1"/>
           <PARAMETER NAME="HAS_TREADY" VALUE="1"/>
-          <PARAMETER NAME="HAS_TSTRB" VALUE="0"/>
+          <PARAMETER NAME="HAS_TSTRB" VALUE="1"/>
           <PARAMETER NAME="INSERT_VIP" VALUE="0"/>
           <PARAMETER NAME="LAYERED_METADATA"/>
           <PARAMETER NAME="PHASE" VALUE="0.0"/>
           <PARAMETER NAME="TDATA_NUM_BYTES" VALUE="4"/>
-          <PARAMETER NAME="TDEST_WIDTH" VALUE="0"/>
-          <PARAMETER NAME="TID_WIDTH" VALUE="0"/>
-          <PARAMETER NAME="TUSER_WIDTH" VALUE="0"/>
+          <PARAMETER NAME="TDEST_WIDTH" VALUE="1"/>
+          <PARAMETER NAME="TID_WIDTH" VALUE="1"/>
+          <PARAMETER NAME="TUSER_WIDTH" VALUE="1"/>
           <PORTMAPS>
             <PORTMAP LOGICAL="TDATA" PHYSICAL="ch3_out_TDATA"/>
+            <PORTMAP LOGICAL="TKEEP" PHYSICAL="ch3_out_TKEEP"/>
+            <PORTMAP LOGICAL="TLAST" PHYSICAL="ch3_out_TLAST"/>
             <PORTMAP LOGICAL="TREADY" PHYSICAL="ch3_out_TREADY"/>
             <PORTMAP LOGICAL="TVALID" PHYSICAL="ch3_out_TVALID"/>
-          </PORTMAPS>
-        </BUSINTERFACE>
-        <BUSINTERFACE BUSNAME="scale_y_0_B" NAME="ch1_in" TYPE="TARGET" VLNV="xilinx.com:interface:axis:1.0">
-          <PARAMETER NAME="CLK_DOMAIN" VALUE="design_1_processing_system7_0_0_FCLK_CLK0"/>
-          <PARAMETER NAME="FREQ_HZ" VALUE="100000000"/>
-          <PARAMETER NAME="HAS_TKEEP" VALUE="0"/>
-          <PARAMETER NAME="HAS_TLAST" VALUE="0"/>
-          <PARAMETER NAME="HAS_TREADY" VALUE="1"/>
-          <PARAMETER NAME="HAS_TSTRB" VALUE="0"/>
-          <PARAMETER NAME="INSERT_VIP" VALUE="0"/>
-          <PARAMETER NAME="LAYERED_METADATA"/>
-          <PARAMETER NAME="PHASE" VALUE="0.0"/>
-          <PARAMETER NAME="TDATA_NUM_BYTES" VALUE="4"/>
-          <PARAMETER NAME="TDEST_WIDTH" VALUE="0"/>
-          <PARAMETER NAME="TID_WIDTH" VALUE="0"/>
-          <PARAMETER NAME="TUSER_WIDTH" VALUE="0"/>
-          <PORTMAPS>
-            <PORTMAP LOGICAL="TDATA" PHYSICAL="ch1_in_TDATA"/>
-            <PORTMAP LOGICAL="TREADY" PHYSICAL="ch1_in_TREADY"/>
-            <PORTMAP LOGICAL="TVALID" PHYSICAL="ch1_in_TVALID"/>
-          </PORTMAPS>
-        </BUSINTERFACE>
-        <BUSINTERFACE BUSNAME="scale_y_1_B" NAME="ch2_in" TYPE="TARGET" VLNV="xilinx.com:interface:axis:1.0">
-          <PARAMETER NAME="CLK_DOMAIN" VALUE="design_1_processing_system7_0_0_FCLK_CLK0"/>
-          <PARAMETER NAME="FREQ_HZ" VALUE="100000000"/>
-          <PARAMETER NAME="HAS_TKEEP" VALUE="0"/>
-          <PARAMETER NAME="HAS_TLAST" VALUE="0"/>
-          <PARAMETER NAME="HAS_TREADY" VALUE="1"/>
-          <PARAMETER NAME="HAS_TSTRB" VALUE="0"/>
-          <PARAMETER NAME="INSERT_VIP" VALUE="0"/>
-          <PARAMETER NAME="LAYERED_METADATA"/>
-          <PARAMETER NAME="PHASE" VALUE="0.0"/>
-          <PARAMETER NAME="TDATA_NUM_BYTES" VALUE="4"/>
-          <PARAMETER NAME="TDEST_WIDTH" VALUE="0"/>
-          <PARAMETER NAME="TID_WIDTH" VALUE="0"/>
-          <PARAMETER NAME="TUSER_WIDTH" VALUE="0"/>
-          <PORTMAPS>
-            <PORTMAP LOGICAL="TDATA" PHYSICAL="ch2_in_TDATA"/>
-            <PORTMAP LOGICAL="TREADY" PHYSICAL="ch2_in_TREADY"/>
-            <PORTMAP LOGICAL="TVALID" PHYSICAL="ch2_in_TVALID"/>
-          </PORTMAPS>
-        </BUSINTERFACE>
-        <BUSINTERFACE BUSNAME="scale_y_2_B" NAME="ch3_in" TYPE="TARGET" VLNV="xilinx.com:interface:axis:1.0">
-          <PARAMETER NAME="CLK_DOMAIN" VALUE="design_1_processing_system7_0_0_FCLK_CLK0"/>
-          <PARAMETER NAME="FREQ_HZ" VALUE="100000000"/>
-          <PARAMETER NAME="HAS_TKEEP" VALUE="0"/>
-          <PARAMETER NAME="HAS_TLAST" VALUE="0"/>
-          <PARAMETER NAME="HAS_TREADY" VALUE="1"/>
-          <PARAMETER NAME="HAS_TSTRB" VALUE="0"/>
-          <PARAMETER NAME="INSERT_VIP" VALUE="0"/>
-          <PARAMETER NAME="LAYERED_METADATA"/>
-          <PARAMETER NAME="PHASE" VALUE="0.0"/>
-          <PARAMETER NAME="TDATA_NUM_BYTES" VALUE="4"/>
-          <PARAMETER NAME="TDEST_WIDTH" VALUE="0"/>
-          <PARAMETER NAME="TID_WIDTH" VALUE="0"/>
-          <PARAMETER NAME="TUSER_WIDTH" VALUE="0"/>
-          <PORTMAPS>
-            <PORTMAP LOGICAL="TDATA" PHYSICAL="ch3_in_TDATA"/>
-            <PORTMAP LOGICAL="TREADY" PHYSICAL="ch3_in_TREADY"/>
-            <PORTMAP LOGICAL="TVALID" PHYSICAL="ch3_in_TVALID"/>
           </PORTMAPS>
         </BUSINTERFACE>
       </BUSINTERFACES>
