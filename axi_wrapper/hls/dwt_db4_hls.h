@@ -17,11 +17,13 @@
 #ifndef __ARRAY_OF_STREAMS_EXAMPLE__
 #define __ARRAY_OF_STREAMS_EXAMPLE__
 
+#include "ap_axi_sdata.h"
+#include "ap_int.h"
 #include "hls_stream.h"
 #include <iostream>
 
 #define DWT_LEVELS 1
 
-extern int dwt_db4_hls(hls::stream<float> &s_in,  hls::stream<float> &coeff_lo, hls::stream<float> coeff_hi[DWT_LEVELS], int size);
+extern int dwt_db4_hls(hls::stream<ap_axiu<32,1,1,1>> &s_in,  hls::stream<ap_axiu<32,1,1,1>> &coeff_lo, hls::stream<ap_axiu<32,1,1,1>> coeff_hi[DWT_LEVELS], int size);
 
 #endif

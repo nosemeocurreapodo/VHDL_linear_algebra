@@ -245,7 +245,7 @@ struct vec16
 	bool newdata;
 };
 
-int dwt_db4_hls(hls::stream<float> &s_in, hls::stream<float> &coeff_lo, hls::stream<float> coeff_hi[DWT_LEVELS], int size)
+int dwt_db4_hls(hls::stream<ap_axis<32,2,5,6>> &s_in, hls::stream<ap_axis<32,2,5,6>> &coeff_lo, hls::stream<ap_axis<32,2,5,6>> coeff_hi[DWT_LEVELS], int size)
 {
 #pragma HLS INTERFACE axis port = s_in
 #pragma HLS INTERFACE axis port = coeff_lo
@@ -350,11 +350,12 @@ main_while_loop:
 	{
 #pragma HLS LOOP_TRIPCOUNT min = 512 max = 512
 
-		float val = 0;
+		ap_axis<32,2,5,6> val;
+        val.data = 0.0;
 		// only read if we still have some data left to read
 		if (shift_reg[0].count < size)
 		{
-			val = s_in.read();
+			val.data = s_in.read();
 		}
 
 		shift_reg[0].shift_down(val);
