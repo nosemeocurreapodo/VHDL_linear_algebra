@@ -41,27 +41,25 @@ struct vec8
 
 	void reset()
 	{
-        vec8_reset_loop:
+	vec8_reset_loop:
 		for (int i = 0; i < 8; i++)
 		{
 #pragma HLS unroll
 			data[i] = 0;
 		}
 		count = 0;
-		newdata = false;
 	}
 
 	void shift_down(type val = 0)
 	{
-        vec8_shift_down_loop:
+	vec8_shift_down_loop:
 		for (int i = 7; i > 0; i--)
 		{
-            #pragma HLS unroll
+#pragma HLS unroll
 			data[i] = data[i - 1];
 		}
 		data[0] = val;
 		count++;
-		newdata = true;
 	}
 
 	void make_symmetric_down()
@@ -83,18 +81,16 @@ struct vec8
 	type dot(vec8<type> a)
 	{
 		type res = 0;
-        vec8_dot_loop:
+	vec8_dot_loop:
 		for (int i = 0; i < 8; i++)
 		{
 			res += data[i] * a.data[i];
 		}
-		newdata = false;
 		return res;
 	}
 
 	type data[8];
 	int count;
-	bool newdata;
 };
 
 template <typename type>
@@ -121,19 +117,18 @@ struct vec16
 
 	void reset()
 	{
-        vec16_reset_loop:
+	vec16_reset_loop:
 		for (int i = 0; i < 16; i++)
 		{
 #pragma HLS unroll
 			data[i] = 0;
 		}
 		count = 0;
-		newdata = false;
 	}
 
 	void shift_down(type val = 0)
 	{
-        vec16_shift_down_loop:
+	vec16_shift_down_loop:
 		for (int i = 15; i > 0; i--)
 		{
 #pragma HLS unroll
@@ -141,12 +136,11 @@ struct vec16
 		}
 		data[0] = val;
 		count++;
-		newdata = true;
 	}
 
 	void shift_up(type val = 0)
 	{
-        vec16_shift_up_loop:
+	vec16_shift_up_loop:
 		for (int i = 0; i < 15 - 1; ++i)
 		{
 #pragma HLS unroll
@@ -154,7 +148,6 @@ struct vec16
 		}
 		data[15] = val;
 		count++;
-		newdata = true;
 	}
 
 	void make_symmetric_down()
@@ -184,19 +177,18 @@ struct vec16
 	type dot(vec8<type> a, int start_index)
 	{
 		type res = 0;
-        vec16_dot_loop:
+	vec16_dot_loop:
 		for (int i = 0; i < 8; i++)
 		{
 			res += data[start_index + i] * a.data[i];
 		}
-		newdata = false;
 		return res;
 	}
 
 	type dot_v2(vec8<type> a, int start_index)
 	{
 		type mult[8];
-        vec16_dot_v2_mult_loop:
+	vec16_dot_v2_mult_loop:
 		for (int i = 0; i < 8; i++)
 		{
 #pragma HLS unroll
@@ -204,7 +196,7 @@ struct vec16
 		}
 
 		type sum1[4];
-        vec16_dot_v2_sum_loop:
+	vec16_dot_v2_sum_loop:
 		for (int i = 0; i < 4; i++)
 		{
 #pragma HLS unroll
@@ -213,7 +205,6 @@ struct vec16
 
 		type res = sum1[0] + sum1[1] + sum1[2] + sum1[3];
 
-		newdata = false;
 		return res;
 	}
 
@@ -232,20 +223,18 @@ struct vec16
 		type sum0 = mul0 + mul4;
 		type sum1 = mul1 + mul5;
 		type sum2 = mul2 + mul6;
-		type sum3 = mul3 + mul7;		
+		type sum3 = mul3 + mul7;
 
 		type res = sum0 + sum1 + sum2 + sum3;
 
-		newdata = false;
 		return res;
 	}
 
 	type data[16];
 	int count;
-	bool newdata;
 };
 
-int dwt_db4_hls(hls::stream<ap_axis<32,2,5,6>> &s_in, hls::stream<ap_axis<32,2,5,6>> &coeff_lo, hls::stream<ap_axis<32,2,5,6>> coeff_hi[DWT_LEVELS], int size)
+int dwt_db4_hls(hls::stream<packet> &s_in, hls::stream<packet> &coeff_lo, hls::stream<packet> &coeff_hi, int size)
 {
 #pragma HLS INTERFACE axis port = s_in
 #pragma HLS INTERFACE axis port = coeff_lo
@@ -271,17 +260,7 @@ int dwt_db4_hls(hls::stream<ap_axis<32,2,5,6>> &s_in, hls::stream<ap_axis<32,2,5
 						  3.084138183556076362721936253495905017031482172003403341821219e-02,
 						  -3.288301166688519973540751354924438866454194113754971259727278e-02,
 						  -1.059740178506903210488320852402722918109996490637641983484974e-02);
-
-	vec8<float> hi_filter_array[DWT_LEVELS];
-#pragma HLS ARRAY_PARTITION variable = hi_filter_array complete dim = 0
-//#pragma HLS ARRAY_PARTITION variable = hi_filter_array[0].data complete dim = 0
-//#pragma HLS ARRAY_PARTITION variable = hi_filter_array[1].data complete dim = 0
-//#pragma HLS ARRAY_PARTITION variable = hi_filter_array[2].data complete dim = 0
-//#pragma HLS ARRAY_PARTITION variable = hi_filter_array[3].data complete dim = 0
-//#pragma HLS ARRAY_PARTITION variable = hi_filter_array[4].data complete dim = 0
-//#pragma HLS ARRAY_PARTITION variable = hi_filter_array[5].data complete dim = 0
-	for (int lvl = 0; lvl < DWT_LEVELS; lvl++)
-		hi_filter_array[lvl] = hi_filter;
+#pragma HLS ARRAY_PARTITION variable = hi_filter complete dim = 0
 
 	vec8<float> lo_filter(-1.059740178506903210488320852402722918109996490637641983484974e-02,
 						  3.288301166688519973540751354924438866454194113754971259727278e-02,
@@ -291,140 +270,93 @@ int dwt_db4_hls(hls::stream<ap_axis<32,2,5,6>> &s_in, hls::stream<ap_axis<32,2,5
 						  6.308807679298589078817163383006152202032229226771951174057473e-01,
 						  7.148465705529156470899219552739926037076084010993081758450110e-01,
 						  2.303778133088965008632911830440708500016152482483092977910968e-01);
-
-	vec8<float> lo_filter_array[DWT_LEVELS];
-#pragma HLS ARRAY_PARTITION variable = lo_filter_array complete dim = 0
-//#pragma HLS ARRAY_PARTITION variable = lo_filter_array[0].data complete dim = 0
-//#pragma HLS ARRAY_PARTITION variable = lo_filter_array[1].data complete dim = 0
-//#pragma HLS ARRAY_PARTITION variable = lo_filter_array[2].data complete dim = 0
-//#pragma HLS ARRAY_PARTITION variable = lo_filter_array[3].data complete dim = 0
-//#pragma HLS ARRAY_PARTITION variable = lo_filter_array[4].data complete dim = 0
-//#pragma HLS ARRAY_PARTITION variable = lo_filter_array[5].data complete dim = 0
-	for (int lvl = 0; lvl < DWT_LEVELS; lvl++)
-		lo_filter_array[lvl] = lo_filter;
+#pragma HLS ARRAY_PARTITION variable = lo_filter complete dim = 0
 
 	// vec8<float> hi_filter(-0.230377813, 0.714846571, -0.630880768, -0.027983769,
 	//					  0.187034812, 0.030841382, -0.032883012, -0.010597402);
 	// vec8<float> lo_filter(-0.010597402, 0.032883012, 0.030841382, -0.187034812,
 	//					  -0.027983769, 0.630880768, 0.714846571, 0.230377813);
 
-	vec16<float> shift_reg[DWT_LEVELS + 1];
+	vec16<float> shift_reg;
 #pragma HLS ARRAY_PARTITION variable = shift_reg complete dim = 0
-//#pragma HLS ARRAY_PARTITION variable = shift_reg[0].data complete dim = 0
-//#pragma HLS ARRAY_PARTITION variable = shift_reg[1].data complete dim = 0
-//#pragma HLS ARRAY_PARTITION variable = shift_reg[2].data complete dim = 0
-//#pragma HLS ARRAY_PARTITION variable = shift_reg[3].data complete dim = 0
-//#pragma HLS ARRAY_PARTITION variable = shift_reg[4].data complete dim = 0
-//#pragma HLS ARRAY_PARTITION variable = shift_reg[5].data complete dim = 0
-//#pragma HLS ARRAY_PARTITION variable = shift_reg[6].data complete dim = 0
-	// #pragma HLS ARRAY_PARTITION variable=shift_reg[7].data complete dim=0
+	// #pragma HLS ARRAY_PARTITION variable = shift_reg[0].data complete dim = 0
+	// #pragma HLS ARRAY_PARTITION variable = shift_reg[1].data complete dim = 0
+	// #pragma HLS ARRAY_PARTITION variable = shift_reg[2].data complete dim = 0
+	// #pragma HLS ARRAY_PARTITION variable = shift_reg[3].data complete dim = 0
+	// #pragma HLS ARRAY_PARTITION variable = shift_reg[4].data complete dim = 0
+	// #pragma HLS ARRAY_PARTITION variable = shift_reg[5].data complete dim = 0
+	// #pragma HLS ARRAY_PARTITION variable = shift_reg[6].data complete dim = 0
+	//  #pragma HLS ARRAY_PARTITION variable=shift_reg[7].data complete dim=0
 
-	bool downsampler[DWT_LEVELS];
-	// #pragma HLS ARRAY_PARTITION variable=downsampler complete dim=0
-    reset_downsampler_loop:
-	for (int i = 0; i < DWT_LEVELS; i++)
-		downsampler[i] = true;
+	bool downsampler = true;
+	int input_data_size = size;
+	int output_data_size = (input_data_size + 8 - 1)/2;
 
-	int dwt_levels_size[DWT_LEVELS];
-	// #pragma HLS ARRAY_PARTITION variable=dwt_levels_size complete dim=0
-	dwt_levels_size[0] = size;
-    set_dwt_levels_size_loop:
-	for (int i = 1; i < DWT_LEVELS; i++)
-	{
-		// dwt_levels_size[i] = dwt_levels_size[i - 1] / 2;
-		dwt_levels_size[i] = ((dwt_levels_size[i - 1] + 8 - 1) / 2);
-	}
+    int out_data_counter = 0;
 
-	bool lvls_done[DWT_LEVELS];
-#pragma HLS ARRAY_PARTITION variable = lvls_done complete dim = 0
-    reset_lvls_done_loop:
-	for (int i = 0; i < DWT_LEVELS; i++)
-	{
-		lvls_done[i] = false;
-	}
-	// lvl_done[DWT_LEVELS - 1] = true;
+	packet in_packet;
 
-	bool all_done = false;
 main_while_loop:
-	while (!all_done)
+	while (true)
 	{
 #pragma HLS LOOP_TRIPCOUNT min = 512 max = 512
 
-		ap_axis<32,2,5,6> val;
-        val.data = 0.0;
-		// only read if we still have some data left to read
-		if (shift_reg[0].count < size)
+		//  only read if we still have some data left to read
+		if (shift_reg.count < input_data_size)
 		{
-			val.data = s_in.read();
+			s_in.read(in_packet);
 		}
 
-		shift_reg[0].shift_down(val);
+        // interpret data as float
+        fpint idata;
+		idata.ival = in_packet.data;					
+
+		shift_reg.shift_down(idata.fval);
+
+		//not enough data read to do the convolution
+		if (shift_reg.count <= 7)
+			continue;
+
 		// to make symmetric at the beggining of stream
-		if (shift_reg[0].count == 8)
-			shift_reg[0].make_symmetric_up();
+		if (shift_reg.count == 8)
+			shift_reg.make_symmetric_up();
 		// to make symmetric at the end of stream
-		if (shift_reg[0].count > dwt_levels_size[0])
+		if (shift_reg.count > input_data_size)
 		{
-			int index = (shift_reg[0].count - dwt_levels_size[0]) * 2 - 1;
-			shift_reg[0].data[0] = shift_reg[0].data[index];
+			int index = (shift_reg.count - input_data_size) * 2 - 1;
+			shift_reg.data[0] = shift_reg.data[index];
 		}
 
-	for_lvl:
-		for (int lvl = 0; lvl < DWT_LEVELS; lvl++)
+		float hi_out = shift_reg.dot_v3(hi_filter, 6);
+		float lo_out = shift_reg.dot_v3(lo_filter, 6);
+
+		if (downsampler)
 		{
-#pragma HLS unroll
+			packet lo_packet;
+			packet hi_packet;
 
-			// if (lvl_done[lvl])
-			//	continue;
+			// interpret data as int
+			fpint lo_data;
+			fpint hi_data;
+			lo_data.fval = lo_out;	
+			hi_data.fval = hi_out;
 
-			bool lvl_done = false;
+			lo_packet.data = lo_data.ival;
+			hi_packet.data = hi_data.ival;
 
-			if (!shift_reg[lvl].newdata || shift_reg[lvl].count <= 7)
-				continue;
+			coeff_lo.write(lo_packet);
+			coeff_hi.write(hi_packet);
 
-			if (shift_reg[lvl].count > dwt_levels_size[lvl] + 12 + lvl)
-			{
-				lvl_done = true;
-				// do_conv = false;
-			}
+            out_data_counter++;
 
-			float hi_out = shift_reg[lvl].dot_v3(hi_filter_array[lvl], 6);
-			float lo_out = shift_reg[lvl].dot_v3(lo_filter_array[lvl], 6);
-
-			if (downsampler[lvl])
-			{
-				// #pragma HLS inline recursive
-				shift_reg[lvl + 1].shift_down(lo_out);
-
-				// to make symmetric at the beggining of stream
-				if (shift_reg[lvl + 1].count == 8)
-					shift_reg[lvl + 1].make_symmetric_up();
-				else
-					// to make symmetric at the end of stream
-					if (shift_reg[lvl + 1].count > dwt_levels_size[lvl + 1])
-					{
-						int index = (shift_reg[lvl + 1].count - dwt_levels_size[lvl + 1]) * 2 - 1;
-						shift_reg[lvl + 1].data[0] = shift_reg[lvl + 1].data[index];
-					}
-
-				if (!lvl_done)
-				{
-					if (lvl == DWT_LEVELS - 1)
-						coeff_lo.write(lo_out);
-					coeff_hi[lvl].write(hi_out);
-				}
-			}
-			downsampler[lvl] = !downsampler[lvl];
-			lvls_done[lvl] = lvl_done;
+            //all data is out
+            //if (shift_reg.count > input_data_size + 12)
+            if(out_data_counter == output_data_size)
+            {
+                break;
+            }            
 		}
-
-		bool is_all_done = true;
-        is_all_done_loop:
-		for (int lvl = 0; lvl < DWT_LEVELS; lvl++)
-		{
-			is_all_done = is_all_done & lvls_done[lvl];
-		}
-		all_done = is_all_done;
+		downsampler = !downsampler;
 	}
 
 	return 1.0;

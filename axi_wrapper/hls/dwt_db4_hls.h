@@ -22,8 +22,15 @@
 #include "hls_stream.h"
 #include <iostream>
 
-#define DWT_LEVELS 1
+typedef ap_axis<32, 2, 5, 6> packet;
 
-extern int dwt_db4_hls(hls::stream<ap_axiu<32,1,1,1>> &s_in,  hls::stream<ap_axiu<32,1,1,1>> &coeff_lo, hls::stream<ap_axiu<32,1,1,1>> coeff_hi[DWT_LEVELS], int size);
+// use a union to "convert" between integer and floating-point
+union fpint
+{
+    int ival;   // integer alias
+    float fval; // floating-point alias
+};
+
+extern int dwt_db4_hls(hls::stream<packet> &s_in, hls::stream<packet> &coeff_lo, hls::stream<packet> &coeff_hi, int size);
 
 #endif
