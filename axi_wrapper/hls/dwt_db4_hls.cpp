@@ -286,7 +286,7 @@ int dwt_db4_hls(hls::stream<packet> &s_in, hls::stream<packet> &coeff_lo, hls::s
 	// #pragma HLS ARRAY_PARTITION variable = shift_reg[4].data complete dim = 0
 	// #pragma HLS ARRAY_PARTITION variable = shift_reg[5].data complete dim = 0
 	// #pragma HLS ARRAY_PARTITION variable = shift_reg[6].data complete dim = 0
-	//  #pragma HLS ARRAY_PARTITION variable=shift_reg[7].data complete dim=0
+	// #pragma HLS ARRAY_PARTITION variable=shift_reg[7].data complete dim=0
 
 	bool downsampler = true;
 	int input_data_size = size;
@@ -296,8 +296,9 @@ int dwt_db4_hls(hls::stream<packet> &s_in, hls::stream<packet> &coeff_lo, hls::s
 
 	packet in_packet;
 
+	bool running = true;
 main_while_loop:
-	while (true)
+	while (running)
 	{
 #pragma HLS LOOP_TRIPCOUNT min = 512 max = 512
 
@@ -306,12 +307,8 @@ main_while_loop:
 		{
 			s_in.read(in_packet);
 		}
-
-        // interpret data as float
-        fpint idata;
-		idata.ival = in_packet.data;					
-
-		shift_reg.shift_down(idata.fval);
+		
+		shift_reg.shift_down(in_packet.data);
 
 		//not enough data read to do the convolution
 		if (shift_reg.count <= 7)
@@ -335,26 +332,26 @@ main_while_loop:
 			packet lo_packet;
 			packet hi_packet;
 
-			// interpret data as int
-			fpint lo_data;
-			fpint hi_data;
-			lo_data.fval = lo_out;	
-			hi_data.fval = hi_out;
+			lo_packet.data = lo_out;
+			hi_packet.data = hi_out;
+			lo_packet.last = 0;
+			hi_packet.last = 0;
+			lo_packet.keep = -1;
+			hi_packet.keep = -1;
 
-			lo_packet.data = lo_data.ival;
-			hi_packet.data = hi_data.ival;
+            //all data is out
+            //if (shift_reg.count > input_data_size + 12)
+            if(out_data_counter == output_data_size-1)
+            {
+                running = false;
+				lo_packet.last = 1;
+				hi_packet.last = 1;
+            }  
 
 			coeff_lo.write(lo_packet);
 			coeff_hi.write(hi_packet);
 
             out_data_counter++;
-
-            //all data is out
-            //if (shift_reg.count > input_data_size + 12)
-            if(out_data_counter == output_data_size)
-            {
-                break;
-            }            
 		}
 		downsampler = !downsampler;
 	}

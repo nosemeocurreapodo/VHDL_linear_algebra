@@ -22,14 +22,9 @@
 #include "hls_stream.h"
 #include <iostream>
 
-typedef ap_axis<32, 2, 5, 6> packet;
-
-// use a union to "convert" between integer and floating-point
-union fpint
-{
-    int ival;   // integer alias
-    float fval; // floating-point alias
-};
+//typedef ap_axis<32, 2, 5, 6> packet;
+//typedef hls::axis<float, 0, 0, 0> packet;
+typedef hls::axis_data<float, AXIS_ENABLE_KEEP|AXIS_ENABLE_LAST> packet;
 
 extern int dwt_db4_hls(hls::stream<packet> &s_in, hls::stream<packet> &coeff_lo, hls::stream<packet> &coeff_hi, int size);
 

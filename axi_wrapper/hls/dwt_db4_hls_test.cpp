@@ -87,12 +87,9 @@ int main()
 	for (int i = 0; i < size; i++)
 	{
 		packet in_packet;
-
-		// interpret data as float
-		fpint in_data;
-		in_data.fval = float(i);
-		in_packet.data = in_data.ival;
+		in_packet.data = float(i);
 		in_packet.last = 0;
+        in_packet.keep = -1;
 		if (i == size - 1)
 			in_packet.last = 1;
 		s_in.write(in_packet);
@@ -110,13 +107,9 @@ int main()
 		packet lo_packet;
 		coeff_lo3.read(lo_packet);
 
-		// interpret data as float
-		fpint lo_data;
-		lo_data.ival = lo_packet.data;
+        std::cout << "gt " << approx_coeff_gt[j] << " est " << lo_packet.data << std::endl;
 
-        std::cout << "gt " << approx_coeff_gt[j] << " est " << lo_data.fval << std::endl;
-
-		approx_coeff_mse += std::pow(approx_coeff_gt[j] - lo_data.fval, 2.0);
+		approx_coeff_mse += std::pow(approx_coeff_gt[j] - lo_packet.data, 2.0);
 	}
 	approx_coeff_mse /= dwt_data_size3;
 
@@ -129,13 +122,9 @@ int main()
 		packet hi_packet;
 		coeff_hi1.read(hi_packet);
 
-		// interpret data as float
-		fpint hi_data;
-		hi_data.ival = hi_packet.data;
+        std::cout << "gt " << detail_coeff1_gt[j] << " est " << hi_packet.data << std::endl;
 
-        std::cout << "gt " << detail_coeff1_gt[j] << " est " << hi_data.fval << std::endl;
-
-		detail_coeff1_mse += std::pow(detail_coeff1_gt[j] - hi_data.fval, 2.0);
+		detail_coeff1_mse += std::pow(detail_coeff1_gt[j] - hi_packet.data, 2.0);
 		// std::cout << hi_data.fval << std::endl;
 	}
 
@@ -149,13 +138,9 @@ int main()
 		packet hi_packet;
 		coeff_hi2.read(hi_packet);
 
-		// interpret data as float
-		fpint hi_data;
-		hi_data.ival = hi_packet.data;
+        std::cout << "gt " << detail_coeff2_gt[j] << " est " << hi_packet.data << std::endl;
 
-        std::cout << "gt " << detail_coeff2_gt[j] << " est " << hi_data.fval << std::endl;
-
-		detail_coeff2_mse += std::pow(detail_coeff2_gt[j] - hi_data.fval, 2.0);
+		detail_coeff2_mse += std::pow(detail_coeff2_gt[j] - hi_packet.data, 2.0);
 		// std::cout << hi_data.fval << std::endl;
 	}
 
@@ -169,13 +154,9 @@ int main()
 		packet hi_packet;
 		coeff_hi3.read(hi_packet);
 
-		// interpret data as float
-		fpint hi_data;
-		hi_data.ival = hi_packet.data;
+        std::cout << "gt " << detail_coeff3_gt[j] << " est " << hi_packet.data << std::endl;
 
-        std::cout << "gt " << detail_coeff3_gt[j] << " est " << hi_data.fval << std::endl;
-
-		detail_coeff2_mse += std::pow(detail_coeff3_gt[j] - hi_data.fval, 2.0);
+		detail_coeff2_mse += std::pow(detail_coeff3_gt[j] - hi_packet.data, 2.0);
 		// std::cout << hi_data.fval << std::endl;
 	}
 
