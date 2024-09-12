@@ -225,7 +225,10 @@ struct vec16
 		type sum2 = mul2 + mul6;
 		type sum3 = mul3 + mul7;
 
-		type res = sum0 + sum1 + sum2 + sum3;
+		type sum4 = sum0 + sum1;
+		type sum5 = sum2 + sum3;
+
+		type res = sum4 + sum5;
 
 		return res;
 	}
