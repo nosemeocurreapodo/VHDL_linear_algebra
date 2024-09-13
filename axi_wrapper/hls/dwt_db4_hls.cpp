@@ -17,6 +17,7 @@
 
 #include "dwt_db4_hls.h"
 
+
 template <typename type>
 struct vec8
 {
@@ -180,6 +181,7 @@ struct vec16
 	vec16_dot_loop:
 		for (int i = 0; i < 8; i++)
 		{
+#pragma HLS UNROLL off
 			res += data[start_index + i] * a.data[i];
 		}
 		return res;
@@ -237,12 +239,13 @@ struct vec16
 	int count;
 };
 
-int dwt_db4_hls(hls::stream<packet> &s_in, hls::stream<packet> &coeff_lo, hls::stream<packet> &coeff_hi, int size)
+int dwt_db4_hls(hls::stream<packet> &s_in, hls::stream<packet> &coeff_lo, hls::stream<packet> &coeff_hi, int size, int &debug)
 {
 #pragma HLS INTERFACE axis port = s_in
 #pragma HLS INTERFACE axis port = coeff_lo
 #pragma HLS INTERFACE axis port = coeff_hi
 #pragma HLS INTERFACE s_axilite port = size
+#pragma HLS INTERFACE s_axilite port = debug
 #pragma HLS INTERFACE s_axilite port = return
 
 	// from what I can read in the pywt implementation
@@ -255,7 +258,7 @@ int dwt_db4_hls(hls::stream<packet> &s_in, hls::stream<packet> &coeff_lo, hls::s
 	//  3.288301166688519973540751354924438866454194113754971259727278e-02,
 	//-1.059740178506903210488320852402722918109996490637641983484974e-02
 
-	vec8<float> hi_filter(-2.303778133088965008632911830440708500016152482483092977910968e-01,
+	vec8<data_type> hi_filter(-2.303778133088965008632911830440708500016152482483092977910968e-01,
 						  7.148465705529156470899219552739926037076084010993081758450110e-01,
 						  -6.308807679298589078817163383006152202032229226771951174057473e-01,
 						  -2.798376941685985421141374718007538541198732022449175284003358e-02,
@@ -263,9 +266,9 @@ int dwt_db4_hls(hls::stream<packet> &s_in, hls::stream<packet> &coeff_lo, hls::s
 						  3.084138183556076362721936253495905017031482172003403341821219e-02,
 						  -3.288301166688519973540751354924438866454194113754971259727278e-02,
 						  -1.059740178506903210488320852402722918109996490637641983484974e-02);
-#pragma HLS ARRAY_PARTITION variable = hi_filter complete dim = 0
+//#pragma HLS ARRAY_PARTITION variable = hi_filter complete dim = 0
 
-	vec8<float> lo_filter(-1.059740178506903210488320852402722918109996490637641983484974e-02,
+	vec8<data_type> lo_filter(-1.059740178506903210488320852402722918109996490637641983484974e-02,
 						  3.288301166688519973540751354924438866454194113754971259727278e-02,
 						  3.084138183556076362721936253495905017031482172003403341821219e-02,
 						  -1.870348117190930840795706727890814195845441743745800912057770e-01,
@@ -273,15 +276,15 @@ int dwt_db4_hls(hls::stream<packet> &s_in, hls::stream<packet> &coeff_lo, hls::s
 						  6.308807679298589078817163383006152202032229226771951174057473e-01,
 						  7.148465705529156470899219552739926037076084010993081758450110e-01,
 						  2.303778133088965008632911830440708500016152482483092977910968e-01);
-#pragma HLS ARRAY_PARTITION variable = lo_filter complete dim = 0
+//#pragma HLS ARRAY_PARTITION variable = lo_filter complete dim = 0
 
 	// vec8<float> hi_filter(-0.230377813, 0.714846571, -0.630880768, -0.027983769,
 	//					  0.187034812, 0.030841382, -0.032883012, -0.010597402);
 	// vec8<float> lo_filter(-0.010597402, 0.032883012, 0.030841382, -0.187034812,
 	//					  -0.027983769, 0.630880768, 0.714846571, 0.230377813);
 
-	vec16<float> shift_reg;
-#pragma HLS ARRAY_PARTITION variable = shift_reg complete dim = 0
+	vec16<data_type> shift_reg;
+//#pragma HLS ARRAY_PARTITION variable = shift_reg complete dim = 0
 	// #pragma HLS ARRAY_PARTITION variable = shift_reg[0].data complete dim = 0
 	// #pragma HLS ARRAY_PARTITION variable = shift_reg[1].data complete dim = 0
 	// #pragma HLS ARRAY_PARTITION variable = shift_reg[2].data complete dim = 0
@@ -290,6 +293,8 @@ int dwt_db4_hls(hls::stream<packet> &s_in, hls::stream<packet> &coeff_lo, hls::s
 	// #pragma HLS ARRAY_PARTITION variable = shift_reg[5].data complete dim = 0
 	// #pragma HLS ARRAY_PARTITION variable = shift_reg[6].data complete dim = 0
 	// #pragma HLS ARRAY_PARTITION variable=shift_reg[7].data complete dim=0
+
+    static int debug_register = -1;
 
 	bool downsampler = true;
 	int input_data_size = size;
@@ -303,6 +308,7 @@ int dwt_db4_hls(hls::stream<packet> &s_in, hls::stream<packet> &coeff_lo, hls::s
 main_while_loop:
 	while (running)
 	{
+#pragma HLS PIPELINE off
 #pragma HLS LOOP_TRIPCOUNT min = 512 max = 512
 
 		//  only read if we still have some data left to read
@@ -311,7 +317,13 @@ main_while_loop:
 			s_in.read(in_packet);
 		}
 		
-		shift_reg.shift_down(in_packet.data);
+        //fpint idata;
+		//idata.ival = in_packet.data;	
+        //data_type ival = idata.fval;
+
+        data_type in_data = in_packet.data;    
+
+		shift_reg.shift_down(in_data);
 
 		//not enough data read to do the convolution
 		if (shift_reg.count <= 7)
@@ -327,37 +339,58 @@ main_while_loop:
 			shift_reg.data[0] = shift_reg.data[index];
 		}
 
-		float hi_out = shift_reg.dot_v3(hi_filter, 6);
-		float lo_out = shift_reg.dot_v3(lo_filter, 6);
+		data_type hi_out = shift_reg.dot(hi_filter, 6);
+		data_type lo_out = shift_reg.dot(lo_filter, 6);
 
 		if (downsampler)
 		{
-			packet lo_packet;
-			packet hi_packet;
+			packet lo_packet;// = in_packet;
+			packet hi_packet;// = in_packet;
 
-			lo_packet.data = lo_out;
-			hi_packet.data = hi_out;
-			lo_packet.last = 0;
-			hi_packet.last = 0;
+            //fpint hi_data;
+		    //hi_data.fval = hi_out;	
+            //data_type hi_data = hi_data.ival;
+
+            data_type hi_data = hi_out;    
+
+            //fpint lo_data;
+		    //lo_data.fval = lo_out;
+
+            data_type lo_data = lo_out;    
+
+			lo_packet.data = lo_data;
+			hi_packet.data = hi_data;
+			lo_packet.last = false;
+			hi_packet.last = false;
 			lo_packet.keep = -1;
 			hi_packet.keep = -1;
+            lo_packet.strb = -1;
+            hi_packet.strb = -1;
+            lo_packet.user = in_packet.user;
+            hi_packet.user = in_packet.user;
+            lo_packet.id   = in_packet.id;
+            hi_packet.id   = in_packet.id;
+            lo_packet.dest = in_packet.dest;
+            hi_packet.dest = in_packet.dest;
 
             //all data is out
             //if (shift_reg.count > input_data_size + 12)
             if(out_data_counter == output_data_size-1)
             {
                 running = false;
-				lo_packet.last = 1;
-				hi_packet.last = 1;
+				lo_packet.last = true;
+				hi_packet.last = true;
             }  
 
 			coeff_lo.write(lo_packet);
 			coeff_hi.write(hi_packet);
 
             out_data_counter++;
+            debug_register = out_data_counter;
 		}
 		downsampler = !downsampler;
 	}
 
+    debug = debug_register;
 	return 1.0;
 }
