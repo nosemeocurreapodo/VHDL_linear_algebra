@@ -19,13 +19,18 @@
 
 void square_sum_mean_std(hls::stream<packet> &data_in, data_type &square_sum, data_type &mean, data_type &std, data_type &entropy)
 {
-	data_type old_mean;
-	data_type old_std;
+//#pragma HLS INLINE off
+	data_type old_mean = 0.0;
+	data_type old_std = 0.0;
 	int n = 0;
+	packet p;
 
+ssms_loop:
 	while (true)
 	{
-		packet p;
+#pragma HLS LOOP_TRIPCOUNT max=512 avg=512 min=512
+//#pragma HLS PIPELINE off
+
 		data_in.read(p);
 		data_type data = p.data;
 		n++;
@@ -81,6 +86,8 @@ int reducer(hls::stream<packet> &approx_coeff,
 #pragma HLS INTERFACE s_axilite port = D_std
 #pragma HLS INTERFACE s_axilite port = A_std
 #pragma HLS INTERFACE s_axilite port = return
+
+#pragma HLS ALLOCATION function instances=square_sum_mean_std limit=1
 
 	data_type approx_square_sum = 0.0;
 	data_type approx_mean = 0.0;
