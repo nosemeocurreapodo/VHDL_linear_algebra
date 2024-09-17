@@ -22,7 +22,8 @@
 #include "hls_stream.h"
 
 
-typedef ap_fixed<32, 20, AP_RND> data_type;
+typedef ap_fixed<32, 16, AP_RND> data_type;
+//typedef float data_type;
 
 //typedef int data_type;
 

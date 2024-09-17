@@ -181,7 +181,7 @@ struct vec16
 	vec16_dot_loop:
 		for (int i = 0; i < 8; i++)
 		{
-#pragma HLS UNROLL off
+//#pragma HLS UNROLL off
 			res += data[start_index + i] * a.data[i];
 		}
 		return res;
@@ -193,7 +193,7 @@ struct vec16
 	vec16_dot_v2_mult_loop:
 		for (int i = 0; i < 8; i++)
 		{
-#pragma HLS unroll
+//#pragma HLS unroll
 			mult[i] = data[start_index + i] * a.data[i];
 		}
 
@@ -201,7 +201,7 @@ struct vec16
 	vec16_dot_v2_sum_loop:
 		for (int i = 0; i < 4; i++)
 		{
-#pragma HLS unroll
+//#pragma HLS unroll
 			sum1[i] = mult[i] + mult[i + 4];
 		}
 
@@ -212,7 +212,7 @@ struct vec16
 
 	type dot_v3(vec8<type> a, int start_index)
 	{
-#pragma HLS INLINE
+//#pragma HLS INLINE
 		type mul0 = data[start_index + 0] * a.data[0];
 		type mul1 = data[start_index + 1] * a.data[1];
 		type mul2 = data[start_index + 2] * a.data[2];
@@ -266,7 +266,7 @@ int dwt_db4_hls(hls::stream<packet> &s_in, hls::stream<packet> &coeff_lo, hls::s
 						  3.084138183556076362721936253495905017031482172003403341821219e-02,
 						  -3.288301166688519973540751354924438866454194113754971259727278e-02,
 						  -1.059740178506903210488320852402722918109996490637641983484974e-02);
-//#pragma HLS ARRAY_PARTITION variable = hi_filter complete dim = 0
+#pragma HLS ARRAY_PARTITION variable = hi_filter complete dim = 0
 
 	vec8<data_type> lo_filter(-1.059740178506903210488320852402722918109996490637641983484974e-02,
 						  3.288301166688519973540751354924438866454194113754971259727278e-02,
@@ -276,7 +276,7 @@ int dwt_db4_hls(hls::stream<packet> &s_in, hls::stream<packet> &coeff_lo, hls::s
 						  6.308807679298589078817163383006152202032229226771951174057473e-01,
 						  7.148465705529156470899219552739926037076084010993081758450110e-01,
 						  2.303778133088965008632911830440708500016152482483092977910968e-01);
-//#pragma HLS ARRAY_PARTITION variable = lo_filter complete dim = 0
+#pragma HLS ARRAY_PARTITION variable = lo_filter complete dim = 0
 
 	// vec8<float> hi_filter(-0.230377813, 0.714846571, -0.630880768, -0.027983769,
 	//					  0.187034812, 0.030841382, -0.032883012, -0.010597402);
@@ -284,7 +284,7 @@ int dwt_db4_hls(hls::stream<packet> &s_in, hls::stream<packet> &coeff_lo, hls::s
 	//					  -0.027983769, 0.630880768, 0.714846571, 0.230377813);
 
 	vec16<data_type> shift_reg;
-//#pragma HLS ARRAY_PARTITION variable = shift_reg complete dim = 0
+#pragma HLS ARRAY_PARTITION variable = shift_reg complete dim = 0
 	// #pragma HLS ARRAY_PARTITION variable = shift_reg[0].data complete dim = 0
 	// #pragma HLS ARRAY_PARTITION variable = shift_reg[1].data complete dim = 0
 	// #pragma HLS ARRAY_PARTITION variable = shift_reg[2].data complete dim = 0
@@ -295,8 +295,6 @@ int dwt_db4_hls(hls::stream<packet> &s_in, hls::stream<packet> &coeff_lo, hls::s
 	// #pragma HLS ARRAY_PARTITION variable=shift_reg[7].data complete dim=0
 
     static int debug_register = -1;
-
-	bool downsampler = true;
 	int input_data_size = size;
 	int output_data_size = (input_data_size + 8 - 1)/2;
 
@@ -304,11 +302,12 @@ int dwt_db4_hls(hls::stream<packet> &s_in, hls::stream<packet> &coeff_lo, hls::s
 
 	packet in_packet;
 
+	bool downsampler = true;
 	bool running = true;
 main_while_loop:
 	while (running)
 	{
-#pragma HLS PIPELINE off
+//#pragma HLS PIPELINE off
 #pragma HLS LOOP_TRIPCOUNT min = 512 max = 512
 
 		//  only read if we still have some data left to read
@@ -339,11 +338,11 @@ main_while_loop:
 			shift_reg.data[0] = shift_reg.data[index];
 		}
 
-		data_type hi_out = shift_reg.dot(hi_filter, 6);
-		data_type lo_out = shift_reg.dot(lo_filter, 6);
-
 		if (downsampler)
 		{
+		    data_type hi_out = shift_reg.dot_v3(hi_filter, 6);
+		    data_type lo_out = shift_reg.dot_v3(lo_filter, 6);
+
 			packet lo_packet;// = in_packet;
 			packet hi_packet;// = in_packet;
 
