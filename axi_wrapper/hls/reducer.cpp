@@ -1,29 +1,22 @@
-/*
- * Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
- * Copyright 2022-2023 Advanced Micro Devices, Inc. All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 #include "reducer.h"
 
-void square_sum_mean_std(hls::stream<packet> &data_in, data_type &square_sum, data_type &mean, data_type &std, data_type &entropy)
+
+void square_sum_mean_std(hls::stream<packet> &data_in, data_type &_square_sum, data_type &_mean, data_type &_std, data_type &_entropy)
 {
-//#pragma HLS INLINE off
-	data_type old_mean = 0.0;
-	data_type old_std = 0.0;
-	int n = 0;
+//#pragma HLS INLINE
+//#pragma HLS allocation operation instances=mul limit=1 
+//#pragma HLS allocation operation instances=div limit=1 
+//#pragma HLS allocation operation instances=add limit=1 
+//#pragma HLS allocation operation instances=sub limit=1
+
 	packet p;
+	data_in.read(p);
+	int n = 1;
+
+    data_type square_sum = 0.0;
+    data_type mean = p.data;
+    data_type std = 0.0;
+    data_type entropy = 0.0;
 
 ssms_loop:
 	while (true)
@@ -31,34 +24,107 @@ ssms_loop:
 #pragma HLS LOOP_TRIPCOUNT max=512 avg=512 min=512
 //#pragma HLS PIPELINE off
 
-		data_in.read(p);
+        data_in.read(p);
 		data_type data = p.data;
-		n++;
-		if (n == 1)
-		{
-			mean = data;
-			old_mean = data;
-			std = 0.0;
-			old_std = 0.0;
-		}
-		else
-		{
-			mean = old_mean + (data - old_mean) / n;
-			std = old_std + (data - old_mean) * (data - mean);
+        n++;
 
-			old_mean = mean;
-			old_std = old_mean;
-		}
-		data_type square = data * data;
-		square_sum += square;
-		entropy += square * data_type(log(float(square)));
+        data_type diff = data - mean;
+        data_type diff_mean = diff / n;
+        data_type new_mean = mean + diff_mean;
+        data_type new_diff = data - mean;
+        data_type new_diff_std = diff * new_diff;
+        data_type new_std = std + new_diff_std;
+
+		data_type new_square = data * data;
+		data_type new_square_sum = square_sum + new_square;
+        data_type new_log = data_type(hls::log(float(new_square)));
+		data_type new_entropy = new_square * new_log;
+        data_type new_entropy_sum = entropy + new_entropy;
+
+        mean = new_mean;
+        std = new_std;
+
+        square_sum = new_square_sum;
+        entropy = new_entropy_sum;
 
 		if (p.last)
 			break;
 	}
 
-	std /= (n - 1);
+    _square_sum = square_sum;
+    _mean = mean;
+    _std = std / (n - 1);
+	_entropy = entropy;
 }
+
+
+int reducer(hls::stream<packet> &coeff,
+			float &square_sum, float &mean,
+			float &std, float &entropy)
+{
+#pragma HLS INTERFACE axis port = coeff
+#pragma HLS INTERFACE s_axilite port = square_sum
+#pragma HLS INTERFACE s_axilite port = mean
+#pragma HLS INTERFACE s_axilite port = std
+#pragma HLS INTERFACE s_axilite port = entropy
+#pragma HLS INTERFACE s_axilite port = return
+
+	packet p;
+	coeff.read(p);
+	int n = 1;
+
+    data_type _square_sum = 0.0;
+    data_type _mean = p.data;
+    data_type _std = 0.0;
+    data_type _entropy = 0.0;
+
+ssms_loop:
+	while (true)
+	{
+#pragma HLS LOOP_TRIPCOUNT max=512 avg=512 min=512
+//#pragma HLS PIPELINE off
+
+        data_type old_square_sum = _square_sum;
+        data_type old_mean = _mean;
+        data_type old_std = _std;
+        data_type old_entropy = _entropy;
+
+        coeff.read(p);
+		data_type data = p.data;
+        n++;
+
+        data_type diff = data - old_mean;
+        data_type diff_mean = diff / n;
+        data_type new_mean = old_mean + diff_mean;
+        data_type new_diff = data - new_mean;
+        data_type new_diff_std = diff * new_diff;
+        data_type new_std = old_std + new_diff_std;
+
+		data_type new_square = data * data;
+		data_type new_square_sum = old_square_sum + new_square;
+        data_type new_log = data_type(hls::log(float(new_square)));
+		data_type new_entropy = new_square * new_log;
+        data_type new_entropy_sum = old_entropy + new_entropy;
+
+        _mean = new_mean;
+        _std = new_std;
+
+        _square_sum = new_square_sum;
+        _entropy = new_entropy_sum;
+
+		if (p.last)
+			break;
+	}
+
+    square_sum = _square_sum;
+    mean = _mean;
+    std = _std / (n - 1);
+    entropy = _entropy;
+
+	return 1;
+}
+
+
 
 int reducer(hls::stream<packet> &approx_coeff,
 			hls::stream<packet> &detail_1_coeff,
@@ -87,7 +153,12 @@ int reducer(hls::stream<packet> &approx_coeff,
 #pragma HLS INTERFACE s_axilite port = A_std
 #pragma HLS INTERFACE s_axilite port = return
 
-#pragma HLS ALLOCATION function instances=square_sum_mean_std limit=1
+#pragma HLS allocation operation instances=mul limit=1 
+#pragma HLS allocation operation instances=div limit=1 
+#pragma HLS allocation operation instances=add limit=1 
+#pragma HLS allocation operation instances=sub limit=1
+
+#pragma HLS allocation function instances=square_sum_mean_std limit=1
 
 	data_type approx_square_sum = 0.0;
 	data_type approx_mean = 0.0;
@@ -129,7 +200,7 @@ int reducer(hls::stream<packet> &approx_coeff,
 
 	cD_Energy = (detail_1_square_sum + detail_2_square_sum + detail_3_square_sum + detail_4_square_sum + detail_5_square_sum) / num_elements;
 	cA_Energy = approx_square_sum;
-	D_Entropy = (detail_1_ent + detail_2_ent + detail_3_ent + detail_4_ent + detail_4_ent) / num_elements;
+	D_Entropy = (detail_1_ent + detail_2_ent + detail_3_ent + detail_4_ent + detail_5_ent) / num_elements;
 	A_Entropy = approx_ent;
 	D_mean = (detail_1_mean + detail_2_mean + detail_3_mean + detail_4_mean + detail_5_mean) / num_elements;
 	A_mean = approx_mean;

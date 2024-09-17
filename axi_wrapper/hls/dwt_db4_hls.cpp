@@ -1,26 +1,10 @@
-/*
- * Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
- * Copyright 2022-2023 Advanced Micro Devices, Inc. All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 #include "dwt_db4_hls.h"
 
 
 template <typename type>
-struct vec8
+class vec8
 {
+    public:
 	vec8()
 	{
 		reset();
@@ -95,8 +79,9 @@ struct vec8
 };
 
 template <typename type>
-struct vec16
+class vec16
 {
+    public:
 	vec16()
 	{
 		reset();
@@ -177,6 +162,10 @@ struct vec16
 
 	type dot(vec8<type> a, int start_index)
 	{
+//#pragma HLS allocation operation instances=mul limit=1 
+//#pragma HLS allocation operation instances=div limit=1 
+//#pragma HLS allocation operation instances=add limit=1
+//#pragma HLS allocation operation instances=sub limit=1
 		type res = 0;
 	vec16_dot_loop:
 		for (int i = 0; i < 8; i++)
@@ -247,6 +236,8 @@ int dwt_db4_hls(hls::stream<packet> &s_in, hls::stream<packet> &coeff_lo, hls::s
 #pragma HLS INTERFACE s_axilite port = size
 #pragma HLS INTERFACE s_axilite port = debug
 #pragma HLS INTERFACE s_axilite port = return
+
+//#pragma HLS allocation function instances=vec16<data_type>::dot_v3 limit=1 
 
 	// from what I can read in the pywt implementation
 	//  2.303778133088965008632911830440708500016152482483092977910968e-01,
