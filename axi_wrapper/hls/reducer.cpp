@@ -1,6 +1,6 @@
 #include "reducer.h"
 
-
+/*
 void square_sum_mean_std(hls::stream<packet> &data_in, data_type &_square_sum, data_type &_mean, data_type &_std, data_type &_entropy)
 {
 //#pragma HLS INLINE
@@ -56,7 +56,7 @@ ssms_loop:
     _std = std / (n - 1);
 	_entropy = entropy;
 }
-
+*/
 
 int reducer(hls::stream<packet> &coeff,
 			float &square_sum, float &mean,
@@ -125,7 +125,7 @@ ssms_loop:
 }
 
 
-
+/*
 int reducer(hls::stream<packet> &approx_coeff,
 			hls::stream<packet> &detail_1_coeff,
 			hls::stream<packet> &detail_2_coeff,
@@ -209,3 +209,4 @@ int reducer(hls::stream<packet> &approx_coeff,
 
 	return 1;
 }
+*/
