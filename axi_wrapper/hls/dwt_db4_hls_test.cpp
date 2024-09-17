@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 #include "dwt_db4_hls.h"
+#include "reducer.h"
 
 int main()
 {
@@ -143,6 +144,17 @@ int main()
     std::cout << "debug " << debug << std::endl;
     auto ret5 = dwt_db4_hls(coeff_lo4, coeff_lo5, coeff_hi5, dwt_data_size4, debug);
     std::cout << "debug " << debug << std::endl;
+
+    float cD_Energy, cA_Energy, D_Entropy, A_Entropy, D_mean, A_mean, D_std, A_std;
+
+    auto ret6 = reducer(coeff_lo5, coeff_hi1, coeff_hi2, coeff_hi3, coeff_hi4, coeff_hi5, 
+    cD_Energy, cA_Energy, D_Entropy, A_Entropy, D_mean, A_mean, D_std, A_std);
+
+    std::cout << "results: " << std::endl;
+    std::cout << "Energy: " << cD_Energy << " " << cA_Energy << std::endl;
+    std::cout << "Entropy: " << D_Entropy << " " << A_Entropy << std::endl;
+    std::cout << "Mean: " << D_mean << " " << A_mean << std::endl;
+    std::cout << "Std: " << D_std << " " << A_std << std::endl;
 
 	std::cout << "dwt approximation coeffs " << std::endl;
 
