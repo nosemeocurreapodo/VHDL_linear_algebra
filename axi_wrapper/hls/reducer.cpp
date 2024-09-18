@@ -60,65 +60,64 @@ ssms_loop:
 
 int reducer(hls::stream<packet> &coeff,
 			float &square_sum, float &mean,
-			float &std, float &entropy)
+			float &std, float &entropy, int size)
 {
 #pragma HLS INTERFACE axis port = coeff
 #pragma HLS INTERFACE s_axilite port = square_sum
 #pragma HLS INTERFACE s_axilite port = mean
 #pragma HLS INTERFACE s_axilite port = std
 #pragma HLS INTERFACE s_axilite port = entropy
+#pragma HLS INTERFACE s_axilite port = size
 #pragma HLS INTERFACE s_axilite port = return
 
-	packet p;
-	coeff.read(p);
-	int n = 1;
-
-    data_type _square_sum = 0.0;
-    data_type _mean = p.data;
-    data_type _std = 0.0;
-    data_type _entropy = 0.0;
+    data_type mean_p[BUFFER_LEN];
+    data_type square_sum_p[BUFFER_LEN];
+    data_type entropy_p[BUFFER_LEN];
+init_buffer_loop:
+    for(int i = 0; i < BUFFER_LEN; i++)
+    {
+        square_sum_p[i] = 0.0;
+        entropy_p[i] = 0.0;
+    }
 
 ssms_loop:
-	while (true)
+	for(int i = 0; i < size; i++)
 	{
 #pragma HLS LOOP_TRIPCOUNT max=512 avg=512 min=512
 //#pragma HLS PIPELINE off
-
-        data_type old_square_sum = _square_sum;
-        data_type old_mean = _mean;
-        data_type old_std = _std;
-        data_type old_entropy = _entropy;
-
+	    packet p;
         coeff.read(p);
 		data_type data = p.data;
-        n++;
 
-        data_type diff = data - old_mean;
-        data_type diff_mean = diff / n;
-        data_type new_mean = old_mean + diff_mean;
-        data_type new_diff = data - new_mean;
-        data_type new_diff_std = diff * new_diff;
-        data_type new_std = old_std + new_diff_std;
-
+        data_type new_mean = data;
 		data_type new_square = data * data;
-		data_type new_square_sum = old_square_sum + new_square;
         data_type new_log = data_type(hls::log(float(new_square)));
 		data_type new_entropy = new_square * new_log;
-        data_type new_entropy_sum = old_entropy + new_entropy;
 
-        _mean = new_mean;
-        _std = new_std;
+        mean_p[i % BUFFER_LEN] += new_mean;
+        square_sum_p[i % BUFFER_LEN] += new_square;
+        entropy_p[i % BUFFER_LEN] += new_entropy;
+        //_entropy = new_entropy_sum;
 
-        _square_sum = new_square_sum;
-        _entropy = new_entropy_sum;
-
-		if (p.last)
-			break;
+		//if (p.last)
+		//	break;
 	}
 
+    data_type _mean = 0.0;
+    data_type _std = 0.0;
+    data_type _square_sum = 0.0;
+    data_type _entropy = 0.0;
+buffer_loop:
+    for(int i = 0; i < BUFFER_LEN; i++)
+    {
+        _mean += mean_p[i];
+        _square_sum += square_sum_p[i];
+        _entropy += entropy_p[i];
+    }
+
     square_sum = _square_sum;
-    mean = _mean;
-    std = _std / (n - 1);
+    mean = _mean / size;
+    std = _std / (size - 1);
     entropy = _entropy;
 
 	return 1;
