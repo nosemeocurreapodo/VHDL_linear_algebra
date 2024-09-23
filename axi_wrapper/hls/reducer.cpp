@@ -143,10 +143,10 @@ data_type _std = 0.0;
         _std +=  data_type(hls::pow((data - _mean), 2.0));        
     }
 
-    _std /= size;
+    _std /= size-1;
 
     mean = _mean;
-    std = _std;
+    std = hls::sqrt(float(_std));
     square_sum = _square_sum;
     entropy = _entropy;
 
