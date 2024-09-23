@@ -70,13 +70,22 @@ int reducer(hls::stream<packet> &coeff,
 #pragma HLS INTERFACE s_axilite port = size
 #pragma HLS INTERFACE s_axilite port = return
 
+data_type buffer[7000];
+
     data_type mean_p[BUFFER_LEN];
+//#pragma HLS ARRAY_PARTITION variable = mean_p complete dim = 0
+    data_type std_p[BUFFER_LEN];
+//#pragma HLS ARRAY_PARTITION variable = std_p complete dim = 0
     data_type square_sum_p[BUFFER_LEN];
+//#pragma HLS ARRAY_PARTITION variable = square_sum_p complete dim = 0
     data_type entropy_p[BUFFER_LEN];
+//#pragma HLS ARRAY_PARTITION variable = entropy_p complete dim = 0
+
 init_buffer_loop:
     for(int i = 0; i < BUFFER_LEN; i++)
     {
         mean_p[i] = 0.0;
+        std_p[i] = 0.0;
         square_sum_p[i] = 0.0;
         entropy_p[i] = 0.0;
     }
@@ -90,12 +99,18 @@ ssms_loop:
         coeff.read(p);
 		data_type data = p.data;
 
+        buffer[i] = data;
+
         data_type new_mean = data;
+        //data_type old_mean = 0.0;//mean_p[i % BUFFER_LEN];
+        //data_type new_mean = old_mean + (data - old_mean) / data_type(i);
+        //data_type new_std  = (data - old_mean) * (data - new_mean);
 		data_type new_square = data * data;
         data_type new_log = data_type(hls::log(float(new_square)));
 		data_type new_entropy = new_square * new_log;
 
         mean_p[i % BUFFER_LEN] += new_mean;
+        //std_p[i % BUFFER_LEN] += new_std;
         square_sum_p[i % BUFFER_LEN] += new_square;
         entropy_p[i % BUFFER_LEN] += new_entropy;
         //_entropy = new_entropy_sum;
@@ -105,19 +120,33 @@ ssms_loop:
 	}
 
     data_type _mean = 0.0;
-    data_type _std = 0.0;
+    //data_type _std = 0.0;
     data_type _square_sum = 0.0;
     data_type _entropy = 0.0;
 buffer_loop:
     for(int i = 0; i < BUFFER_LEN; i++)
     {
         _mean += mean_p[i];
+        //_std += std_p[i];
         _square_sum += square_sum_p[i];
         _entropy += entropy_p[i];
     }
 
-    mean = _mean / size;
-    std = _std / (size - 1);
+    _mean /= size;
+
+data_type _std = 0.0;
+    std_loop:
+	for(int i = 0; i < size; i++)
+	{
+#pragma HLS LOOP_TRIPCOUNT max=512 avg=512 min=512
+        data_type data = buffer[i];
+        _std +=  data_type(hls::pow((data - _mean), 2.0));        
+    }
+
+    _std /= size;
+
+    mean = _mean;
+    std = _std;
     square_sum = _square_sum;
     entropy = _entropy;
 
