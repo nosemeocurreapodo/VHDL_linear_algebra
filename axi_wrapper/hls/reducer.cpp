@@ -76,6 +76,7 @@ int reducer(hls::stream<packet> &coeff,
 init_buffer_loop:
     for(int i = 0; i < BUFFER_LEN; i++)
     {
+        mean_p[i] = 0.0;
         square_sum_p[i] = 0.0;
         entropy_p[i] = 0.0;
     }
@@ -115,9 +116,9 @@ buffer_loop:
         _entropy += entropy_p[i];
     }
 
-    square_sum = _square_sum;
     mean = _mean / size;
     std = _std / (size - 1);
+    square_sum = _square_sum;
     entropy = _entropy;
 
 	return 1;
