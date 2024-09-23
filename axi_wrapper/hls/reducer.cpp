@@ -140,7 +140,7 @@ data_type _std = 0.0;
 	{
 #pragma HLS LOOP_TRIPCOUNT max=512 avg=512 min=512
         data_type data = buffer[i];
-        _std +=  data_type(hls::pow((data - _mean), 2.0));        
+        _std +=  data_type(hls::pow(data_type(data - _mean), data_type(2.0)));        
     }
 
     _std /= size-1;
