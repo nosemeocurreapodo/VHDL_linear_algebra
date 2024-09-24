@@ -3,12 +3,13 @@
 #include "ap_axi_sdata.h"
 //#include "ap_int.h"
 #include "ap_fixed.h"
+#include "hls_half.h"
 #include "hls_stream.h"
 
 
-typedef ap_fixed<16, 8, AP_RND> data_type;
+//typedef ap_fixed<24, 16, AP_RND> data_type;
 //typedef float data_type;
-
+typedef half data_type;
 //typedef int data_type;
 
 //typedef ap_axis<32, 2, 5, 6> packet;

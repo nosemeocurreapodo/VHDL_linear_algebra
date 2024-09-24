@@ -106,7 +106,7 @@ ssms_loop:
         //data_type new_mean = old_mean + (data - old_mean) / data_type(i);
         //data_type new_std  = (data - old_mean) * (data - new_mean);
 		data_type new_square = data * data;
-        data_type new_log = data_type(hls::log(float(new_square)));
+        data_type new_log = data_type(hls::log(new_square));
 		data_type new_entropy = new_square * new_log;
 
         mean_p[i % BUFFER_LEN] += new_mean;
@@ -140,13 +140,14 @@ data_type _std = 0.0;
 	{
 #pragma HLS LOOP_TRIPCOUNT max=512 avg=512 min=512
         data_type data = buffer[i];
-        _std +=  data_type(hls::pow(float(data - _mean), float(2.0)));        
+        data_type diff = data - _mean;
+        _std +=  diff*diff;        
     }
 
     _std /= size-1;
 
     mean = _mean;
-    std = hls::sqrt(float(_std));
+    std = hls::sqrt(data_type(_std));
     square_sum = _square_sum;
     entropy = _entropy;
 
