@@ -118,21 +118,38 @@ int main()
 		s_in.write(in_packet);
 	}
 
+    float square_sum_1, mean_1, std_1, entropy_1;
+    float square_sum_2, mean_2, std_2, entropy_2;
+    float square_sum_3, mean_3, std_3, entropy_3;
+    float square_sum_4, mean_4, std_4, entropy_4;
+    float square_sum_5, mean_5, std_5, entropy_5;
+
 	auto ret1 = dwt_db4_hls(s_in, coeff_lo1, coeff_hi1, size, debug);
+    auto ret6 = reducer(coeff_hi1, square_sum_1, mean_1, std_1, entropy_1, dwt_data_size1);
     std::cout << "debug " << debug << std::endl;
     auto ret2 = dwt_db4_hls(coeff_lo1, coeff_lo2, coeff_hi2, dwt_data_size1, debug);
+    auto ret7 = reducer(coeff_hi2, square_sum_2, mean_2, std_2, entropy_2, dwt_data_size2);
     std::cout << "debug " << debug << std::endl;
     auto ret3 = dwt_db4_hls(coeff_lo2, coeff_lo3, coeff_hi3, dwt_data_size2, debug);
+    auto ret8 = reducer(coeff_hi3, square_sum_3, mean_3, std_3, entropy_3, dwt_data_size3);
     std::cout << "debug " << debug << std::endl;
     auto ret4 = dwt_db4_hls(coeff_lo3, coeff_lo4, coeff_hi4, dwt_data_size3, debug);
+    auto ret9 = reducer(coeff_hi4, square_sum_4, mean_4, std_4, entropy_4, dwt_data_size4);
     std::cout << "debug " << debug << std::endl;
     auto ret5 = dwt_db4_hls(coeff_lo4, coeff_lo5, coeff_hi5, dwt_data_size4, debug);
+    auto ret10 = reducer(coeff_hi5, square_sum_5, mean_5, std_5, entropy_5, dwt_data_size5);
     std::cout << "debug " << debug << std::endl;
 
     float cD_Energy, cA_Energy, D_Entropy, A_Entropy, D_mean, A_mean, D_std, A_std;
 
-    auto ret6 = reducer(coeff_lo5, coeff_hi1, coeff_hi2, coeff_hi3, coeff_hi4, coeff_hi5, 
-    cD_Energy, cA_Energy, D_Entropy, A_Entropy, D_mean, A_mean, D_std, A_std);
+    cD_Energy = (square_sum_1 + square_sum_2 + square_sum_3 + square_sum_4 + square_sum_5)/5.0;
+    D_Entropy = (entropy_1 + entropy_2 + entropy_3 + entropy_4 + entropy_5)/5.0;
+    D_mean = (mean_1 + mean_2 + mean_3 + mean_4 + mean_5)/5.0;
+    D_std = (std_1 + std_2 + std_3 + std_4 + std_5)/5.0;
+    cA_Energy = 0.0;
+    A_Entropy = 0.0;
+    A_mean = 0.0;
+    A_std = 0.0;
 
     std::cout << "results: " << std::endl;
     std::cout << "Energy: " << cD_Energy << " " << cA_Energy << std::endl;

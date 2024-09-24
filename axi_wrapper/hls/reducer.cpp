@@ -97,7 +97,7 @@ ssms_loop:
 //#pragma HLS PIPELINE off
 	    packet p;
         coeff.read(p);
-		data_type data = p.data;
+		data_type data = data_type(p.data);
 
         buffer[i] = data;
 
@@ -106,8 +106,13 @@ ssms_loop:
         //data_type new_mean = old_mean + (data - old_mean) / data_type(i);
         //data_type new_std  = (data - old_mean) * (data - new_mean);
 		data_type new_square = data * data;
-        data_type new_log = data_type(hls::log(new_square));
+        //float new_square_float = float(new_square);
+        data_type new_log = 0.0;
+        if(new_square > 0.0)
+            new_log = data_type(hls::log(float(new_square)));
+        //float new_log_float = float(new_log);
 		data_type new_entropy = new_square * new_log;
+        //float new_entropy_float = float(new_entropy);
 
         mean_p[i % BUFFER_LEN] += new_mean;
         //std_p[i % BUFFER_LEN] += new_std;
@@ -146,10 +151,10 @@ data_type _std = 0.0;
 
     _std /= size-1;
 
-    mean = _mean;
-    std = hls::sqrt(data_type(_std));
-    square_sum = _square_sum;
-    entropy = _entropy;
+    mean = float(_mean);
+    std = float(hls::sqrt(float(_std)));
+    square_sum = float(_square_sum);
+    entropy = float(_entropy);
 
 	return 1;
 }

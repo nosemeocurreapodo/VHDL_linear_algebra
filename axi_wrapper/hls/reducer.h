@@ -7,7 +7,7 @@ extern void square_sum_mean_std(hls::stream<packet> &data_in, data_type &square_
 
 extern int reducer(hls::stream<packet> &coeff,
 			float &square_sum, float &mean,
-			float &std, float &entropy);
+			float &std, float &entropy, int size);
 
 /*
 extern int reducer(hls::stream<packet> &approx_coeff,

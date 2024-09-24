@@ -311,7 +311,7 @@ main_while_loop:
 		//idata.ival = in_packet.data;	
         //data_type ival = idata.fval;
 
-        data_type in_data = in_packet.data;    
+        data_type in_data = data_type(in_packet.data);    
 
 		shift_reg.shift_down(in_data);
 
@@ -348,8 +348,8 @@ main_while_loop:
 
             data_type lo_data = lo_out;    
 
-			lo_packet.data = lo_data;
-			hi_packet.data = hi_data;
+			lo_packet.data = float(lo_data);
+			hi_packet.data = float(hi_data);
 			lo_packet.last = false;
 			hi_packet.last = false;
 			lo_packet.keep = -1;
