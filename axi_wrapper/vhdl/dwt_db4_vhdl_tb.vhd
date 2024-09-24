@@ -240,24 +240,22 @@ begin
 					rand := real(counter - reset_len);
 					scalar_input <= scalar_to_std_logic_vector(to_scalar(rand));
 					scalar_input_ok <= '1';
-					if(counter = scalar_vector_len + reset_len) then
+					if(counter = scalar_vector_len + reset_len - 1) then
 					    state <= BUSY;
 					end if;
 					
                 when BUSY =>
 					scalar_input_ok <= '0';
 					scalar_input <= scalar_to_std_logic_vector(to_scalar(0));
-                    if(hi_data_ok = '1') then
+                    if(counter = scalar_vector_len*10) then
 						state <= WAITING;
 					end if;
                 
                 when WAITING =>
 					scalar_input_ok <= '0';
 					scalar_input <= scalar_to_std_logic_vector(to_scalar(0));
-					if(hi_data_ok = '0') then
-						state <= READY;
-					end if;
-                
+					state <= READY;
+
 				when READY =>
 					assert false
 						report "processing done!!"
