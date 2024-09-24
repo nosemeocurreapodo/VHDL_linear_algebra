@@ -7,9 +7,9 @@
 #include "hls_stream.h"
 
 
-//typedef ap_fixed<24, 16, AP_RND> data_type;
+typedef ap_fixed<24, 12, AP_RND> data_type;
 //typedef float data_type;
-typedef half data_type;
+//typedef half data_type;
 //typedef int data_type;
 
 //typedef ap_axis<32, 2, 5, 6> packet;

@@ -98,7 +98,8 @@ begin
                                                                            
 	-- Streaming output data is read from FIFO                                      
 	process(M_AXIS_ACLK)                                                          
-	variable  sig_one : integer := 1;                                             
+	--variable  sig_one : integer := 1; 
+	variable  sig_one : integer := 0;                                             
 	begin                                                                         
 	    if (rising_edge (M_AXIS_ACLK)) then                                         
 	      	if(M_AXIS_ARESETN = '0') then                                             

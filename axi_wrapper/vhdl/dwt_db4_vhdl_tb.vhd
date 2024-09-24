@@ -99,14 +99,14 @@ architecture rtl of dwt_db4_vhdl_tb is
 	signal hi_data_ok          : std_logic := '0';
 	signal lo_data             : std_logic_vector(scalar_size - 1 downto 0) := std_logic_vector(to_unsigned(0, scalar_size));
 	signal lo_data_ok          : std_logic := '0';
-	
-	signal scalar_vector_len        : unsigned(31 downto 0) := to_unsigned(64, 32);
-
+	  
 	type state_type is (IDLE, FEEDING, BUSY, WAITING, READY);
 	signal state : state_type := IDLE;
 
 	signal counter : integer := 0;
 	
+	constant scalar_vector_len : integer := 32;
+	constant reset_len         : integer := 32;  
 	constant AXIS_TDATA_WIDTH : integer := 32;
 
 	signal S_AXIS_TVALID  : std_logic;
@@ -230,16 +230,17 @@ begin
 		
 			case state is
 				when IDLE =>
-					if (counter > 10) then
+					if (counter = reset_len-1) then
 						state <= FEEDING;
 						scalar_input_ok <= '0';
 						scalar_input <= scalar_to_std_logic_vector(to_scalar(0));
 					end if;
 				when FEEDING =>
-					uniform(seed1, seed2, rand); -- generate random number
+					--uniform(seed1, seed2, rand); -- generate random number
+					rand := real(counter - reset_len);
 					scalar_input <= scalar_to_std_logic_vector(to_scalar(rand));
 					scalar_input_ok <= '1';
-					if(counter > scalar_vector_len) then
+					if(counter = scalar_vector_len + reset_len) then
 					    state <= BUSY;
 					end if;
 					
