@@ -10,8 +10,8 @@ entity SCALAR_M_AXIS is
 	);
 	port (
 
-		data_in_ok  : in std_logic;
-		data_in     : in std_logic_vector(scalar_size-1 downto 0);
+		data_in_ok   : in std_logic;
+		data_in      : in std_logic_vector(scalar_size-1 downto 0);
 
 		-- Global ports
 		M_AXIS_ACLK	: in std_logic;

@@ -37,8 +37,9 @@ architecture rtl of dwt_db4_vhdl_tb is
 			C_S_AXIS_TDATA_WIDTH	: integer	:= 32
 		);
 		port (
-			data_out_ok : out std_logic;
-			data_out    : out std_logic_vector(C_S_AXIS_TDATA_WIDTH-1 downto 0);
+			data_out_ok   : out std_logic;
+			data_out      : out std_logic_vector(C_S_AXIS_TDATA_WIDTH-1 downto 0);
+			data_out_last : out std_logic;
 
 			S_AXIS_ACLK	: in std_logic;
 			S_AXIS_ARESETN	: in std_logic;
@@ -97,8 +98,10 @@ architecture rtl of dwt_db4_vhdl_tb is
 
 	signal hi_data             : std_logic_vector(scalar_size - 1 downto 0) := std_logic_vector(to_unsigned(0, scalar_size));
 	signal hi_data_ok          : std_logic := '0';
+	signal hi_data_last        : std_logic := '0';
 	signal lo_data             : std_logic_vector(scalar_size - 1 downto 0) := std_logic_vector(to_unsigned(0, scalar_size));
 	signal lo_data_ok          : std_logic := '0';
+	signal lo_data_last        : std_logic := '0';
 	  
 	type state_type is (IDLE, FEEDING, BUSY, WAITING, READY);
 	signal state : state_type := IDLE;
@@ -150,8 +153,9 @@ begin
 	generic map(
 	   C_S_AXIS_TDATA_WIDTH => AXIS_TDATA_WIDTH)
 	port map (
-		data_out_ok => hi_data_ok,
-		data_out    => hi_data,
+		data_out_ok   => hi_data_ok,
+		data_out      => hi_data,
+		data_out_last => hi_data_last, 
 
 		S_AXIS_ACLK    	=> clk,
 		S_AXIS_ARESETN	=> rst,
@@ -166,8 +170,9 @@ begin
 	generic map(
 	   C_S_AXIS_TDATA_WIDTH => AXIS_TDATA_WIDTH)
 	port map (
-		data_out_ok => lo_data_ok,
-		data_out    => lo_data,
+		data_out_ok   => lo_data_ok,
+		data_out      => lo_data,
+		data_out_last => lo_data_last,
 
 		S_AXIS_ACLK    	=> clk,
 		S_AXIS_ARESETN	=> rst,

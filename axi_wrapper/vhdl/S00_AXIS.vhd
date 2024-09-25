@@ -10,8 +10,9 @@ entity SCALAR_S_AXIS is
 	);
 	port (
 
-		data_out_ok : out std_logic;
-		data_out    : out std_logic_vector(scalar_size-1 downto 0);
+		data_out_ok   : out std_logic;
+		data_out      : out std_logic_vector(scalar_size-1 downto 0);
+		data_out_last : out std_logic;
 
 		-- AXI4Stream sink: Clock
 		S_AXIS_ACLK	: in std_logic;
@@ -57,9 +58,11 @@ begin
 			if(S_AXIS_ARESETN = '0') then
 				data_out_ok <= '0';
 				data_out <= scalar_to_std_logic_vector(to_scalar(0));
+				data_out_last <= '0';
 			else
 				data_out_ok <= S_AXIS_TVALID;
 				data_out    <= S_AXIS_TDATA(C_S_AXIS_TDATA_WIDTH - 1 downto 0);
+				data_out_last <= S_AXIS_TLAST;
 			end if;
 		end if;
 	end process;
