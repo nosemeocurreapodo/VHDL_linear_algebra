@@ -30,6 +30,7 @@ entity dwt_db4_vhdl is
 		hi_m_axis_tvalid	: out std_logic;
 		hi_m_axis_tdata  	: out std_logic_vector(C_M00_AXIS_TDATA_WIDTH-1 downto 0);
 		hi_m_axis_tstrb 	: out std_logic_vector((C_M00_AXIS_TDATA_WIDTH/8)-1 downto 0);
+		hi_m_axis_tkeep 	: out std_logic_vector((C_M00_AXIS_TDATA_WIDTH/8)-1 downto 0);
 		hi_m_axis_tlast	    : out std_logic;
 		hi_m_axis_tready	: in std_logic;
 
@@ -39,6 +40,7 @@ entity dwt_db4_vhdl is
 		lo_m_axis_tvalid	: out std_logic;
 		lo_m_axis_tdata	    : out std_logic_vector(C_M00_AXIS_TDATA_WIDTH-1 downto 0);
 		lo_m_axis_tstrb 	: out std_logic_vector((C_M00_AXIS_TDATA_WIDTH/8)-1 downto 0);
+		lo_m_axis_tkeep 	: out std_logic_vector((C_M00_AXIS_TDATA_WIDTH/8)-1 downto 0);
 		lo_m_axis_tlast 	: out std_logic;
 		lo_m_axis_tready	: in std_logic
 
@@ -79,6 +81,7 @@ architecture arch_imp of dwt_db4_vhdl is
 		M_AXIS_TVALID	: out std_logic;
 		M_AXIS_TDATA	: out std_logic_vector(C_M_AXIS_TDATA_WIDTH-1 downto 0);
 		M_AXIS_TSTRB	: out std_logic_vector((C_M_AXIS_TDATA_WIDTH/8)-1 downto 0);
+		M_AXIS_TKEEP	: out std_logic_vector((C_M_AXIS_TDATA_WIDTH/8)-1 downto 0);
 		M_AXIS_TLAST	: out std_logic;
 		M_AXIS_TREADY	: in std_logic
 		);
@@ -214,6 +217,7 @@ SCALAR_hi_M_AXIS_inst : SCALAR_M_AXIS
 		M_AXIS_TVALID	=> hi_m_axis_tvalid,
 		M_AXIS_TDATA	=> hi_m_axis_tdata,
 		M_AXIS_TSTRB	=> hi_m_axis_tstrb,
+		M_AXIS_TKEEP    => hi_m_axis_tkeep,
 		M_AXIS_TLAST	=> hi_m_axis_tlast,
 		M_AXIS_TREADY	=> hi_m_axis_tready
 	);
@@ -231,6 +235,7 @@ SCALAR_lo_M_AXIS_inst : SCALAR_M_AXIS
 		M_AXIS_TVALID	=> lo_m_axis_tvalid,
 		M_AXIS_TDATA	=> lo_m_axis_tdata,
 		M_AXIS_TSTRB	=> lo_m_axis_tstrb,
+		M_AXIS_TKEEP    => lo_m_axis_tkeep,
 		M_AXIS_TLAST	=> lo_m_axis_tlast,
 		M_AXIS_TREADY	=> lo_m_axis_tready
 	);

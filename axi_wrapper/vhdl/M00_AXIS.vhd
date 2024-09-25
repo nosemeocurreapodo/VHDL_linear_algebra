@@ -23,6 +23,7 @@ entity SCALAR_M_AXIS is
 		M_AXIS_TDATA	: out std_logic_vector(C_M_AXIS_TDATA_WIDTH-1 downto 0);
 		-- TSTRB is the byte qualifier that indicates whether the content of the associated byte of TDATA is processed as a data byte or a position byte.
 		M_AXIS_TSTRB	: out std_logic_vector((C_M_AXIS_TDATA_WIDTH/8)-1 downto 0);
+		M_AXIS_TKEEP	: out std_logic_vector((C_M_AXIS_TDATA_WIDTH/8)-1 downto 0);
 		-- TLAST indicates the boundary of a packet.
 		M_AXIS_TLAST	: out std_logic;
 		-- TREADY indicates that the slave can accept a transfer in the current cycle.
@@ -106,16 +107,19 @@ begin
 		  		M_AXIS_TDATA <= std_logic_vector(to_unsigned(sig_one,C_M_AXIS_TDATA_WIDTH));  
 				M_AXIS_TVALID <= '0';
 				M_AXIS_TSTRB <= (others => '0');
+				M_AXIS_TKEEP <= (others => '0');
 	      --elsif (tx_en = '1') then -- && M_AXIS_TSTRB(byte_index)                   
 	      --  stream_data_out <= std_logic_vector( to_unsigned(read_pointer,C_M_AXIS_TDATA_WIDTH) + to_unsigned(sig_one,C_M_AXIS_TDATA_WIDTH));
 		  	elsif (scalar_fifo_valid(SCALAR_FIFO_DEPTH - 1) = '1' and M_AXIS_TREADY = '1') then
 				M_AXIS_TDATA <= scalar_to_std_logic_vector(scalar_fifo(SCALAR_FIFO_DEPTH - 1));
 				M_AXIS_TVALID <= '1';
 				M_AXIS_TSTRB <= (others => '1');
+				M_AXIS_TKEEP <= (others => '1');
 			else
 				M_AXIS_TDATA <= std_logic_vector(to_unsigned(sig_one,C_M_AXIS_TDATA_WIDTH));
 				M_AXIS_TVALID <= '0';
 				M_AXIS_TSTRB <= (others => '0');
+				M_AXIS_TKEEP <= (others => '0');
 	      	end if;                                                                   
 	    end if;                                                                    
 	end process;                                                                 
