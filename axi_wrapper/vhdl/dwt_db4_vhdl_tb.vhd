@@ -52,12 +52,11 @@ architecture rtl of dwt_db4_vhdl_tb is
 	end component SCALAR_S_AXIS;
 
 	component dwt_db4_vhdl is
-		generic (
-			SHIFT_REG_LEN	: integer	:= 16;
-	
-			C_S00_AXIS_TDATA_WIDTH	: integer	:= 32;
-			C_M00_AXIS_TDATA_WIDTH	: integer	:= 32
-		);
+		--generic (
+		--	SHIFT_REG_LEN	: integer	:= 16;
+		--	C_S00_AXIS_TDATA_WIDTH	: integer	:= 32;
+		--	C_M00_AXIS_TDATA_WIDTH	: integer	:= 32
+		--);
 		port (
 	
 			-- Ports of Axi Slave Bus Interface S00_AXIS
