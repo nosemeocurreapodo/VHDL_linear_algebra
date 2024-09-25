@@ -105,19 +105,21 @@ begin
 	      	if(M_AXIS_ARESETN = '0') then                                             
 		  		M_AXIS_TDATA <= std_logic_vector(to_unsigned(sig_one,C_M_AXIS_TDATA_WIDTH));  
 				M_AXIS_TVALID <= '0';
+				M_AXIS_TSTRB <= (others => '0');
 	      --elsif (tx_en = '1') then -- && M_AXIS_TSTRB(byte_index)                   
 	      --  stream_data_out <= std_logic_vector( to_unsigned(read_pointer,C_M_AXIS_TDATA_WIDTH) + to_unsigned(sig_one,C_M_AXIS_TDATA_WIDTH));
 		  	elsif (scalar_fifo_valid(SCALAR_FIFO_DEPTH - 1) = '1' and M_AXIS_TREADY = '1') then
 				M_AXIS_TDATA <= scalar_to_std_logic_vector(scalar_fifo(SCALAR_FIFO_DEPTH - 1));
 				M_AXIS_TVALID <= '1';
+				M_AXIS_TSTRB <= (others => '1');
 			else
 				M_AXIS_TDATA <= std_logic_vector(to_unsigned(sig_one,C_M_AXIS_TDATA_WIDTH));
 				M_AXIS_TVALID <= '0';
+				M_AXIS_TSTRB <= (others => '0');
 	      	end if;                                                                   
 	    end if;                                                                    
 	end process;                                                                 
 	   
-	M_AXIS_TSTRB <= (others => '1');
 	M_AXIS_TLAST <= '1' when (scalar_fifo_last_data = '1') else '0';
 
 end implementation;
