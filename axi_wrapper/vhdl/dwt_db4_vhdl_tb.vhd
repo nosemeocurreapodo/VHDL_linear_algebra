@@ -108,7 +108,7 @@ architecture rtl of dwt_db4_vhdl_tb is
 
 	signal counter : integer := 0;
 	
-	constant scalar_vector_len : integer := 32;
+	constant scalar_vector_len : integer := 5121;
 	constant reset_len         : integer := 32;  
 	constant AXIS_TDATA_WIDTH : integer := 32;
 
@@ -252,7 +252,7 @@ begin
                 when BUSY =>
 					scalar_input_ok <= '0';
 					scalar_input <= scalar_to_std_logic_vector(to_scalar(0));
-                    if(counter = scalar_vector_len*10) then
+                    if(counter = scalar_vector_len*2) then
 						state <= WAITING;
 					end if;
                 
