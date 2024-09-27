@@ -61,7 +61,7 @@ begin
 				data_out_last <= '0';
 			else
 				data_out_ok <= S_AXIS_TVALID;
-				data_out    <= S_AXIS_TDATA(C_S_AXIS_TDATA_WIDTH - 1 downto 0);
+				data_out    <= S_AXIS_TDATA(scalar_size - 1 downto 0);
 				data_out_last <= S_AXIS_TLAST;
 			end if;
 		end if;

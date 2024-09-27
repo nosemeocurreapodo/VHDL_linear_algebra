@@ -27,6 +27,7 @@ architecture rtl of dwt_db4_vhdl_tb is
 			M_AXIS_TVALID	: out std_logic;
 			M_AXIS_TDATA	: out std_logic_vector(C_M_AXIS_TDATA_WIDTH-1 downto 0);
 			M_AXIS_TSTRB	: out std_logic_vector((C_M_AXIS_TDATA_WIDTH/8)-1 downto 0);
+			M_AXIS_TKEEP	: out std_logic_vector((C_M_AXIS_TDATA_WIDTH/8)-1 downto 0);
 			M_AXIS_TLAST	: out std_logic;
 			M_AXIS_TREADY	: in std_logic
 		);
@@ -74,6 +75,7 @@ architecture rtl of dwt_db4_vhdl_tb is
 			hi_m_axis_tvalid	: out std_logic;
 			hi_m_axis_tdata  	: out std_logic_vector(C_M00_AXIS_TDATA_WIDTH-1 downto 0);
 			hi_m_axis_tstrb 	: out std_logic_vector((C_M00_AXIS_TDATA_WIDTH/8)-1 downto 0);
+			hi_m_axis_tkeep 	: out std_logic_vector((C_M00_AXIS_TDATA_WIDTH/8)-1 downto 0);
 			hi_m_axis_tlast	    : out std_logic;
 			hi_m_axis_tready	: in std_logic;
 	
@@ -83,6 +85,7 @@ architecture rtl of dwt_db4_vhdl_tb is
 			lo_m_axis_tvalid	: out std_logic;
 			lo_m_axis_tdata	    : out std_logic_vector(C_M00_AXIS_TDATA_WIDTH-1 downto 0);
 			lo_m_axis_tstrb 	: out std_logic_vector((C_M00_AXIS_TDATA_WIDTH/8)-1 downto 0);
+			lo_m_axis_tkeep 	: out std_logic_vector((C_M00_AXIS_TDATA_WIDTH/8)-1 downto 0);
 			lo_m_axis_tlast 	: out std_logic;
 			lo_m_axis_tready	: in std_logic
 	
@@ -114,18 +117,21 @@ architecture rtl of dwt_db4_vhdl_tb is
 	signal S_AXIS_TVALID  : std_logic;
 	signal S_AXIS_TDATA   : std_logic_vector(AXIS_TDATA_WIDTH-1 downto 0);
 	signal S_AXIS_TSTRB   : std_logic_vector((AXIS_TDATA_WIDTH/8)-1 downto 0);
+	signal S_AXIS_TKEEP   : std_logic_vector((AXIS_TDATA_WIDTH/8)-1 downto 0) := "1111";
 	signal S_AXIS_TLAST   : std_logic;
 	signal S_AXIS_TREADY  : std_logic;
 
 	signal lo_AXIS_TVALID  : std_logic;
 	signal lo_AXIS_TDATA   : std_logic_vector(AXIS_TDATA_WIDTH-1 downto 0);
 	signal lo_AXIS_TSTRB   : std_logic_vector((AXIS_TDATA_WIDTH/8)-1 downto 0);
+	signal lo_AXIS_TKEEP   : std_logic_vector((AXIS_TDATA_WIDTH/8)-1 downto 0);
 	signal lo_AXIS_TLAST   : std_logic;
 	signal lo_AXIS_TREADY  : std_logic;
 
 	signal hi_AXIS_TVALID  : std_logic;
 	signal hi_AXIS_TDATA   : std_logic_vector(AXIS_TDATA_WIDTH-1 downto 0);
 	signal hi_AXIS_TSTRB   : std_logic_vector((AXIS_TDATA_WIDTH/8)-1 downto 0);
+	signal hi_AXIS_TKEEP   : std_logic_vector((AXIS_TDATA_WIDTH/8)-1 downto 0);
 	signal hi_AXIS_TLAST   : std_logic;
 	signal hi_AXIS_TREADY  : std_logic;
 
@@ -144,6 +150,7 @@ begin
 			M_AXIS_TVALID	=> S_AXIS_TVALID,
 			M_AXIS_TDATA	=> S_AXIS_TDATA,
 			M_AXIS_TSTRB	=> S_AXIS_TSTRB,
+			M_AXIS_TKEEP	=> S_AXIS_TKEEP,
 			M_AXIS_TLAST	=> S_AXIS_TLAST,
 			M_AXIS_TREADY	=> S_AXIS_TREADY
 		);
@@ -204,6 +211,7 @@ begin
 			hi_m_axis_tvalid	=> hi_AXIS_TVALID,
 			hi_m_axis_tdata  	=> hi_AXIS_TDATA,
 			hi_m_axis_tstrb 	=> hi_AXIS_TSTRB,
+			hi_m_axis_tkeep     => hi_AXIS_TKEEP,
 			hi_m_axis_tlast	    => hi_AXIS_TLAST,
 			hi_m_axis_tready	=> hi_AXIS_TREADY,
 	
@@ -213,6 +221,7 @@ begin
 			lo_m_axis_tvalid	=> lo_AXIS_TVALID,
 			lo_m_axis_tdata	    => lo_AXIS_TDATA,
 			lo_m_axis_tstrb 	=> lo_AXIS_TSTRB,
+			lo_m_axis_tkeep 	=> lo_AXIS_TKEEP,
 			lo_m_axis_tlast 	=> lo_AXIS_TLAST,
 			lo_m_axis_tready	=> lo_AXIS_TREADY
 		);

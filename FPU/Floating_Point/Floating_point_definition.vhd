@@ -6,8 +6,8 @@ use ieee.math_real.all;
 use work.FPU_utility_functions.all;
 
 package Floating_point_definition is
-	constant exponent_size       : integer := 8;
-	constant mantissa_size       : integer := 23;
+	constant exponent_size       : integer := 5;
+	constant mantissa_size       : integer := 10;
 	constant floating_point_size : integer := 1 + exponent_size + mantissa_size;
 
 	type floating_point is record
