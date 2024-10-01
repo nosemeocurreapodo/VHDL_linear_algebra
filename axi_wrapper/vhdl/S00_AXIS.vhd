@@ -24,6 +24,7 @@ entity SCALAR_S_AXIS is
 		S_AXIS_TDATA	: in std_logic_vector(C_S_AXIS_TDATA_WIDTH-1 downto 0);
 		-- Byte qualifier
 		S_AXIS_TSTRB	: in std_logic_vector((C_S_AXIS_TDATA_WIDTH/8)-1 downto 0);
+		S_AXIS_TKEEP	: in std_logic_vector((C_S_AXIS_TDATA_WIDTH/8)-1 downto 0);
 		-- Indicates boundary of last packet
 		S_AXIS_TLAST	: in std_logic;
 		-- Data is in valid
@@ -59,14 +60,14 @@ begin
 				data_out_ok <= '0';
 				data_out <= scalar_to_std_logic_vector(to_scalar(0));
 				data_out_last <= '0';
+				S_AXIS_TREADY <= '0';
 			else
+				S_AXIS_TREADY <= '1';
 				data_out_ok <= S_AXIS_TVALID;
 				data_out    <= S_AXIS_TDATA(scalar_size - 1 downto 0);
 				data_out_last <= S_AXIS_TLAST;
 			end if;
 		end if;
 	end process;
-
-	S_AXIS_TREADY <= '1';
 
 end arch_imp;

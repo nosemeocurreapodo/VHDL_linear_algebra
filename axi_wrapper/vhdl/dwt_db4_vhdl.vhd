@@ -21,6 +21,7 @@ entity dwt_db4_vhdl is
 		s_axis_tready	: out std_logic;
 		s_axis_tdata	: in std_logic_vector(C_S00_AXIS_TDATA_WIDTH-1 downto 0);
 		s_axis_tstrb	: in std_logic_vector((C_S00_AXIS_TDATA_WIDTH/8)-1 downto 0);
+		s_axis_tkeep	: in std_logic_vector((C_S00_AXIS_TDATA_WIDTH/8)-1 downto 0);
 		s_axis_tlast	: in std_logic;
 		s_axis_tvalid	: in std_logic;
 
@@ -63,6 +64,7 @@ architecture arch_imp of dwt_db4_vhdl is
 		S_AXIS_TREADY	: out std_logic;
 		S_AXIS_TDATA	: in std_logic_vector(C_S_AXIS_TDATA_WIDTH-1 downto 0);
 		S_AXIS_TSTRB	: in std_logic_vector((C_S_AXIS_TDATA_WIDTH/8)-1 downto 0);
+		S_AXIS_TKEEP	: in std_logic_vector((C_S_AXIS_TDATA_WIDTH/8)-1 downto 0);
 		S_AXIS_TLAST	: in std_logic;
 		S_AXIS_TVALID	: in std_logic
 		);
@@ -200,6 +202,7 @@ SCALAR_S_AXIS_inst : SCALAR_S_AXIS
 		S_AXIS_TREADY	=> s_axis_tready,
 		S_AXIS_TDATA	=> s_axis_tdata,
 		S_AXIS_TSTRB	=> s_axis_tstrb,
+		S_AXIS_TKEEP	=> s_axis_tkeep,
 		S_AXIS_TLAST	=> s_axis_tlast,
 		S_AXIS_TVALID	=> s_axis_tvalid
 	);
