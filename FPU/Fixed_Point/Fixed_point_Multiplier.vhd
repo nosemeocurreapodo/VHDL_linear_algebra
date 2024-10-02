@@ -1,20 +1,26 @@
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
-use work.request_id_pack.all;
-use work.Fixed_point_definition.all;
-use work.Synthesis_definitions_pack.all;
 
 entity Fixed_point_Multiplier is
+	-- OUT_SIZE has to be less thatn IN_SIZE*2
+	-- OUT_FRAC_SIZE also has to be less than IN_FRAC_SIZE*2
+	generic (
+		IN_SIZE	      : integer := 32;
+		IN_FRAC_SIZE  : integer := 20;
+		OUT_SIZE      : integer := 32;
+		OUT_FRAC_SIZE : integer := 20;
+		AUX_SIZE      : integer := 32
+	);
 	port(
-		clk       : in  std_logic;
-		opa       : in  fixed_point;
-		opb       : in  fixed_point;
-		output    : out fixed_point;
-		new_op    : in  std_logic;
-		op_id_in  : in  request_id;
-		op_id_out : out request_id;
-		op_ready  : out std_logic
+		clk      : in  std_logic;
+		opa      : in  std_logic_vector(IN_SIZE - 1 downto 0);
+		opb      : in  std_logic_vector(IN_SIZE - 1 downto 0);
+		output   : out std_logic_vector(OUT_SIZE - 1 downto 0);
+		new_op   : in  std_logic;
+		aux_in   : in  std_logic_vector(AUX_SIZE - 1 downto 0);
+		aux_out  : out std_logic_vector(AUX_SIZE - 1 downto 0);
+		op_ready : out std_logic
 	);
 end entity Fixed_point_Multiplier;
 
@@ -22,61 +28,51 @@ architecture RTL of Fixed_point_Multiplier is
 
 	-- stage 1
 	signal request_1 : std_logic;
-	signal request_id_1 : request_id;
+	signal aux_1 : std_logic_vector(AUX_SIZE - 1 downto 0);
 
-	signal opa_1 : signed(fixed_point_size - 1 downto 0);
-	signal opb_1 : signed(fixed_point_size - 1 downto 0);
+	signal opa_1 : std_logic_vector(IN_SIZE - 1 downto 0);
+	signal opb_1 : std_logic_vector(IN_SIZE - 1 downto 0);
 
 	-- multiplication pipeline stages (this is required for infering pipeline in the dsps)
 	-- 4 stages are required for 32 bit (20 bit fraction) fixed point
 	constant num_pipe_stages : integer := 4;
-	type signed_array is array (num_pipe_stages - 1 downto 0) of signed(fixed_point_size*2 - 1 downto 0);
+	type signed_array is array (num_pipe_stages - 1 downto 0) of signed(IN_SIZE*2 - 1 downto 0);
+	type aux_array is array (num_pipe_stages - 1 downto 0) of std_logic_vector(AUX_SIZE - 1 downto 0);
 
-	signal pipe_request    : std_logic_vector(num_pipe_stages - 1 downto 0);
-	signal pipe_request_id : request_id_array(num_pipe_stages - 1 downto 0);
-	signal pipe_output     : signed_array;
+	signal pipe_request  : std_logic_vector(num_pipe_stages - 1 downto 0);
+	signal pipe_aux      : aux_array;
+	signal pipe_output   : signed_array;
 	
-	-- output stage
-	signal request_o : std_logic;
-	signal request_id_o : request_id;
-	
-	signal output_o : signed(fixed_point_size * 2 - 1 downto 0);
-
 begin
 	process(clk)
 
 	begin
 		if (rising_edge(clk)) then
 			
-			-- stage 1
-			opa_1 <= opa;
-			opb_1 <= opb;
-
-			if (new_op = '1') then
-				request_id_1 <= op_id_in;
-				request_1    <= '1';
-			else
-				request_id_1 <= request_id_zero;
-				request_1    <= '0';
-			end if;
+			-- stage 1 -- latch input
+			opa_1     <= opa;
+			opb_1     <= opb;
+			aux_1     <= aux_in;
+			request_1 <= new_op;
 
 			-- mult pipeline stages
-			pipe_request(0)    <= request_1;
-			pipe_request_id(0) <= request_id_1;
-			pipe_output(0)     <= opa_1 * opb_1;
+			pipe_request(0) <= request_1;
+			pipe_aux(0)     <= aux_1;
+			pipe_output(0)  <= signed(opa_1) * signed(opb_1);
 
+			-- multiplication pipeline stages (this is required for infering pipeline in the dsps)
 			for I in num_pipe_stages - 1 downto 1 loop
-				pipe_request(I)    <= pipe_request(I - 1);
-				pipe_request_id(I) <= pipe_request_id(I - 1);
-				pipe_output(I)     <= pipe_output(I - 1);
+				pipe_request(I) <= pipe_request(I - 1);
+				pipe_aux(I)     <= pipe_aux(I - 1);
+				pipe_output(I)  <= pipe_output(I - 1);
 			end loop;
 
 			-- output stage 
 			op_ready <= pipe_request(num_pipe_stages - 1);
-			op_id_out <= pipe_request_id(num_pipe_stages - 1);
-
-			output <= pipe_output(num_pipe_stages - 1)(fixed_point_size + fraction_size - 1 downto fraction_size);
-
+			aux_out  <= pipe_aux(num_pipe_stages - 1);
+			-- the fraction point is in IN_FRAC_SIZE*2
+			-- from there, move - OUT_FRAC_SIZE to take how many OUT_FRAC_SIZE you want
+			output <= std_logic_vector(pipe_output(num_pipe_stages - 1)(OUT_SIZE + 2*IN_FRAC_SIZE - OUT_FRAC_SIZE - 1 downto 2*IN_FRAC_SIZE - OUT_FRAC_SIZE));
 		end if;
 	end process;
 end architecture RTL;

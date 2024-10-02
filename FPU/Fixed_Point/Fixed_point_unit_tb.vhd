@@ -51,10 +51,10 @@ begin
 		--		variable output : integer;
 
 		-- real
-		variable int_min : real := -2.0**((fixed_point_size-fraction_size)/2-1)+1.0;
-		variable int_max : real := 2.0**((fixed_point_size-fraction_size)/2-1)-1.0;
-		variable opa_increment : real := 2.0**4;--2.0**(-fraction_size);
-		variable opb_increment : real := 2.0**4;--2.0**(-fraction_size);
+		variable int_min : real :=  -2.0**(2);---2.0**((SIZE-FRAC_SIZE)/2-1)+1.0;
+		variable int_max : real :=  2.0**(2);--2.0**((SIZE-FRAC_SIZE)/2-1)-1.0;
+		variable opa_increment : real := 2.0**(-1);--2.0**(-fraction_size);
+		variable opb_increment : real := 2.0**(-1);--2.0**(-fraction_size);
 		variable opa     : real := int_min;
 		variable opb     : real := int_min;
 		variable output  : real;
@@ -64,8 +64,8 @@ begin
 	begin
 		if (rising_edge(clk)) then
 			BUS_in.new_request <= '1';
-			BUS_in.opa         <= fixed_point_to_std_logic_vector(to_fixed_point(opa));
-			BUS_in.opb         <= fixed_point_to_std_logic_vector(to_fixed_point(opb));
+			BUS_in.opa         <= to_fixed_point(opa, SIZE, FRAC_SIZE);
+			BUS_in.opb         <= to_fixed_point(opb, SIZE, FRAC_SIZE);
 			--FPU_BUS_in.opa         <= to_fixed_point(to_signed(opa, fixed_point_size));
 			--FPU_BUS_in.opb         <= to_fixed_point(to_signed(opb, fixed_point_size));
 			BUS_in.operation   <= op;
@@ -87,7 +87,7 @@ begin
 					output := opa / opb;
 			end case;
 
-			BUS_in.new_request_id.id <= fixed_point_to_std_logic_vector(to_fixed_point(output));
+			BUS_in.aux <= to_fixed_point(output, SIZE, FRAC_SIZE);
 
 			opa := opa + opa_increment;
 			if (opa > int_max) then
@@ -113,7 +113,7 @@ begin
 				end if;
 			end if;
 			if (BUS_out.request_ready = '1') then
-				assert BUS_out.output = BUS_out.request_ready_id.id
+				assert BUS_out.output = BUS_out.aux
 					report "Some error"
 					severity failure;
 			end if;
