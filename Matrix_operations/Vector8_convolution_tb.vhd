@@ -13,7 +13,7 @@ end entity Vector8_convolution_tb;
 
 architecture rtl of Vector8_convolution_tb is
 
-	component Vector8_convolution_fast is
+	component Vector8_convolution_fast_no_pipe is
 		port(
 			clk                      : in  std_logic;
 			new_operation_request    : in  std_logic;
@@ -21,7 +21,7 @@ architecture rtl of Vector8_convolution_tb is
 			input                    : in  std_logic_vector(scalar_size - 1 downto 0);
 			output                   : out std_logic_vector(scalar_size - 1 downto 0)
 		);
-	end component Vector8_convolution_fast;
+	end component Vector8_convolution_fast_no_pipe;
 
 	signal clk : std_logic := '1';
 
@@ -36,7 +36,7 @@ architecture rtl of Vector8_convolution_tb is
 	signal counter : integer := 0;
 
 begin
-	Vector8_convolution_fast_instantiation : Vector8_convolution_fast port map(
+	Vector8_convolution_fast_instantiation : Vector8_convolution_fast_no_pipe port map(
 			clk                      => clk,
 			new_operation_request    => new_operation_request,
 			new_operation_done       => new_operation_done,

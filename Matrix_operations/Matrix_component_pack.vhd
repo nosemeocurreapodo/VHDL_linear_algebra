@@ -34,6 +34,19 @@ component Vector8_dot_fast is
 	);
 end component Vector8_dot_fast;
 
+component Vector8_dot_fast_no_pipe is
+	port(
+		clk                      : in  std_logic;
+		new_operation_request    : in  std_logic;
+		new_operation_request_id : in  request_id;
+		new_operation_done       : out std_logic;
+		new_operation_done_id    : out request_id;
+		Vector1_input            : in  Vector8;
+		Vector2_input            : in  Vector8;
+		output                   : out scalar
+	);
+end component Vector8_dot_fast_no_pipe;
+
 component Vector8_convolution_fast is
 	port(
 		clk                      : in  std_logic;
@@ -43,6 +56,16 @@ component Vector8_convolution_fast is
 		output                   : out scalar
 	);
 end component Vector8_convolution_fast;
+
+component Vector8_convolution_fast_no_pipe is
+	port(
+		clk                      : in  std_logic;
+		new_operation_request    : in  std_logic;
+		new_operation_done       : out std_logic;
+		input                    : in  scalar;
+		output                   : out scalar
+	);
+end component Vector8_convolution_fast_no_pipe;
 
 end package Matrix_component_pack;
 

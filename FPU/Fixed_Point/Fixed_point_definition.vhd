@@ -6,8 +6,8 @@ use ieee.math_real.all;
 use work.FPU_utility_functions.all;
 
 package Fixed_point_definition is
-	constant fixed_point_size : integer := 24;
-	constant fraction_size    : integer := 12;
+	constant fixed_point_size : integer := 32;
+	constant fraction_size    : integer := 20;
 
 	subtype fixed_point is signed(fixed_point_size - 1 downto 0);
 	
