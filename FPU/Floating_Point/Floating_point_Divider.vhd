@@ -124,10 +124,10 @@ begin
 				exponent_4 <= to_unsigned(0, OUT_SIZE - OUT_MANTISSA_SIZE - 1);
 				mantissa_4 <= to_unsigned(0, OUT_MANTISSA_SIZE);
 			elsif(mantissa_3(mantissa_3'length - 1) = '1') then
-				mantissa_4       <= mantissa_3(mantissa_3'length - 2 downto mantissa_3'length - 2 - OUT_MANTISSA_SIZE + 1);
+				mantissa_4       <= mantissa_3(mantissa_3'length - 1 downto 1);
 				exponent_4       <= exponent_3;
 			else
-				mantissa_4       <= mantissa_3(mantissa_3'length - 3 downto mantissa_3'length - 3 - OUT_MANTISSA_SIZE + 1);
+				mantissa_4       <= mantissa_3(mantissa_3'length - 1 downto 1);
 				exponent_4       <= exponent_3 - 1;
 			end if;
 

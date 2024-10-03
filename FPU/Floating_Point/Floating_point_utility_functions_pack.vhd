@@ -50,7 +50,7 @@ package body Floating_point_utility_functions_pack is
 	function get_exponent(fp : std_logic_vector; exponent_size : integer) return std_logic_vector is
 		variable exponent : std_logic_vector(exponent_size - 1 downto 0);
 	begin
-		exponent := fp(fp'length - 2 downto fp'length - 2 - exponent_size);
+		exponent := fp(fp'length - 2 downto fp'length - 1 - exponent_size);
 		return exponent;
 	end function;
 

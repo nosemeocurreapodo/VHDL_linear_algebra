@@ -2,37 +2,27 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-use work.request_id_pack.all;
-use work.FPU_definitions_pack.all;
-use work.Matrix_definition_pack.all;
-
 package Matrix_component_pack is
-
-component Matrix3x3_VMultiplier_fast is
-	port(
-		clk                      : in  std_logic;
-		new_operation_request    : in  std_logic;
-		new_operation_request_id : in  request_id;
-		new_operation_done       : out std_logic;
-		new_operation_done_id    : out request_id;
-		Matrix_input             : in  Matrix3x3;
-		Vector_input             : in  Vector3;
-		Vector_output            : out Vector3
-	);
-end component Matrix3x3_VMultiplier_fast;
 	
 component Vector8_dot_fast is
-	port(
-		clk                      : in  std_logic;
-		new_operation_request    : in  std_logic;
-		new_operation_request_id : in  request_id;
-		new_operation_done       : out std_logic;
-		new_operation_done_id    : out request_id;
-		Vector1_input            : in  Vector8;
-		Vector2_input            : in  Vector8;
-		output                   : out scalar
+	generic(
+		IN_SIZE       : integer := 32;
+		IN_FRAC_SIZE  : integer := 23;
+		OUT_SIZE      : integer := 32;
+		OUT_FRAC_SIZE : integer := 23;
+		AUX_SIZE      : integer := 32
 	);
-end component Vector8_dot_fast;
+	port(
+		clk           : in  std_logic;
+		new_op_in     : in  std_logic;
+		aux_in        : in  std_logic_vector(AUX_SIZE - 1 downto 0);
+		new_op_out    : out std_logic;
+		aux_out       : out std_logic_vector(AUX_SIZE - 1 downto 0);
+		Vector1_input : in  std_logic_vector(IN_SIZE*8 - 1 downto 0);
+		Vector2_input : in  std_logic_vector(IN_SIZE*8 -1 downto 0);
+		output        : out std_logic_vector(OUT_SIZE - 1 downto 0);
+	);
+end component;
 
 component Vector8_convolution_fast is
 	port(
@@ -42,7 +32,7 @@ component Vector8_convolution_fast is
 		input                    : in  scalar;
 		output                   : out scalar
 	);
-end component Vector8_convolution_fast;
+end component;
 
 end package Matrix_component_pack;
 

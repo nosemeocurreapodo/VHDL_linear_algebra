@@ -51,8 +51,8 @@ begin
 		--		variable output : integer;
 
 		-- real
-		variable int_min : real := -2.0**(8);-- -2.0**((mantissa_size)/2-1)+1.0;
-		variable int_max : real :=  2.0**(8);-- 2.0**((mantissa_size)/2-1)-1.0;
+		variable int_min : real := -2.0**(2);-- -2.0**((mantissa_size)/2-1)+1.0;
+		variable int_max : real :=  2.0**(2);-- 2.0**((mantissa_size)/2-1)-1.0;
 		variable opa_increment : real := 2.0**(-8);--2.0**(-fraction_size);
 		variable opb_increment : real := 2.0**(-8);--2.0**(-fraction_size);
 		variable opa     : real := int_min;
