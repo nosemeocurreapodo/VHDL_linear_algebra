@@ -6,12 +6,13 @@ use work.FPU_definitions_pack.all;
 entity SCALAR_S_AXIS is
 	generic (
 		-- AXI4Stream sink: Data Width
-		C_S_AXIS_TDATA_WIDTH	: integer	:= 32
+		SCALAR_SIZE           : integer := 32;
+		C_S_AXIS_TDATA_WIDTH  : integer	:= 32
 	);
 	port (
 
 		data_out_ok   : out std_logic;
-		data_out      : out std_logic_vector(scalar_size-1 downto 0);
+		data_out      : out std_logic_vector(SCALAR_SIZE-1 downto 0);
 		data_out_last : out std_logic;
 
 		-- AXI4Stream sink: Clock
@@ -64,7 +65,7 @@ begin
 			else
 				S_AXIS_TREADY <= '1';
 				data_out_ok <= S_AXIS_TVALID;
-				data_out    <= S_AXIS_TDATA(scalar_size - 1 downto 0);
+				data_out    <= S_AXIS_TDATA(SCALAR_SIZE - 1 downto 0);
 				data_out_last <= S_AXIS_TLAST;
 			end if;
 		end if;

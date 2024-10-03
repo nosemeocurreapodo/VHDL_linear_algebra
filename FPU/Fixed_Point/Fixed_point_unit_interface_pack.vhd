@@ -1,7 +1,7 @@
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
-use work.Fixed_point_utility_functions.all;
+use work.Fixed_point_utility_functions_pack.all;
 use work.FPU_unit_common_pack.all;
 
 package Fixed_point_unit_interface_pack is

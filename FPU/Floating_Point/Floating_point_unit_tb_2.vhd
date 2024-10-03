@@ -1,8 +1,8 @@
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
-use work.request_id_pack.all;
-use work.Floating_point_definition.all;
+
+use work.Floating_point_utility_functions_pack.all;
 use work.Floating_point_unit_interface_pack.all;
 use work.FPU_unit_common_pack.all;
 
@@ -18,7 +18,7 @@ end Floating_point_unit_tb_2;
 architecture rtl of Floating_point_unit_tb_2 is
 	component Floating_point_unit
 		port(
-			clk         : in  std_logic;
+			clk     : in  std_logic;
 			BUS_in  : in  BUS_to_floating_point_unit;
 			BUS_out : out BUS_from_floating_point_unit
 		);
@@ -51,21 +51,21 @@ begin
 		--		variable output : integer;
 
 		-- real
-		variable int_min : real := -2.0**(-5);-- -2.0**((mantissa_size)/2-1)+1.0;
-		variable int_max : real := 2.0**(5);-- 2.0**((mantissa_size)/2-1)-1.0;
-		variable opa_increment : real := 2.0**(3);--2.0**(-fraction_size);
-		variable opb_increment : real := 2.0**(3);--2.0**(-fraction_size);
+		variable int_min : real := -2.0**(8);-- -2.0**((mantissa_size)/2-1)+1.0;
+		variable int_max : real :=  2.0**(8);-- 2.0**((mantissa_size)/2-1)-1.0;
+		variable opa_increment : real := 2.0**(-8);--2.0**(-fraction_size);
+		variable opb_increment : real := 2.0**(-8);--2.0**(-fraction_size);
 		variable opa     : real := int_min;
 		variable opb     : real := int_min;
 		variable output  : real;
 
-		variable op : FPU_operation := DIV;
+		variable op : FPU_operation := MUL;
 
 	begin
 		if (rising_edge(clk)) then
 			BUS_in.new_request <= '1';
-			BUS_in.opa         <= floating_point_to_std_logic_vector(to_floating_point(opa));
-			BUS_in.opb         <= floating_point_to_std_logic_vector(to_floating_point(opb));
+			BUS_in.opa         <= to_floating_point(opa, SIZE, MANTISSA_SIZE);
+			BUS_in.opb         <= to_floating_point(opb, SIZE, MANTISSA_SIZE);
 			--FPU_BUS_in.opa         <= to_fixed_point(to_signed(opa, fixed_point_size));
 			--FPU_BUS_in.opb         <= to_fixed_point(to_signed(opb, fixed_point_size));
 			BUS_in.operation   <= op;
@@ -87,7 +87,7 @@ begin
 					output := opa / opb;
 			end case;
 
-			BUS_in.new_request_id.id <= floating_point_to_std_logic_vector(to_floating_point(output));
+			BUS_in.aux <= to_floating_point(output, SIZE, MANTISSA_SIZE);
 
 			opa := opa + opa_increment;
 			if (opa > int_max) then
@@ -113,7 +113,7 @@ begin
 				end if;
 			end if;
 			if (BUS_out.request_ready = '1') then
-				assert BUS_out.output = BUS_out.request_ready_id.id
+				assert BUS_out.output = BUS_out.aux
 					report "Some error"
 					severity failure;
 			end if;

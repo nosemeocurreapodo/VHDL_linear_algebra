@@ -4,17 +4,14 @@ use ieee.numeric_std.all;
 use ieee.math_real.all;
 
 
-package Fixed_point_utility_functions is
+package Fixed_point_utility_functions_pack is
 
 	function to_fixed_point(int : integer; size : integer; frac_size : integer) return std_logic_vector;
 	function to_fixed_point(float : real; size : integer; frac_size : integer) return std_logic_vector;
-	--function fixed_point_to_std_logic_vector(fp : std_logic_vector) return std_logic_vector;
-
-	--constant fixed_point_zero : fixed_point := to_fixed_point(0.0);
 
 end package;
 
-package body Fixed_point_utility_functions is
+package body Fixed_point_utility_functions_pack is
 
 	function to_fixed_point(int : integer; size : integer; frac_size : integer) return std_logic_vector is
 		variable fp : signed(size - 1 downto 0);

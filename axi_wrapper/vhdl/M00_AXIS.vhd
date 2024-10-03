@@ -1,17 +1,17 @@
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
-use work.FPU_definitions_pack.all;
 
 entity SCALAR_M_AXIS is
 	generic (
-		C_M_AXIS_TDATA_WIDTH	: integer	:= 32;
-		SCALAR_FIFO_DEPTH : integer := 32
+		C_M_AXIS_TDATA_WIDTH : integer := 32;
+		SCALAR_SIZE          : integer := 32;
+		SCALAR_FIFO_DEPTH    : integer := 32
 	);
 	port (
 
 		data_in_ok   : in std_logic;
-		data_in      : in std_logic_vector(scalar_size-1 downto 0);
+		data_in      : in std_logic_vector(SCALAR_SIZE-1 downto 0);
 
 		-- Global ports
 		M_AXIS_ACLK	: in std_logic;
@@ -53,8 +53,10 @@ architecture implementation of SCALAR_M_AXIS is
 	   return(count);        	                                              
 	 end;                                                                    
 
-	signal scalar_fifo          : scalar_array(SCALAR_FIFO_DEPTH - 1 downto 0);
-	signal scalar_fifo_valid    : std_logic_vector(SCALAR_FIFO_DEPTH - 1 downto 0);
+	type scalar_array is array (integer range<>) of std_logic_vector(SCALAR_SIZE - 1 downto 0);
+	
+	signal scalar_fifo           : scalar_array(SCALAR_FIFO_DEPTH - 1 downto 0);
+	signal scalar_fifo_valid     : std_logic_vector(SCALAR_FIFO_DEPTH - 1 downto 0);
 	signal scalar_fifo_last_data : std_logic;
 begin
 
@@ -69,7 +71,7 @@ begin
 					scalar_fifo(I)        <= scalar_fifo(I - 1);
 					scalar_fifo_valid(I)  <= scalar_fifo_valid(I - 1);
 				end loop;
-				scalar_fifo(0) <= to_scalar(data_in);
+				scalar_fifo(0) <= data_in;
 				if(data_in_ok = '1') then
 					scalar_fifo_valid(0) <= '1';
 				else
@@ -111,7 +113,7 @@ begin
 	      --elsif (tx_en = '1') then -- && M_AXIS_TSTRB(byte_index)                   
 	      --  stream_data_out <= std_logic_vector( to_unsigned(read_pointer,C_M_AXIS_TDATA_WIDTH) + to_unsigned(sig_one,C_M_AXIS_TDATA_WIDTH));
 		  	elsif (scalar_fifo_valid(SCALAR_FIFO_DEPTH - 1) = '1' and M_AXIS_TREADY = '1') then
-				M_AXIS_TDATA(scalar_size - 1 downto 0) <= scalar_to_std_logic_vector(scalar_fifo(SCALAR_FIFO_DEPTH - 1));
+				M_AXIS_TDATA(SCALAR_SIZE - 1 downto 0) <= scalar_fifo(SCALAR_FIFO_DEPTH - 1);
 				M_AXIS_TVALID <= '1';
 				M_AXIS_TSTRB <= (others => '1');
 				M_AXIS_TKEEP <= (others => '1');

@@ -1,18 +1,14 @@
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
-use work.Floating_point_definition.all;
-use work.FPU_utility_functions.all;
-use work.Synthesis_definitions_pack.all;
-use work.request_id_pack.all;
+
+use work.Floating_point_utility_functions_pack.all;
 
 entity Floating_Point_Divider is
 	generic(
 		IN_SIZE           : integer := 32;
-		IN_EXPONENT_SIZE  : integer := 8;
 		IN_MANTISSA_SIZE  : integer := 23;
 		OUT_SIZE          : integer := 32;
-		OUT_EXPONENT_SIZE : integer := 8;
 		OUT_MANTISSA_SIZE : integer := 23;
 		AUX_SIZE          : integer := 32
 	);
@@ -31,8 +27,8 @@ architecture RTL of Floating_Point_Divider is
 	-- stage 1
 	signal opa_sign_1      : std_logic;
 	signal opb_sign_1      : std_logic;
-	signal opa_exponent_1  : std_logic_vector(IN_EXPONENT_SIZE - 1 downto 0);
-	signal opb_exponent_1  : std_logic_vector(IN_EXPONENT_SIZE - 1 downto 0);
+	signal opa_exponent_1  : std_logic_vector(IN_SIZE - IN_MANTISSA_SIZE - 2 downto 0);
+	signal opb_exponent_1  : std_logic_vector(IN_SIZE - IN_MANTISSA_SIZE - 2 downto 0);
 	signal opa_mantissa_1  : std_logic_vector(IN_MANTISSA_SIZE - 1 downto 0);
 	signal opb_mantissa_1  : std_logic_vector(IN_MANTISSA_SIZE - 1 downto 0);
 
@@ -41,8 +37,8 @@ architecture RTL of Floating_Point_Divider is
 
 	-- stage 2
 	signal sign_2 : std_logic;
-	signal exponent_2 : unsigned(IN_EXPONENT_SIZE - 1 downto 0);
-	signal mantissa_2 : unsigned((IN_MANTISSA_SIZE + 1) * 2 - 1 downto 0);
+	signal exponent_2 : unsigned(IN_SIZE - IN_MANTISSA_SIZE - 2 downto 0);
+	signal mantissa_2 : unsigned(IN_MANTISSA_SIZE downto 0);
 
 	signal new_request_2 : std_logic;
 	signal aux_2 : std_logic_vector(AUX_SIZE - 1 downto 0);
@@ -50,9 +46,9 @@ architecture RTL of Floating_Point_Divider is
 	-- multiplication pipeline stages (this is required for infering pipeline in the dsps)
 	-- 3 stages (four with the one I added for readability) is needed for single presicion floating point
 	constant num_mult_pipe_stages : integer := 3;
-	type exponent_array is array (num_mult_pipe_stages - 1 downto 0) of unsigned(IN_EXPONENT_SIZE - 1 downto 0);
-	type mantissa_array is array (num_mult_pipe_stages - 1 downto 0) of unsigned((IN_MANTISSA_SIZE + 1) * 2 - 1 downto 0);
-	type aux_array is array (num_mult_pipe_stages - 1 downto 0) of unsigned(AUX_SIZE - 1 downto 0);
+	type exponent_array is array (num_mult_pipe_stages - 1 downto 0) of unsigned(IN_SIZE - IN_MANTISSA_SIZE - 2 downto 0);
+	type mantissa_array is array (num_mult_pipe_stages - 1 downto 0) of unsigned(IN_MANTISSA_SIZE downto 0);
+	type aux_array is array (num_mult_pipe_stages - 1 downto 0) of std_logic_vector(AUX_SIZE - 1 downto 0);
 
 	signal mult_pipe_new_request    : std_logic_vector(num_mult_pipe_stages - 1 downto 0);
 	signal mult_pipe_sign           : std_logic_vector(num_mult_pipe_stages - 1 downto 0);
@@ -64,14 +60,14 @@ architecture RTL of Floating_Point_Divider is
 	signal new_request_3    : std_logic;
 	signal aux_3            : std_logic_vector(AUX_SIZE - 1 downto 0);
 	signal sign_3           : std_logic;
-	signal exponent_3       : unsigned(IN_EXPONENT_SIZE - 1 downto 0);
-	signal mantissa_3       : unsigned((IN_MANTISSA_SIZE + 1) * 2 - 1 downto 0);
+	signal exponent_3       : unsigned(IN_SIZE - IN_MANTISSA_SIZE - 2 downto 0);
+	signal mantissa_3       : unsigned(IN_MANTISSA_SIZE downto 0);
 
 	-- stage 4
 	signal new_request_4    : std_logic;
 	signal aux_4            : std_logic_vector(AUX_SIZE - 1 downto 0);
 	signal sign_4           : std_logic;
-	signal exponent_4       : unsigned(OUT_EXPONENT_SIZE - 1 downto 0);
+	signal exponent_4       : unsigned(OUT_SIZE - OUT_MANTISSA_SIZE - 2 downto 0);
 	signal mantissa_4       : unsigned(OUT_MANTISSA_SIZE - 1 downto 0);
 	
 begin
@@ -82,12 +78,12 @@ begin
 			-- stage 1
 			opa_sign_1     <= get_sign(opa);
 			opb_sign_1     <= get_sign(opb);
-			opa_exponent_1 <= get_exponent(opa, IN_EXPONENT_SIZE);
-			opb_exponent_1 <= get_exponent(opb, IN_EXPONENT_SIZE);
+			opa_exponent_1 <= get_exponent(opa, IN_SIZE - IN_MANTISSA_SIZE - 1);
+			opb_exponent_1 <= get_exponent(opb, IN_SIZE - IN_MANTISSA_SIZE - 1);
 			opa_mantissa_1 <= get_mantissa(opa, IN_MANTISSA_SIZE);
 			opb_mantissa_1 <= get_mantissa(opb, IN_MANTISSA_SIZE);
 			aux_1          <= aux_in;
-			new_operation_1 <= new_op;
+			new_request_1  <= new_op;
 
 			-- stage 2
 			sign_2     <= opa_sign_1 xor opb_sign_1;
@@ -122,25 +118,25 @@ begin
 			-- stage 4
 			sign_4        <= sign_3;
 			new_request_4 <= new_request_3;
-			aux_4         <= aux3;
+			aux_4         <= aux_3;
 
 			if(mantissa_3 = to_unsigned(0, (IN_MANTISSA_SIZE + 1)*2)) then
-				exponent_4 <= to_unsigned(0, OUT_EXPONENT_SIZE);
+				exponent_4 <= to_unsigned(0, OUT_SIZE - OUT_MANTISSA_SIZE - 1);
 				mantissa_4 <= to_unsigned(0, OUT_MANTISSA_SIZE);
 			elsif(mantissa_3(mantissa_3'length - 1) = '1') then
-				mantissa_4       <= mantissa_3(mantissa_3'length - 2 downto mantissa_3'length - 2 - mantissa_size + 1);
+				mantissa_4       <= mantissa_3(mantissa_3'length - 2 downto mantissa_3'length - 2 - OUT_MANTISSA_SIZE + 1);
 				exponent_4       <= exponent_3;
 			else
-				mantissa_4       <= mantissa_3(mantissa_3'length - 3 downto mantissa_3'length - 3 - mantissa_size + 1);
+				mantissa_4       <= mantissa_3(mantissa_3'length - 3 downto mantissa_3'length - 3 - OUT_MANTISSA_SIZE + 1);
 				exponent_4       <= exponent_3 - 1;
 			end if;
 
 			-- stage output
-			output(OUT_SIZE - 1)                                         <= sign_4;
-			output(OUT_SIZE - 2 downto OUT_SIZE - 2 - OUT_EXPONENT_SIZE) <= exponent_4;
-			output(OUT_MANTISSA_SIZE - 1 downto 0)                       <= mantissa_4;
-			aux_out                                                      <= new_request_id_4;
-			op_ready                                                     <= new_request_4;
+			output(OUT_SIZE - 1)                          <= sign_4;
+			output(OUT_SIZE - 2 downto OUT_MANTISSA_SIZE) <= std_logic_vector(exponent_4);
+			output(OUT_MANTISSA_SIZE - 1 downto 0)        <= std_logic_vector(mantissa_4);
+			aux_out                                       <= aux_4;
+			op_ready                                      <= new_request_4;
 
 		end if;
 	end process;

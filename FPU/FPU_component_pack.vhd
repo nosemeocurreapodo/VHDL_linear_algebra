@@ -2,58 +2,88 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-use work.FPU_definitions_pack.all;
-use work.request_id_pack.all;
-
 package FPU_component_pack is
+
 	component FPU_Adder is
-	port(
-		clk       : in  std_logic;
-		opa       : in  scalar;
-		opb       : in  scalar;
-		output    : out scalar;
-		new_op    : in  std_logic;
-		op_id_in  : in  request_id;
-		op_id_out : out request_id;
-		op_ready  : out std_logic
-	);
-end component FPU_Adder;
-component FPU_Substractor is
-	port(
-		clk       : in  std_logic;
-		opa       : in  scalar;
-		opb       : in  scalar;
-		output    : out scalar;
-		new_op    : in  std_logic;
-		op_id_in  : in  request_id;
-		op_id_out : out request_id;
-		op_ready  : out std_logic
-	);
-end component FPU_Substractor;
-component FPU_Multiplier is
-	port(
-		clk       : in  std_logic;
-		opa       : in  scalar;
-		opb       : in  scalar;
-		output    : out scalar;
-		new_op    : in  std_logic;
-		op_id_in  : in  request_id;
-		op_id_out : out request_id;
-		op_ready  : out std_logic
-	);
-end component FPU_Multiplier;
-component FPU_Divider is
-	port(
-		clk       : in  std_logic;
-		opa       : in  scalar;
-		opb       : in  scalar;
-		output    : out scalar;
-		new_op    : in  std_logic;
-		op_id_in  : in  request_id;
-		op_id_out : out request_id;
-		op_ready  : out std_logic
-	);
-end component FPU_Divider;
+		generic(
+			IN_SIZE       : integer := 32;
+			IN_FRAC_SIZE  : integer := 23;
+			OUT_SIZE      : integer := 32;
+			OUT_FRAC_SIZE : integer := 23;
+			AUX_SIZE      : integer := 32
+		);
+		port(
+			clk       : in  std_logic;
+			opa       : in  std_logic_vector(IN_SIZE - 1 downto 0);
+			opb       : in  std_logic_vector(IN_SIZE - 1 downto 0);
+			output    : out std_logic_vector(OUT_SIZE - 1 downto 0);
+			new_op    : in  std_logic;
+			aux_in    : in  std_logic_vector(AUX_SIZE - 1 downto 0);
+			aux_out   : out std_logic_vector(AUX_SIZE - 1 downto 0);
+			op_ready  : out std_logic
+		);
+	end component;
+
+	component FPU_Substractor is
+		generic(
+			IN_SIZE       : integer := 32;
+			IN_FRAC_SIZE  : integer := 23;
+			OUT_SIZE      : integer := 32;
+			OUT_FRAC_SIZE : integer := 23;
+			AUX_SIZE      : integer := 32
+		);
+		port(
+			clk       : in  std_logic;
+			opa       : in  std_logic_vector(IN_SIZE - 1 downto 0);
+			opb       : in  std_logic_vector(IN_SIZE - 1 downto 0);
+			output    : out std_logic_vector(OUT_SIZE - 1 downto 0);
+			new_op    : in  std_logic;
+			aux_in    : in  std_logic_vector(AUX_SIZE - 1 downto 0);
+			aux_out   : out std_logic_vector(AUX_SIZE - 1 downto 0);
+			op_ready  : out std_logic
+		);
+	end component;
+
+	component FPU_Multiplier is
+		generic(
+			IN_SIZE       : integer := 32;
+			IN_FRAC_SIZE  : integer := 23;
+			OUT_SIZE      : integer := 32;
+			OUT_FRAC_SIZE : integer := 23;
+			AUX_SIZE      : integer := 32
+		);
+		port(
+			clk       : in  std_logic;
+			opa       : in  std_logic_vector(IN_SIZE - 1 downto 0);
+			opb       : in  std_logic_vector(IN_SIZE - 1 downto 0);
+			output    : out std_logic_vector(OUT_SIZE - 1 downto 0);
+			new_op    : in  std_logic;
+			aux_in    : in  std_logic_vector(AUX_SIZE - 1 downto 0);
+			aux_out   : out std_logic_vector(AUX_SIZE - 1 downto 0);
+			op_ready  : out std_logic
+		);
+	end component;
+
+	component FPU_Divider is
+		generic(
+			IN_SIZE       : integer := 32;
+			IN_FRAC_SIZE  : integer := 23;
+			OUT_SIZE      : integer := 32;
+			OUT_FRAC_SIZE : integer := 23;
+			AUX_SIZE      : integer := 32
+		);
+		port(
+			clk       : in  std_logic;
+			opa       : in  std_logic_vector(IN_SIZE - 1 downto 0);
+			opb       : in  std_logic_vector(IN_SIZE - 1 downto 0);
+			output    : out std_logic_vector(OUT_SIZE - 1 downto 0);
+			new_op    : in  std_logic;
+			aux_in    : in  std_logic_vector(AUX_SIZE - 1 downto 0);
+			aux_out   : out std_logic_vector(AUX_SIZE - 1 downto 0);
+			op_ready  : out std_logic
+		);
+	end component;
+	
 end package FPU_component_pack;
 
 package body FPU_component_pack is

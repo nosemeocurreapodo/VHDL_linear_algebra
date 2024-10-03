@@ -1,18 +1,13 @@
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
-use work.request_id_pack.all;
-use work.Floating_point_definition.all;
-use work.FPU_utility_functions.all;
 
 entity Floating_point_Substractor is
 	generic(
-		IN_SIZE           : integer := 16;
-		IN_EXPONENT_SIZE  : integer := 5;
-		IN_MANTISSA_SIZE  : integer := 10;
-		OUT_SIZE          : integer := 16;
-		OUT_EXPONENT_SIZE : integer := 5;
-		OUT_MANTISSA_SIZE : integer := 10;
+		IN_SIZE           : integer := 32;
+		IN_MANTISSA_SIZE  : integer := 23;
+		OUT_SIZE          : integer := 32;
+		OUT_MANTISSA_SIZE : integer := 23;
 		AUX_SIZE          : integer := 32
 	);
 	port(
@@ -32,12 +27,10 @@ architecture RTL of Floating_point_Substractor is
 	component Floating_point_Adder is
 		generic(
 			IN_SIZE           : integer := 32;
-			IN_EXPONENT_SIZE  : integer := 8;
 			IN_MANTISSA_SIZE  : integer := 23;
 			OUT_SIZE          : integer := 32;
-			OUT_EXPONENT_SIZE : integer := 8;
 			OUT_MANTISSA_SIZE : integer := 23;
-			AUX_SIZE          : integer := 32;
+			AUX_SIZE          : integer := 32
 		);
 		port(
 			clk       : in  std_logic;
@@ -45,8 +38,8 @@ architecture RTL of Floating_point_Substractor is
 			opb       : in  std_logic_vector(IN_SIZE - 1 downto 0);
 			output    : out std_logic_vector(OUT_SIZE - 1 downto 0);
 			new_op    : in  std_logic;
-			op_id_in  : in  std_logic_vector(AUX_SIZE - 1 downto 0);
-			op_id_out : out std_logic_vector(AUX_SIZE - 1 downto 0);
+			aux_in    : in  std_logic_vector(AUX_SIZE - 1 downto 0);
+			aux_out   : out std_logic_vector(AUX_SIZE - 1 downto 0);
 			op_ready  : out std_logic
 		);
 	end component Floating_point_Adder;
@@ -61,10 +54,8 @@ begin
 	adder_int : Floating_point_Adder 
 	generic map (
 		IN_SIZE	          => IN_SIZE,
-		IN_EXPONENT_SIZE  => IN_EXPONENT_SIZE,
 		IN_MANTISSA_SIZE  => IN_MANTISSA_SIZE,
 		OUT_SIZE	      => OUT_SIZE,
-		OUT_EXPONENT_SIZE => OUT_EXPONENT_SIZE,
 		OUT_MANTISSA_SIZE => OUT_MANTISSA_SIZE
 	)
 	port map(
