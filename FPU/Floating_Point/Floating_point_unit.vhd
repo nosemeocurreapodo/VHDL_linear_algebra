@@ -15,37 +15,37 @@ entity Floating_point_unit is
 end entity;
 
 architecture RTL2 of Floating_point_unit is
-	signal opa_reg           : std_logic_vector(SIZE - 1 downto 0);
-	signal opb_reg           : std_logic_vector(SIZE - 1 downto 0);
+	signal opa_reg           : std_logic_vector(INPUT_SIZE - 1 downto 0);
+	signal opb_reg           : std_logic_vector(INPUT_SIZE - 1 downto 0);
 	signal op_reg            : FPU_operation;
 	signal request_id_in_reg : std_logic_vector(AUX_SIZE - 1 downto 0);
 
 	signal excep : FPU_exception := FPU_exceptions_initial_state;
 
 	signal add_input_ready  : std_logic;
-	signal add_out          : std_logic_vector(SIZE - 1 downto 0);
+	signal add_out          : std_logic_vector(OUTPUT_SIZE - 1 downto 0);
 	signal add_out_id       : std_logic_vector(AUX_SIZE - 1 downto 0);
 	signal add_output_ready : std_logic;
 	signal sub_input_ready  : std_logic;
-	signal sub_out          : std_logic_vector(SIZE - 1 downto 0);
+	signal sub_out          : std_logic_vector(OUTPUT_SIZE - 1 downto 0);
 	signal sub_out_id       : std_logic_vector(AUX_SIZE - 1 downto 0);
 	signal sub_output_ready : std_logic;
 	signal mul_input_ready  : std_logic;
-	signal mul_out          : std_logic_vector(SIZE - 1 downto 0);
+	signal mul_out          : std_logic_vector(OUTPUT_SIZE - 1 downto 0);
 	signal mul_out_id       : std_logic_vector(AUX_SIZE - 1 downto 0);
 	signal mul_output_ready : std_logic;
 	signal div_input_ready  : std_logic;
-	signal div_out          : std_logic_vector(SIZE - 1 downto 0);
+	signal div_out          : std_logic_vector(OUTPUT_SIZE - 1 downto 0);
 	signal div_out_id       : std_logic_vector(AUX_SIZE - 1 downto 0);
 	signal div_output_ready : std_logic;
 
 begin
 	adder_int : Floating_point_Adder 
 	generic map(
-			IN_SIZE            => SIZE,
-			IN_MANTISSA_SIZE   => MANTISSA_SIZE,
-			OUT_SIZE           => SIZE,
-			OUT_MANTISSA_SIZE  => MANTISSA_SIZE,
+			IN_SIZE            => INPUT_SIZE,
+			IN_MANTISSA_SIZE   => INPUT_MANTISSA_SIZE,
+			OUT_SIZE           => OUTPUT_SIZE,
+			OUT_MANTISSA_SIZE  => OUTPUT_MANTISSA_SIZE,
 			AUX_SIZE           => AUX_SIZE)
 	port map(
 			clk       => clk,
@@ -59,11 +59,11 @@ begin
 
 	substractor_int : Floating_point_Substractor 
 	generic map(
-		IN_SIZE            => SIZE,
-		IN_MANTISSA_SIZE   => MANTISSA_SIZE,
-		OUT_SIZE           => SIZE,
-		OUT_MANTISSA_SIZE  => MANTISSA_SIZE,
-		AUX_SIZE           => AUX_SIZE)
+			IN_SIZE            => INPUT_SIZE,
+			IN_MANTISSA_SIZE   => INPUT_MANTISSA_SIZE,
+			OUT_SIZE           => OUTPUT_SIZE,
+			OUT_MANTISSA_SIZE  => OUTPUT_MANTISSA_SIZE,
+			AUX_SIZE           => AUX_SIZE)
 	port map(
 			clk       => clk,
 			opa       => opa_reg,
@@ -76,11 +76,11 @@ begin
 
 	multiplier_int : Floating_Point_Multiplier 
 	generic map(
-		IN_SIZE            => SIZE,
-		IN_MANTISSA_SIZE   => MANTISSA_SIZE,
-		OUT_SIZE           => SIZE,
-		OUT_MANTISSA_SIZE  => MANTISSA_SIZE,
-		AUX_SIZE           => AUX_SIZE)
+			IN_SIZE            => INPUT_SIZE,
+			IN_MANTISSA_SIZE   => INPUT_MANTISSA_SIZE,
+			OUT_SIZE           => OUTPUT_SIZE,
+			OUT_MANTISSA_SIZE  => OUTPUT_MANTISSA_SIZE,
+			AUX_SIZE           => AUX_SIZE)
 	port map(
 			clk       => clk,
 			opa       => opa_reg,
@@ -93,11 +93,11 @@ begin
 
 	divider_int : Floating_Point_Divider 
 	generic map(
-		IN_SIZE            => SIZE,
-		IN_MANTISSA_SIZE   => MANTISSA_SIZE,
-		OUT_SIZE           => SIZE,
-		OUT_MANTISSA_SIZE  => MANTISSA_SIZE,
-		AUX_SIZE           => AUX_SIZE)
+			IN_SIZE            => INPUT_SIZE,
+			IN_MANTISSA_SIZE   => INPUT_MANTISSA_SIZE,
+			OUT_SIZE           => OUTPUT_SIZE,
+			OUT_MANTISSA_SIZE  => OUTPUT_MANTISSA_SIZE,
+			AUX_SIZE           => AUX_SIZE)
 	port map(
 			clk       => clk,
 			opa       => opa_reg,

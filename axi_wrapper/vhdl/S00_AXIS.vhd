@@ -1,12 +1,14 @@
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
-use work.FPU_definitions_pack.all;
+
+use work.FPU_utility_functions_pack.all;
 
 entity SCALAR_S_AXIS is
 	generic (
 		-- AXI4Stream sink: Data Width
 		SCALAR_SIZE           : integer := 32;
+		SCALAR_FRAC_SIZE      : integer := 23;
 		C_S_AXIS_TDATA_WIDTH  : integer	:= 32
 	);
 	port (
@@ -59,7 +61,7 @@ begin
 		if(rising_edge(S_AXIS_ACLK)) then
 			if(S_AXIS_ARESETN = '0') then
 				data_out_ok <= '0';
-				data_out <= scalar_to_std_logic_vector(to_scalar(0));
+				data_out <= to_scalar(0, SCALAR_SIZE, SCALAR_FRAC_SIZE);
 				data_out_last <= '0';
 				S_AXIS_TREADY <= '0';
 			else

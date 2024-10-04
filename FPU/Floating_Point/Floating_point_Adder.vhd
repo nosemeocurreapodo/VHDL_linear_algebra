@@ -7,11 +7,11 @@ use work.FPU_utility_functions.all;
 
 entity Floating_point_Adder is
 	generic(
-		IN_SIZE           : integer := 32;
-		IN_MANTISSA_SIZE  : integer := 23;
-		OUT_SIZE          : integer := 32;
-		OUT_MANTISSA_SIZE : integer := 23;
-		AUX_SIZE          : integer := 32
+		IN_SIZE           : integer;-- := 32;
+		IN_MANTISSA_SIZE  : integer;-- := 23;
+		OUT_SIZE          : integer;-- := 32;
+		OUT_MANTISSA_SIZE : integer;-- := 23;
+		AUX_SIZE          : integer-- := 32
 	);
 	port(
 		clk       : in  std_logic;
@@ -112,7 +112,12 @@ begin
 			opa_mantissa_1 <= get_mantissa(opa, IN_MANTISSA_SIZE);
 			opb_mantissa_1 <= get_mantissa(opb, IN_MANTISSA_SIZE);
 			aux_1    <= aux_in;
-			new_operation_1 <= new_op;
+			-- seems to be important, otherwise we propagate undifined states during simulation
+			if(new_op = '1') then
+				new_operation_1 <= '1';
+			else
+				new_operation_1	<= '0';
+			end if;
 
 			-- stage 2 check bigger
 			if (opa_exponent_1 >= opb_exponent_1) then
@@ -197,9 +202,9 @@ begin
 
 			-- stage 8 shift left
 			sign_8 <= sign_7;
-			if(mantissa_7 = to_unsigned(0, IN_MANTISSA_SIZE + 3)) then
-				exponent_8 <= to_unsigned(0, IN_SIZE - IN_MANTISSA_SIZE - 1);
-				mantissa_8 <= to_unsigned(0, IN_MANTISSA_SIZE + 3);
+			if(mantissa_7 = to_unsigned(0, mantissa_7'length)) then
+				exponent_8 <= to_unsigned(0, exponent_8'length);
+				mantissa_8 <= to_unsigned(0, mantissa_8'length);
 			else
 				mantissa_8 <= shift_left(mantissa_7, l_zeros_7 + 1);
 				exponent_8 <= exponent_7 + 2 - l_zeros_7;
@@ -239,8 +244,18 @@ begin
 
 			-- stage output
 			output(OUT_SIZE - 1)                          <= sign_8;
-			output(OUT_SIZE - 2 downto OUT_MANTISSA_SIZE) <= std_logic_vector(exponent_8);
-			output(OUT_MANTISSA_SIZE - 1 downto 0)        <= std_logic_vector(mantissa_8(mantissa_8'length - 1 downto mantissa_8'length - OUT_MANTISSA_SIZE));
+
+			if(OUT_SIZE - OUT_MANTISSA_SIZE > IN_SIZE - IN_MANTISSA_SIZE) then
+				output(OUT_SIZE - 2 downto OUT_MANTISSA_SIZE) <= std_logic_vector(to_unsigned(0, OUT_SIZE - OUT_MANTISSA_SIZE - IN_SIZE + IN_MANTISSA_SIZE)) & std_logic_vector(exponent_8);
+			else
+				output(OUT_SIZE - 2 downto OUT_MANTISSA_SIZE) <= std_logic_vector(exponent_8(OUT_SIZE - OUT_MANTISSA_SIZE - 2 downto 0));
+			end if;
+			
+			if(OUT_MANTISSA_SIZE > IN_MANTISSA_SIZE + 3) then
+				output(OUT_MANTISSA_SIZE - 1 downto 0)        <= std_logic_vector(mantissa_8) & std_logic_vector(to_unsigned(0, OUT_MANTISSA_SIZE - IN_MANTISSA_SIZE - 3));
+			else
+				output(OUT_MANTISSA_SIZE - 1 downto 0)        <= std_logic_vector(mantissa_8(mantissa_8'length - 1 downto mantissa_8'length - OUT_MANTISSA_SIZE));
+			end if;
 
 			aux_out  <= aux_8;
 			op_ready <= new_operation_8;

@@ -1,12 +1,12 @@
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
-use work.request_id_pack.all;
 
-use work.FPU_definitions_pack.all;
-use work.Matrix_definition_pack.all;
+use work.FPU_utility_functions_pack.all;
+use work.Matrix_definitions_pack.all;
 use work.Matrix_component_pack.all;
 
+-- This always takes as input a float32, and outputs also a float32, regardless of the precision of the internal computations
 entity dwt_db4_vhdl is
 	generic (
 		SHIFT_REG_LEN	: integer	:= 16;
@@ -53,11 +53,12 @@ architecture arch_imp of dwt_db4_vhdl is
 	-- component declaration
 	component SCALAR_S_AXIS is
 		generic (
+		SCALAR_SIZE           : integer := 32;
 		C_S_AXIS_TDATA_WIDTH	: integer	:= 32
 		);
 		port (
 		data_out_ok   : out std_logic;
-		data_out      : out std_logic_vector(scalar_size-1 downto 0);
+		data_out      : out std_logic_vector(31 downto 0);
 		data_out_last : out std_logic;
 		S_AXIS_ACLK	: in std_logic;
 		S_AXIS_ARESETN	: in std_logic;
@@ -72,12 +73,13 @@ architecture arch_imp of dwt_db4_vhdl is
 
 	component SCALAR_M_AXIS is
 		generic (
+		SCALAR_SIZE           : integer := 32;
 		C_M_AXIS_TDATA_WIDTH  : integer	:= 32;
 		SCALAR_FIFO_DEPTH	  : integer	:= 32
 		);
 		port (
 		data_in_ok  : in std_logic;
-		data_in     : in std_logic_vector(scalar_size-1 downto 0);
+		data_in     : in std_logic_vector(31 downto 0);
 		M_AXIS_ACLK	: in std_logic;
 		M_AXIS_ARESETN	: in std_logic;
 		M_AXIS_TVALID	: out std_logic;
@@ -93,15 +95,13 @@ architecture arch_imp of dwt_db4_vhdl is
 	signal data_in_len_register : std_logic_vector(31 downto 0) := std_logic_vector(to_unsigned(32, 32));
 	signal data_out_len_register : std_logic_vector(31 downto 0) := std_logic_vector(to_unsigned((32 + 8 - 1)/2, 32));
 
-	signal slave_data      : std_logic_vector(scalar_size - 1 downto 0);
+	signal slave_data      : std_logic_vector(31 downto 0);
 	signal slave_data_ok   : std_logic;
 	signal slave_data_last : std_logic;
 
-	signal master_data    : scalar;
-	signal master_data_ok : std_logic;
-
-	signal shift_reg        : scalar_array(SHIFT_REG_LEN - 1 downto 0);
-	signal filter_input     : Vector8;
+	-- VHDL 2008 syntax
+	signal shift_reg        : Vector(SHIFT_REG_LEN - 1 downto 0)(31 downto 0);
+	signal filter_input     : Vector(7 downto 0)(31 downto 0);
 	--signal lo_filter_coeff  : Vector8;
 	--signal hi_filter_coeff  : Vector8;
 
@@ -123,14 +123,15 @@ architecture arch_imp of dwt_db4_vhdl is
 	--									   to_scalar(7.148465705529156470899219552739926037076084010993081758450110e-01),
 	--									   to_scalar(-2.303778133088965008632911830440708500016152482483092977910968e-01));
 
-	constant hi_filter_coeff : Vector8 := (to_scalar(-0.01059740178506903210488),
-										   to_scalar(-0.03288301166688519973540),
-										   to_scalar( 0.03084138183556076362721),
-										   to_scalar( 0.18703481171909308407957),
-										   to_scalar(-0.02798376941685985421141),
-										   to_scalar(-0.63088076792985890788171),
-										   to_scalar( 0.71484657055291564708992),
-										   to_scalar(-0.23037781330889650086329));
+	-- VHDL 2008 syntax
+	constant hi_filter_coeff : Vector(7 downto 0)(31 downto 0) := (to_scalar(-0.01059740178506903210488, 32, 23),
+										   to_scalar(-0.03288301166688519973540, 32, 23),
+										   to_scalar( 0.03084138183556076362721, 32, 23),
+										   to_scalar( 0.18703481171909308407957, 32, 23),
+										   to_scalar(-0.02798376941685985421141, 32, 23),
+										   to_scalar(-0.63088076792985890788171, 32, 23),
+										   to_scalar( 0.71484657055291564708992, 32, 23),
+										   to_scalar(-0.23037781330889650086329, 32, 23));
 
 	--constant hi_filter_coeff : Vector8 := (to_scalar(0.0),
 	--									   to_scalar(0.0),
@@ -159,19 +160,20 @@ architecture arch_imp of dwt_db4_vhdl is
 	--									   to_scalar(3.288301166688519973540751354924438866454194113754971259727278e-02),
 	--									   to_scalar(-1.059740178506903210488320852402722918109996490637641983484974e-02));
 
-	constant lo_filter_coeff : Vector8 := (to_scalar( 0.23037781330889650086329),
-										   to_scalar( 0.71484657055291564708992),
-										   to_scalar( 0.63088076792985890788171),
-										   to_scalar(-0.02798376941685985421141),
-										   to_scalar(-0.18703481171909308407957),
-										   to_scalar( 0.03084138183556076362721),
-										   to_scalar( 0.03288301166688519973540),
-										   to_scalar(-0.01059740178506903210488));
+	-- VHDL 2008 syntax
+	constant lo_filter_coeff : Vector(7 downto 0)(31 downto 0) := (to_scalar( 0.23037781330889650086329, 32, 23),
+										   to_scalar( 0.71484657055291564708992, 32, 23),
+										   to_scalar( 0.63088076792985890788171, 32, 23),
+										   to_scalar(-0.02798376941685985421141, 32, 23),
+										   to_scalar(-0.18703481171909308407957, 32, 23),
+										   to_scalar( 0.03084138183556076362721, 32, 23),
+										   to_scalar( 0.03288301166688519973540, 32, 23),
+										   to_scalar(-0.01059740178506903210488, 32, 23));
 
-	signal lo_data     : scalar;
+	signal lo_data     : std_logic_vector(31 downto 0);
 	signal lo_data_ok  : std_logic;
 
-	signal hi_data     : scalar;
+	signal hi_data     : std_logic_vector(31 downto 0);
 	signal hi_data_ok  : std_logic;
 
 	signal data_in_count : unsigned(31 downto 0)  := to_unsigned(0, 32);
@@ -191,6 +193,7 @@ begin
 
 SCALAR_S_AXIS_inst : SCALAR_S_AXIS
 	generic map (
+	   SCALAR_SIZE => 32,
 		C_S_AXIS_TDATA_WIDTH	=> C_S00_AXIS_TDATA_WIDTH
 	)
 	port map (
@@ -209,12 +212,13 @@ SCALAR_S_AXIS_inst : SCALAR_S_AXIS
 
 SCALAR_hi_M_AXIS_inst : SCALAR_M_AXIS
 	generic map (
+	    SCALAR_SIZE => 32,
 		C_M_AXIS_TDATA_WIDTH  => C_M00_AXIS_TDATA_WIDTH,
 		SCALAR_FIFO_DEPTH     => 32
 	)
 	port map (
 		data_in_ok      => hi_data_ok,
-		data_in         => scalar_to_std_logic_vector(hi_data),
+		data_in         => hi_data,
 		M_AXIS_ACLK	    => hi_m_axis_aclk,
 		M_AXIS_ARESETN	=> hi_m_axis_aresetn,
 		M_AXIS_TVALID	=> hi_m_axis_tvalid,
@@ -232,7 +236,7 @@ SCALAR_lo_M_AXIS_inst : SCALAR_M_AXIS
 	)
 	port map (
 		data_in_ok      => lo_data_ok,
-		data_in         => scalar_to_std_logic_vector(lo_data),
+		data_in         => lo_data,
 		M_AXIS_ACLK	    => lo_m_axis_aclk,
 		M_AXIS_ARESETN	=> lo_m_axis_aresetn,
 		M_AXIS_TVALID	=> lo_m_axis_tvalid,
@@ -243,26 +247,58 @@ SCALAR_lo_M_AXIS_inst : SCALAR_M_AXIS
 		M_AXIS_TREADY	=> lo_m_axis_tready
 	);
 
-	hi_filter : Vector8_dot_fast 
-	port map(
-		clk                      => s_axis_aclk,
-		new_operation_request    => do_convolution,
-		new_operation_request_id => request_id_zero,
-		new_operation_done       => hi_data_ok,
-		Vector1_input            => filter_input,
-		Vector2_input            => hi_filter_coeff,
-		output                   => hi_data
+	hi_filter : 
+	Vector8_dot_fast 
+	generic map
+	(
+		IN_SIZE         => 32,
+		IN_FRAC_SIZE    => 23,
+		ADD_1_SIZE      => 32,
+		ADD_1_FRAC_SIZE => 23,
+		ADD_2_SIZE      => 32,
+		ADD_2_FRAC_SIZE => 23,
+		ADD_3_SIZE      => 32,
+		ADD_3_FRAC_SIZE => 23,
+		OUT_SIZE        => 32,
+		OUT_FRAC_SIZE   => 23,
+		AUX_SIZE        => 32
+	)
+	port map
+	(
+		clk           => s_axis_aclk,
+		new_op        => do_convolution,
+		op_done       => hi_data_ok,
+		aux_in        => std_logic_vector(to_unsigned(0, 32)),
+		Vector1_input => filter_input,
+		Vector2_input => hi_filter_coeff,
+		output        => hi_data
 	);
 
-	lo_filter : Vector8_dot_fast 
-	port map(
-		clk                      => s_axis_aclk,
-		new_operation_request    => do_convolution,
-		new_operation_request_id => request_id_zero,
-		new_operation_done       => lo_data_ok,
-		Vector1_input            => filter_input,
-		Vector2_input            => lo_filter_coeff,
-		output                   => lo_data
+	lo_filter : 
+	Vector8_dot_fast 
+	generic map
+	(
+		IN_SIZE         => 32,
+		IN_FRAC_SIZE    => 23,
+		ADD_1_SIZE      => 32,
+		ADD_1_FRAC_SIZE => 10,
+		ADD_2_SIZE      => 32,
+		ADD_2_FRAC_SIZE => 23,
+		ADD_3_SIZE      => 32,
+		ADD_3_FRAC_SIZE => 23,
+		OUT_SIZE        => 32,
+		OUT_FRAC_SIZE   => 23,
+		AUX_SIZE        => 32
+	)
+	port map
+	(
+		clk           => s_axis_aclk,
+		new_op        => do_convolution,
+		op_done       => lo_data_ok,
+		aux_in        => std_logic_vector(to_unsigned(0, 32)),
+		Vector1_input => filter_input,
+		Vector2_input => lo_filter_coeff,
+		output        => lo_data
 	);
 
 	filter_input_gen: for i in 7 downto 0 generate
@@ -331,14 +367,14 @@ SCALAR_lo_M_AXIS_inst : SCALAR_M_AXIS
 				if(state = IDLE or state = LESS_THAN_8) then
 					index_1 := 7 - to_integer(data_in_count);
 					index_2 := 8 + to_integer(data_in_count);
-					shift_reg(index_1) <= to_scalar(slave_data);
-					shift_reg(index_2) <= to_scalar(slave_data);
+					shift_reg(index_1) <= slave_data;
+					shift_reg(index_2) <= slave_data;
 				else
 					for I in SHIFT_REG_LEN - 1 downto 1 loop
 						shift_reg(I) <= shift_reg(I-1);
 					end loop;
 					if(slave_data_ok = '1') then
-						shift_reg(0) <= to_scalar(slave_data);
+						shift_reg(0) <= slave_data;
 					else
 						index_1 := to_integer(do_padding_count)*2;
 						if(index_1 > 15) then

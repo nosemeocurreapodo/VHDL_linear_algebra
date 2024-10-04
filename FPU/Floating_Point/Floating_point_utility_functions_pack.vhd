@@ -86,7 +86,7 @@ package body Floating_point_utility_functions_pack is
 			m                                                          := to_unsigned(abs_int, mantissa_size);
 			m_zeros                                                    := count_l_zeros_var(m);
 			fp(size - 2 downto mantissa_size) := std_logic_vector(shift_left(m, m_zeros + 1));
-			fp(mantissa_size - 1 downto 0)    := std_logic_vector(to_unsigned(128, mantissa_size) - m_zeros);
+			fp(mantissa_size - 1 downto 0)    := std_logic_vector(to_unsigned(2**(size - mantissa_size - 2), mantissa_size) - m_zeros);
 			--exponent := floor(log2(abs_int));
 			--quotient := 2.0 ** exponent;
 			--mantissa := abs_int / quotient;
@@ -99,11 +99,15 @@ package body Floating_point_utility_functions_pack is
 	
 	function to_floating_point(float : real; size : integer; mantissa_size : integer) return std_logic_vector is
 		variable fp        : std_logic_vector(size - 1 downto 0);
+		variable exponent_size : integer;
 		variable abs_float : real;
 		variable exponent  : real;
 		variable mantissa  : real;
 		variable quotient  : real;
 	begin
+
+		exponent_size := size - mantissa_size - 1;
+
 		if (float >= 0.0) then
 			fp(size - 1) := '0';
 		else
@@ -113,14 +117,14 @@ package body Floating_point_utility_functions_pack is
 		abs_float := abs(float);
 
 		if( abs_float = 0.0) then
-			fp(size - 2 downto mantissa_size) := std_logic_vector(to_unsigned(0, size - mantissa_size - 1));
+			fp(size - 2 downto mantissa_size) := std_logic_vector(to_unsigned(0, exponent_size));
 			fp(mantissa_size - 1 downto 0)    := std_logic_vector(to_unsigned(0, mantissa_size));
 		else
 			exponent := floor(log2(abs_float));
 			quotient := 2.0 ** exponent;
 			mantissa := abs_float / quotient;
 			
-			fp(size - 2 downto mantissa_size) := std_logic_vector(to_unsigned(natural(127.0+exponent), size - mantissa_size - 1));
+			fp(size - 2 downto mantissa_size) := std_logic_vector(to_unsigned(natural(2**(exponent_size - 1) - 1 + exponent), size - mantissa_size - 1));
 			fp(mantissa_size - 1 downto 0)    := std_logic_vector(to_unsigned(natural(round(mantissa*(2.0**(mantissa_size)))), mantissa_size));
 		end if;
 

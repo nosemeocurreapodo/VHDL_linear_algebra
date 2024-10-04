@@ -5,11 +5,11 @@ use ieee.numeric_std.all;
 package Floating_point_component_pack is
 	component Floating_point_Adder is
 		generic(
-			IN_SIZE           : integer := 32;
-			IN_MANTISSA_SIZE  : integer := 23;
-			OUT_SIZE          : integer := 32;
-			OUT_MANTISSA_SIZE : integer := 23;
-			AUX_SIZE          : integer := 32
+			IN_SIZE           : integer;-- := 32;
+			IN_MANTISSA_SIZE  : integer;-- := 23;
+			OUT_SIZE          : integer;-- := 32;
+			OUT_MANTISSA_SIZE : integer;-- := 23;
+			AUX_SIZE          : integer-- := 32
 		);
 		port(
 			clk       : in  std_logic;
@@ -24,11 +24,11 @@ package Floating_point_component_pack is
 	end component Floating_point_Adder;
 	component Floating_point_Substractor is
 		generic(
-			IN_SIZE           : integer := 32;
-			IN_MANTISSA_SIZE  : integer := 23;
-			OUT_SIZE          : integer := 32;
-			OUT_MANTISSA_SIZE : integer := 23;
-			AUX_SIZE          : integer := 32
+			IN_SIZE           : integer;-- := 32;
+			IN_MANTISSA_SIZE  : integer;-- := 23;
+			OUT_SIZE          : integer;-- := 32;
+			OUT_MANTISSA_SIZE : integer;-- := 23;
+			AUX_SIZE          : integer-- := 32
 		);
 		port(
 			clk       : in  std_logic;
@@ -43,11 +43,11 @@ package Floating_point_component_pack is
 	end component Floating_point_Substractor;
 	component Floating_Point_Multiplier is
 		generic(
-			IN_SIZE           : integer := 32;
-			IN_MANTISSA_SIZE  : integer := 23;
-			OUT_SIZE          : integer := 32;
-			OUT_MANTISSA_SIZE : integer := 23;
-			AUX_SIZE          : integer := 32
+			IN_SIZE           : integer;-- := 32;
+			IN_MANTISSA_SIZE  : integer;-- := 23;
+			OUT_SIZE          : integer;-- := 32;
+			OUT_MANTISSA_SIZE : integer;-- := 23;
+			AUX_SIZE          : integer-- := 32
 		);
 		port(clk       : in  std_logic;
 			 opa       : in  std_logic_vector(IN_SIZE - 1 downto 0);
@@ -60,11 +60,11 @@ package Floating_point_component_pack is
 	end component Floating_Point_Multiplier;
 	component Floating_Point_Divider is
 		generic(
-			IN_SIZE           : integer := 32;
-			IN_MANTISSA_SIZE  : integer := 23;
-			OUT_SIZE          : integer := 32;
-			OUT_MANTISSA_SIZE : integer := 23;
-			AUX_SIZE          : integer := 32
+			IN_SIZE           : integer;-- := 32;
+			IN_MANTISSA_SIZE  : integer;-- := 23;
+			OUT_SIZE          : integer;-- := 32;
+			OUT_MANTISSA_SIZE : integer;-- := 23;
+			AUX_SIZE          : integer-- := 32
 		);
 		port(clk       : in  std_logic;
 			 opa       : in  std_logic_vector(IN_SIZE - 1 downto 0);

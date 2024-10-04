@@ -1,8 +1,8 @@
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
-use work.request_id_pack.all;
-use work.Fixed_point_definition.all;
+
+use work.Fixed_point_utility_functions_pack.all;
 use work.Fixed_point_unit_interface_pack.all;
 use work.FPU_unit_common_pack.all;
 

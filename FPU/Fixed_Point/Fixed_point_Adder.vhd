@@ -39,7 +39,12 @@ begin
 			opa_1    <= opa;
 			opb_1    <= opb;
 			aux_1    <= aux_in;
-			new_op_1 <= new_op;
+			-- seems to be important, otherwise we propagate undifined states during simulation
+			if(new_op = '1') then
+				new_op_1 <= '1';
+			else
+				new_op_1 <= '0';
+			end if;
 
 			-- stage 2 -- do adition
 			out_2    <= std_logic_vector(signed(opa_1(IN_SIZE -1) & opa_1) + signed(opb_1));

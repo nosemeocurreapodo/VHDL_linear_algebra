@@ -17,7 +17,7 @@ entity S00_AXI is
 	port (
 		-- Users to add ports here
 
-		data_in_len : out unsinged(31 downto 0);
+		data_in_len : out std_logic_vector(31 downto 0);
 
 		-- User ports ends
 		-- Do not modify the ports beyond this line

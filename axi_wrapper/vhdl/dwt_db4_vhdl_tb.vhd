@@ -3,10 +3,9 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 use ieee.math_real.all;
 
-use work.request_id_pack.all;
-use work.FPU_definitions_pack.all;
-use work.Matrix_definition_pack.all;
+use work.Matrix_definitions_pack.all;
 use work.Matrix_component_pack.all;
+use work.FPU_utility_functions_pack.all;
 
 entity dwt_db4_vhdl_tb is
 end entity dwt_db4_vhdl_tb;
@@ -15,6 +14,7 @@ architecture rtl of dwt_db4_vhdl_tb is
 
 	component SCALAR_M_AXIS is
 		generic (
+		    SCALAR_SIZE : integer := 32;
 			C_M_AXIS_TDATA_WIDTH	: integer	:= 32;
 			SCALAR_FIFO_DEPTH	: integer	:= 32
 		);
@@ -31,10 +31,11 @@ architecture rtl of dwt_db4_vhdl_tb is
 			M_AXIS_TLAST	: out std_logic;
 			M_AXIS_TREADY	: in std_logic
 		);
-	end component SCALAR_M_AXIS;
+	end component;
 
 	component SCALAR_S_AXIS is
 		generic (
+		    SCALAR_SIZE : integer := 32;
 			C_S_AXIS_TDATA_WIDTH	: integer	:= 32
 		);
 		port (
@@ -47,10 +48,11 @@ architecture rtl of dwt_db4_vhdl_tb is
 			S_AXIS_TREADY	: out std_logic;
 			S_AXIS_TDATA	: in std_logic_vector(C_S_AXIS_TDATA_WIDTH-1 downto 0);
 			S_AXIS_TSTRB	: in std_logic_vector((C_S_AXIS_TDATA_WIDTH/8)-1 downto 0);
+			S_AXIS_TKEEP	: in std_logic_vector((C_S_AXIS_TDATA_WIDTH/8)-1 downto 0);
 			S_AXIS_TLAST	: in std_logic;
 			S_AXIS_TVALID	: in std_logic
 		);
-	end component SCALAR_S_AXIS;
+	end component;
 
 	component dwt_db4_vhdl is
 		generic (
@@ -66,6 +68,7 @@ architecture rtl of dwt_db4_vhdl_tb is
 			s_axis_tready	: out std_logic;
 			s_axis_tdata	: in std_logic_vector(C_S00_AXIS_TDATA_WIDTH-1 downto 0);
 			s_axis_tstrb	: in std_logic_vector((C_S00_AXIS_TDATA_WIDTH/8)-1 downto 0);
+			s_axis_tkeep	: in std_logic_vector((C_S00_AXIS_TDATA_WIDTH/8)-1 downto 0);
 			s_axis_tlast	: in std_logic;
 			s_axis_tvalid	: in std_logic;
 	
@@ -95,13 +98,13 @@ architecture rtl of dwt_db4_vhdl_tb is
 	signal clk : std_logic := '1';
 	signal rst : std_logic := '0';
 
-	signal scalar_input        : std_logic_vector(scalar_size - 1 downto 0) := std_logic_vector(to_unsigned(0, scalar_size));
+	signal scalar_input        : std_logic_vector(31 downto 0) := std_logic_vector(to_unsigned(0, 32));
 	signal scalar_input_ok     : std_logic := '0';
 
-	signal hi_data             : std_logic_vector(scalar_size - 1 downto 0) := std_logic_vector(to_unsigned(0, scalar_size));
+	signal hi_data             : std_logic_vector(31 downto 0) := std_logic_vector(to_unsigned(0, 32));
 	signal hi_data_ok          : std_logic := '0';
 	signal hi_data_last        : std_logic := '0';
-	signal lo_data             : std_logic_vector(scalar_size - 1 downto 0) := std_logic_vector(to_unsigned(0, scalar_size));
+	signal lo_data             : std_logic_vector(31 downto 0) := std_logic_vector(to_unsigned(0, 32));
 	signal lo_data_ok          : std_logic := '0';
 	signal lo_data_last        : std_logic := '0';
 	  
@@ -110,7 +113,7 @@ architecture rtl of dwt_db4_vhdl_tb is
 
 	signal counter : integer := 0;
 	
-	constant scalar_vector_len : integer := 5121;
+	constant scalar_vector_len : integer := 32;
 	constant reset_len         : integer := 32;  
 	constant AXIS_TDATA_WIDTH : integer := 32;
 
@@ -168,6 +171,7 @@ begin
 		S_AXIS_TREADY	=> hi_AXIS_TREADY,
 		S_AXIS_TDATA	=> hi_AXIS_TDATA,
 		S_AXIS_TSTRB	=> hi_AXIS_TSTRB,
+		S_AXIS_TKEEP	=> hi_AXIS_TKEEP,
 		S_AXIS_TLAST	=> hi_AXIS_TLAST,
 		S_AXIS_TVALID	=> hi_AXIS_TVALID
 	);
@@ -185,6 +189,7 @@ begin
 		S_AXIS_TREADY	=> lo_AXIS_TREADY,
 		S_AXIS_TDATA	=> lo_AXIS_TDATA,
 		S_AXIS_TSTRB	=> lo_AXIS_TSTRB,
+		S_AXIS_TKEEP	=> lo_AXIS_TKEEP,
 		S_AXIS_TLAST	=> lo_AXIS_TLAST,
 		S_AXIS_TVALID	=> lo_AXIS_TVALID
 	);
@@ -202,6 +207,7 @@ begin
 			s_axis_tready	=> S_AXIS_TREADY,
 			s_axis_tdata	=> S_AXIS_TDATA,
 			s_axis_tstrb	=> S_AXIS_TSTRB,
+			s_axis_tkeep	=> S_AXIS_TKEEP,
 			s_axis_tlast	=> S_AXIS_TLAST,
 			s_axis_tvalid	=> S_AXIS_TVALID,
 	
@@ -246,12 +252,12 @@ begin
 					if (counter = reset_len-1) then
 						state <= FEEDING;
 						scalar_input_ok <= '0';
-						scalar_input <= scalar_to_std_logic_vector(to_scalar(0));
+						scalar_input <= to_scalar(0, 32, 23);
 					end if;
 				when FEEDING =>
 					--uniform(seed1, seed2, rand); -- generate random number
 					rand := real(counter - reset_len);
-					scalar_input <= scalar_to_std_logic_vector(to_scalar(rand));
+					scalar_input <= to_scalar(rand, 32, 23);
 					scalar_input_ok <= '1';
 					if(counter = scalar_vector_len + reset_len - 1) then
 					    state <= BUSY;
@@ -259,14 +265,14 @@ begin
 					
                 when BUSY =>
 					scalar_input_ok <= '0';
-					scalar_input <= scalar_to_std_logic_vector(to_scalar(0));
-                    if(counter = scalar_vector_len*2) then
+					scalar_input <= to_scalar(0, 32, 23);
+                    if(counter = scalar_vector_len*10) then
 						state <= WAITING;
 					end if;
                 
                 when WAITING =>
 					scalar_input_ok <= '0';
-					scalar_input <= scalar_to_std_logic_vector(to_scalar(0));
+					scalar_input <= to_scalar(0, 32, 23);
 					state <= READY;
 
 				when READY =>

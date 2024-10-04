@@ -7,11 +7,11 @@ use work.FPU_utility_functions.all;
 
 entity Floating_Point_Multiplier is
 	generic(
-		IN_SIZE           : integer := 32;
-		IN_MANTISSA_SIZE  : integer := 23;
-		OUT_SIZE          : integer := 32;
-		OUT_MANTISSA_SIZE : integer := 23;
-		AUX_SIZE          : integer := 32
+		IN_SIZE           : integer;-- := 32;
+		IN_MANTISSA_SIZE  : integer;-- := 23;
+		OUT_SIZE          : integer;-- := 32;
+		OUT_MANTISSA_SIZE : integer;-- := 23;
+		AUX_SIZE          : integer-- := 32
 	);
 	port(clk       : in  std_logic;
 		 opa       : in  std_logic_vector(IN_SIZE - 1 downto 0);
@@ -25,11 +25,14 @@ end entity Floating_Point_Multiplier;
 
 architecture RTL of Floating_Point_Multiplier is
 
+	constant IN_EXPONENT_SIZE : integer := IN_SIZE - IN_MANTISSA_SIZE - 1;
+	constant OUT_EXPONENT_SIZE : integer := OUT_SIZE - OUT_MANTISSA_SIZE - 1;
+
 	-- stage 1
 	signal opa_sign_1      : std_logic;
 	signal opb_sign_1      : std_logic;
-	signal opa_exponent_1  : std_logic_vector(IN_SIZE - IN_MANTISSA_SIZE - 2 downto 0);
-	signal opb_exponent_1  : std_logic_vector(IN_SIZE - IN_MANTISSA_SIZE - 2 downto 0);
+	signal opa_exponent_1  : std_logic_vector(IN_EXPONENT_SIZE - 1 downto 0);
+	signal opb_exponent_1  : std_logic_vector(IN_EXPONENT_SIZE - 1 downto 0);
 	signal opa_mantissa_1  : std_logic_vector(IN_MANTISSA_SIZE - 1 downto 0);
 	signal opb_mantissa_1  : std_logic_vector(IN_MANTISSA_SIZE - 1 downto 0);
 
@@ -38,8 +41,8 @@ architecture RTL of Floating_Point_Multiplier is
 
 	-- stage 2 sign and unnormalization
 	signal sign_2 : std_logic;
-	signal opa_exponent_2 : signed(IN_SIZE - IN_MANTISSA_SIZE - 2 downto 0);
-	signal opb_exponent_2 : signed(IN_SIZE - IN_MANTISSA_SIZE - 2 downto 0);
+	signal opa_exponent_2 : signed(IN_EXPONENT_SIZE - 1 downto 0);
+	signal opb_exponent_2 : signed(IN_EXPONENT_SIZE - 1 downto 0);
 	signal opa_mantissa_2 : std_logic_vector(IN_MANTISSA_SIZE downto 0);
 	signal opb_mantissa_2 : std_logic_vector(IN_MANTISSA_SIZE downto 0);
 
@@ -48,7 +51,7 @@ architecture RTL of Floating_Point_Multiplier is
 
 	-- stage 3 add and multiplication
 	signal sign_3 : std_logic;
-	signal exponent_3 : unsigned(IN_SIZE - IN_MANTISSA_SIZE - 2 downto 0);
+	signal exponent_3 : unsigned(IN_EXPONENT_SIZE - 1 downto 0);
 	signal mantissa_3 : unsigned((IN_MANTISSA_SIZE + 1) * 2 - 1 downto 0);
 
 	signal new_request_3 : std_logic;
@@ -60,7 +63,7 @@ architecture RTL of Floating_Point_Multiplier is
 	--type exponent_array is array (num_mult_pipe_stages - 1 downto 0) of unsigned(IN_SIZE - IN_MANTISSA_SIZE - 2 downto 0);
 	--type mantissa_array is array (num_mult_pipe_stages - 1 downto 0) of unsigned((IN_MANTISSA_SIZE + 1) * 2 - 1 downto 0);
 	--type aux_array is array (num_mult_pipe_stages - 1 downto 0) of std_logic_vector(AUX_SIZE - 1 downto 0);
-	type exponent_array is array (integer range<>) of unsigned(IN_SIZE - IN_MANTISSA_SIZE - 2 downto 0);
+	type exponent_array is array (integer range<>) of unsigned(IN_EXPONENT_SIZE - 1 downto 0);
 	type mantissa_array is array (integer range<>) of unsigned((IN_MANTISSA_SIZE + 1) * 2 - 1 downto 0);
 	type aux_array is array (integer range<>) of std_logic_vector(AUX_SIZE - 1 downto 0);
 
@@ -81,15 +84,16 @@ architecture RTL of Floating_Point_Multiplier is
 	signal new_request_5    : std_logic;
 	signal aux_5            : std_logic_vector(AUX_SIZE - 1 downto 0);
 	signal sign_5           : std_logic;
-	signal exponent_5       : unsigned(OUT_SIZE - OUT_MANTISSA_SIZE - 2 downto 0);
+	signal exponent_5       : unsigned(IN_SIZE - IN_MANTISSA_SIZE - 2 downto 0);
 	signal mantissa_5       : unsigned((IN_MANTISSA_SIZE + 1) * 2 - 1 downto 0);
-	
+	signal l_zeros_5        : integer;
+
 	-- stage 6
 	signal new_request_6    : std_logic;
 	signal aux_6            : std_logic_vector(AUX_SIZE - 1 downto 0);
 	signal sign_6           : std_logic;
-	signal exponent_6       : unsigned(OUT_SIZE - OUT_MANTISSA_SIZE - 2 downto 0);
-	signal mantissa_6       : unsigned(OUT_MANTISSA_SIZE - 1 downto 0);
+	signal exponent_6       : unsigned(IN_SIZE - IN_MANTISSA_SIZE - 2 downto 0);
+	signal mantissa_6       : unsigned((IN_MANTISSA_SIZE + 1) * 2 - 1 downto 0);
 
 begin
 	process(clk)
@@ -104,12 +108,17 @@ begin
 			opa_mantissa_1  <= get_mantissa(opa, IN_MANTISSA_SIZE);
 			opb_mantissa_1  <= get_mantissa(opb, IN_MANTISSA_SIZE);
 			aux_1           <= aux_in;
-			new_request_1   <= new_op;
+			-- seems to be important, otherwise we propagate undifined states during simulation
+			if(new_op = '1') then
+				new_request_1 <= '1';
+			else
+				new_request_1 <= '0';
+			end if;
 
 			-- stage 2 sign and unnormalization
 			sign_2         <= opa_sign_1 xor opb_sign_1;
-			opa_exponent_2 <= signed(opa_exponent_1) - 127;
-			opb_exponent_2 <= signed(opb_exponent_1) - 127;
+			opa_exponent_2 <= signed(opa_exponent_1) - 2**(IN_SIZE - IN_MANTISSA_SIZE - 2) - 1; -- -127;
+			opb_exponent_2 <= signed(opb_exponent_1) - 2**(IN_SIZE - IN_MANTISSA_SIZE - 2) - 1;
 			if(unsigned(opa_exponent_1) = to_unsigned(0, opa_exponent_1'length)) then
 				opa_mantissa_2 <= '0' & opa_mantissa_1;
 			else
@@ -126,7 +135,7 @@ begin
 
 			-- stage 3 add and multiply
 			sign_3     <= sign_2;
-			exponent_3 <= unsigned(opa_exponent_2 + opb_exponent_2 + 128);
+			exponent_3 <= unsigned(opa_exponent_2 + opb_exponent_2 + 2**(IN_SIZE - IN_MANTISSA_SIZE - 2) );
 			mantissa_3 <= unsigned(opa_mantissa_2) * unsigned(opb_mantissa_2);
 
 			aux_3          <= aux_2;
@@ -155,47 +164,65 @@ begin
 			mantissa_4    <= mult_pipe_mantissa(num_mult_pipe_stages - 1);
 
 			-- stage 5 -- count leading zeros
-			--sign_5        <= sign_4;
-			--aux_5         <= aux_4;
-			--new_request_5 <= new_request_4;
-			--exponent_5    <= exponent_4;
-			--mantissa_5    <= mantissa_4;
-			--l_zeros_5     <= count_l_zeros(mantissa_4);
+			sign_5        <= sign_4;
+			aux_5         <= aux_4;
+			new_request_5 <= new_request_4;
+			exponent_5    <= exponent_4;
+			mantissa_5    <= mantissa_4;
+			l_zeros_5     <= count_l_zeros(mantissa_4);
 
 			-- stage 6 shift left
-			--sign_6 <= sign_5;
-			--if(mantissa_5 = to_unsigned(0, mantissa_5'length)) then
-			--	exponent_6 <= to_unsigned(0, exponent_6'length);
-			--	mantissa_6 <= to_unsigned(0, mantissa_6'length);
-			--else
-			--	mantissa_6 <= shift_left(mantissa_5, l_zeros_5 + 1);
-			--	exponent_6 <= exponent_5 + 1 - l_zeros_5;
-			--end if;
-			--new_operation_6 <= new_operation_5;
-			--aux_6 <= aux_5;
-
-			-- stage 5 --normalization
-			new_request_6 <= new_request_4;
-			aux_6         <= aux_4;
-
-			if(mantissa_4 = to_unsigned(0, mantissa_4'length)) then
+			if(mantissa_5 = to_unsigned(0, mantissa_5'length)) then
 				exponent_6 <= to_unsigned(0, exponent_6'length);
 				mantissa_6 <= to_unsigned(0, mantissa_6'length);
-				sign_6     <= '0';
-			elsif(mantissa_4(mantissa_4'length - 1) = '1') then
-				mantissa_6  <= mantissa_4(mantissa_4'length - 2 downto mantissa_4'length - 2 - OUT_MANTISSA_SIZE + 1);
-				exponent_6  <= exponent_4;
-				sign_6      <= sign_4;
+				sign_6 <= '0';
 			else
-				mantissa_6  <= mantissa_4(mantissa_4'length - 3 downto mantissa_4'length - 3 - OUT_MANTISSA_SIZE + 1);
-				exponent_6  <= exponent_4 - 1;
-				sign_6      <= sign_4;
+				mantissa_6 <= shift_left(mantissa_5, l_zeros_5 + 1);
+				exponent_6 <= exponent_5 - l_zeros_5;
+				sign_6 <= sign_5;
 			end if;
+			new_request_6 <= new_request_5;
+			aux_6 <= aux_5;
+
+			-- stage 5 --normalization
+			--new_request_6 <= new_request_4;
+			--aux_6         <= aux_4;
+
+			--if(mantissa_4 = to_unsigned(0, mantissa_4'length)) then
+			--	exponent_6 <= to_unsigned(0, exponent_6'length);
+			--	mantissa_6 <= to_unsigned(0, mantissa_6'length);
+			--	sign_6     <= '0';
+			--elsif(mantissa_4(mantissa_4'length - 1) = '1') then
+			--	mantissa_6  <= mantissa_4(mantissa_4'length - 2 downto mantissa_4'length - 2 - OUT_MANTISSA_SIZE + 1);
+			--	exponent_6  <= exponent_4(exponent_6'length - 1 downto 0);
+			--	sign_6      <= sign_4;
+			--else
+			--	mantissa_6  <= mantissa_4(mantissa_4'length - 3 downto mantissa_4'length - 3 - OUT_MANTISSA_SIZE + 1);
+			--	exponent_6  <= exponent_4(exponent_6'length - 1 downto 0) - 1;
+			--	sign_6      <= sign_4;
+			--end if;
 
 			-- stage output
+			--output(OUT_SIZE - 1)                          <= sign_6;
+			--output(OUT_SIZE - 2 downto OUT_MANTISSA_SIZE) <= std_logic_vector(exponent_6);
+			--output(OUT_MANTISSA_SIZE - 1 downto 0)        <= std_logic_vector(mantissa_6);
+			--aux_out                                       <= aux_6;
+			--op_ready                                      <= new_request_6;
+
 			output(OUT_SIZE - 1)                          <= sign_6;
-			output(OUT_SIZE - 2 downto OUT_MANTISSA_SIZE) <= std_logic_vector(exponent_6);
-			output(OUT_MANTISSA_SIZE - 1 downto 0)        <= std_logic_vector(mantissa_6);
+
+			if(OUT_SIZE - OUT_MANTISSA_SIZE > IN_SIZE - IN_MANTISSA_SIZE) then
+				output(OUT_SIZE - 2 downto OUT_MANTISSA_SIZE) <= std_logic_vector(to_unsigned(0, OUT_SIZE - OUT_MANTISSA_SIZE - IN_SIZE + IN_MANTISSA_SIZE)) & std_logic_vector(exponent_6);
+			else
+				output(OUT_SIZE - 2 downto OUT_MANTISSA_SIZE) <= std_logic_vector(exponent_6(OUT_SIZE - OUT_MANTISSA_SIZE - 2 downto 0));
+			end if;
+			
+			if(OUT_MANTISSA_SIZE > (IN_MANTISSA_SIZE + 1)*2) then
+				output(OUT_MANTISSA_SIZE - 1 downto 0)  <= std_logic_vector(mantissa_6) & std_logic_vector(to_unsigned(0, OUT_MANTISSA_SIZE - (IN_MANTISSA_SIZE + 1)*2));
+			else
+				output(OUT_MANTISSA_SIZE - 1 downto 0)  <= std_logic_vector(mantissa_6(mantissa_6'length - 1 downto mantissa_6'length - OUT_MANTISSA_SIZE));
+			end if;
+
 			aux_out                                       <= aux_6;
 			op_ready                                      <= new_request_6;
 

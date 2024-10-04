@@ -15,7 +15,7 @@ end package;
 
 package body FPU_utility_functions_pack is
 
-	function to_scalar(int : integer; size : integer; frac_size : integer) return scalar is
+	function to_scalar(int : integer; size : integer; frac_size : integer) return std_logic_vector is
 		variable fp : std_logic_vector(size - 1 downto 0);
 	begin
 		--fp := to_fixed_point(int, size, frac_size);
@@ -23,7 +23,7 @@ package body FPU_utility_functions_pack is
 		return fp;
 	end function;
 
-	function to_scalar(float : real; size : integer; frac_size : integer) return scalar is
+	function to_scalar(float : real; size : integer; frac_size : integer) return std_logic_vector is
 		variable fp : std_logic_vector(size - 1 downto 0);
 	begin
 		--fp := to_fixed_point(float, size, frac_size);

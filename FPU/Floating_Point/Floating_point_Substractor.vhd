@@ -4,11 +4,11 @@ use ieee.numeric_std.all;
 
 entity Floating_point_Substractor is
 	generic(
-		IN_SIZE           : integer := 32;
-		IN_MANTISSA_SIZE  : integer := 23;
-		OUT_SIZE          : integer := 32;
-		OUT_MANTISSA_SIZE : integer := 23;
-		AUX_SIZE          : integer := 32
+		IN_SIZE           : integer;-- := 32;
+		IN_MANTISSA_SIZE  : integer;-- := 23;
+		OUT_SIZE          : integer;-- := 32;
+		OUT_MANTISSA_SIZE : integer;-- := 23;
+		AUX_SIZE          : integer-- := 32
 	);
 	port(
 		clk       : in  std_logic;
@@ -26,11 +26,11 @@ architecture RTL of Floating_point_Substractor is
 
 	component Floating_point_Adder is
 		generic(
-			IN_SIZE           : integer := 32;
-			IN_MANTISSA_SIZE  : integer := 23;
-			OUT_SIZE          : integer := 32;
-			OUT_MANTISSA_SIZE : integer := 23;
-			AUX_SIZE          : integer := 32
+			IN_SIZE           : integer;-- := 32;
+			IN_MANTISSA_SIZE  : integer;-- := 23;
+			OUT_SIZE          : integer;-- := 32;
+			OUT_MANTISSA_SIZE : integer;-- := 23;
+			AUX_SIZE          : integer-- := 32
 		);
 		port(
 			clk       : in  std_logic;
@@ -56,7 +56,8 @@ begin
 		IN_SIZE	          => IN_SIZE,
 		IN_MANTISSA_SIZE  => IN_MANTISSA_SIZE,
 		OUT_SIZE	      => OUT_SIZE,
-		OUT_MANTISSA_SIZE => OUT_MANTISSA_SIZE
+		OUT_MANTISSA_SIZE => OUT_MANTISSA_SIZE,
+		AUX_SIZE          => AUX_SIZE
 	)
 	port map(
 		clk      => clk,

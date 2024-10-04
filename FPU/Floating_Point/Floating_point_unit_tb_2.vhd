@@ -32,10 +32,14 @@ architecture rtl of Floating_point_unit_tb_2 is
 begin
 
 	-- instantiate fpu
-	FPU_slow_tb_INSTANTIATION : Floating_point_unit port map(
-			clk     => clk,
-			BUS_in  => BUS_in,
-			BUS_out => BUS_out);
+	FPU_slow_tb_INSTANTIATION : 
+	Floating_point_unit 
+	port map
+	(
+		clk     => clk,
+		BUS_in  => BUS_in,
+		BUS_out => BUS_out
+	);
 
 	---------------------------------------------------------------------------
 	-- toggle clock
@@ -64,8 +68,8 @@ begin
 	begin
 		if (rising_edge(clk)) then
 			BUS_in.new_request <= '1';
-			BUS_in.opa         <= to_floating_point(opa, SIZE, MANTISSA_SIZE);
-			BUS_in.opb         <= to_floating_point(opb, SIZE, MANTISSA_SIZE);
+			BUS_in.opa         <= to_floating_point(opa, INPUT_SIZE, INPUT_MANTISSA_SIZE);
+			BUS_in.opb         <= to_floating_point(opb, INPUT_SIZE, INPUT_MANTISSA_SIZE);
 			--FPU_BUS_in.opa         <= to_fixed_point(to_signed(opa, fixed_point_size));
 			--FPU_BUS_in.opb         <= to_fixed_point(to_signed(opb, fixed_point_size));
 			BUS_in.operation   <= op;
@@ -87,9 +91,10 @@ begin
 					output := opa / opb;
 			end case;
 
-			BUS_in.aux <= to_floating_point(output, SIZE, MANTISSA_SIZE);
+			BUS_in.aux <= to_floating_point(output, OUTPUT_SIZE, OUTPUT_MANTISSA_SIZE);
 
 			opa := opa + opa_increment;
+			--uniform(seed1, seed2, opa); -- generate random number
 			if (opa > int_max) then
 				opa := int_min;
 				opb := opb + opb_increment;

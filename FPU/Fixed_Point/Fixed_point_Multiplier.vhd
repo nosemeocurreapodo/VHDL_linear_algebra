@@ -42,6 +42,11 @@ architecture RTL of Fixed_point_Multiplier is
 	signal pipe_request  : std_logic_vector(num_pipe_stages - 1 downto 0);
 	signal pipe_aux      : aux_array;
 	signal pipe_output   : signed_array;
+
+	-- stage 2
+	signal request_2 : std_logic;
+	signal aux_2 : std_logic_vector(AUX_SIZE - 1 downto 0);
+	signal out_2 : signed(IN_SIZE*2 - 1 downto 0);
 	
 begin
 	process(clk)
@@ -53,7 +58,11 @@ begin
 			opa_1     <= opa;
 			opb_1     <= opb;
 			aux_1     <= aux_in;
-			request_1 <= new_op;
+			if(new_op = '1') then
+				request_1 <= '1';
+			else
+				request_1 <= '0';
+			end if;
 
 			-- mult pipeline stages
 			pipe_request(0) <= request_1;
@@ -67,12 +76,17 @@ begin
 				pipe_output(I)  <= pipe_output(I - 1);
 			end loop;
 
+			-- stage 2
+			request_2 <= pipe_request(num_pipe_stages - 1);
+			aux_2     <= pipe_aux(num_pipe_stages - 1);
+			out_2     <= pipe_output(num_pipe_stages - 1);
+
 			-- output stage 
-			op_ready <= pipe_request(num_pipe_stages - 1);
-			aux_out  <= pipe_aux(num_pipe_stages - 1);
+			op_ready <= request_2;
+			aux_out  <= aux_2;
 			-- the fraction point is in IN_FRAC_SIZE*2
 			-- from there, move - OUT_FRAC_SIZE to take how many OUT_FRAC_SIZE you want
-			output <= std_logic_vector(pipe_output(num_pipe_stages - 1)(OUT_SIZE + 2*IN_FRAC_SIZE - OUT_FRAC_SIZE - 1 downto 2*IN_FRAC_SIZE - OUT_FRAC_SIZE));
+			output <= std_logic_vector(out_2(OUT_SIZE + 2*IN_FRAC_SIZE - OUT_FRAC_SIZE - 1 downto 2*IN_FRAC_SIZE - OUT_FRAC_SIZE));
 		end if;
 	end process;
 end architecture RTL;
