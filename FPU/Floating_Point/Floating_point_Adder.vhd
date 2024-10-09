@@ -65,21 +65,21 @@ architecture RTL of Floating_point_Adder is
 	-- stage 4
 	signal opa_mantissa_4    : signed(IN_MANTISSA_SIZE + 2 downto 0);
 	signal opb_mantissa_4    : signed(IN_MANTISSA_SIZE + 2 downto 0);
-	signal exponent_4        : unsigned(IN_EXPONENT_SIZE - 1 downto 0);
+	signal exponent_4        : signed(IN_EXPONENT_SIZE - 1 downto 0);
 
 	signal aux_4      : std_logic_vector(AUX_SIZE - 1 downto 0);
 	signal new_operation_4   : std_logic;
 
 	-- stage 5
 	signal mantissa_5 : signed(IN_MANTISSA_SIZE + 2 downto 0);
-	signal exponent_5 : unsigned(IN_EXPONENT_SIZE - 1 downto 0);
+	signal exponent_5 : signed(IN_EXPONENT_SIZE - 1 downto 0);
 
 	signal aux_5      : std_logic_vector(AUX_SIZE - 1 downto 0);
 	signal new_operation_5   : std_logic;
 
 	-- stage 6
 	signal sign_6     : std_logic;
-	signal exponent_6 : unsigned(IN_EXPONENT_SIZE - 1 downto 0);
+	signal exponent_6 : signed(IN_EXPONENT_SIZE - 1 downto 0);
 	signal mantissa_6 : unsigned(IN_MANTISSA_SIZE + 2 downto 0);
 
 	signal aux_6    : std_logic_vector(AUX_SIZE - 1 downto 0);
@@ -87,7 +87,7 @@ architecture RTL of Floating_point_Adder is
 
 	-- stage 7
 	signal sign_7     : std_logic;
-	signal exponent_7 : unsigned(IN_EXPONENT_SIZE - 1 downto 0);
+	signal exponent_7 : signed(OUT_EXPONENT_SIZE - 1 downto 0);
 	signal mantissa_7 : unsigned(IN_MANTISSA_SIZE + 2 downto 0);
 	signal l_zeros_7 : integer;
 
@@ -96,7 +96,7 @@ architecture RTL of Floating_point_Adder is
 
 	-- stage 8
 	signal sign_8     : std_logic;
-	signal exponent_8 : unsigned(IN_EXPONENT_SIZE - 1 downto 0);
+	signal exponent_8 : signed(OUT_EXPONENT_SIZE - 1 downto 0);
 	signal mantissa_8 : unsigned(IN_MANTISSA_SIZE + 2 downto 0);
 
 	signal aux_8    : std_logic_vector(AUX_SIZE - 1 downto 0);
@@ -170,7 +170,7 @@ begin
 			-- stage 4 shift_right
 			opb_mantissa_4  <= shift_right(opb_mantissa_3, to_integer(exponent_diff_3));
 			opa_mantissa_4  <= opa_mantissa_3;
-			exponent_4      <= unsigned(exponent_3 + integer(2**(OUT_EXPONENT_SIZE - 1) - 1 )); -- + 128 -- idn why the extra -1
+			exponent_4      <= exponent_3;
 
 			aux_4           <= aux_3;
 			new_operation_4 <= new_operation_3;
@@ -199,14 +199,20 @@ begin
 			sign_7          <= sign_6;
 			aux_7           <= aux_6;
 			new_operation_7 <= new_operation_6;
-			exponent_7 <= exponent_6;
+
+			if(OUT_EXPONENT_SIZE > IN_EXPONENT_SIZE) then
+				exponent_7 <= exponent_6 + to_signed(integer(2**(OUT_EXPONENT_SIZE - 1) - 1), OUT_EXPONENT_SIZE); -- + 128, idnw the extra -1
+			else
+				exponent_7 <= exponent_6(OUT_EXPONENT_SIZE - 1 downto 0) + to_signed(integer(2**(OUT_EXPONENT_SIZE - 1) - 1), OUT_EXPONENT_SIZE); -- + 128, idnw the extra -1
+			end if;
+
 			mantissa_7 <= mantissa_6;
 			l_zeros_7 <= count_l_zeros(mantissa_6);
 
 			-- stage 8 shift left
 			sign_8 <= sign_7;
 			if(mantissa_7 = to_unsigned(0, mantissa_7'length)) then
-				exponent_8 <= to_unsigned(0, exponent_8'length);
+				exponent_8 <= to_signed(0, exponent_8'length);
 				mantissa_8 <= to_unsigned(0, mantissa_8'length);
 			else
 				mantissa_8 <= shift_left(mantissa_7, l_zeros_7 + 1);
@@ -248,11 +254,13 @@ begin
 			-- stage output
 			output(OUT_SIZE - 1)                          <= sign_8;
 
-			if(OUT_EXPONENT_SIZE > IN_EXPONENT_SIZE) then
-				output(OUT_SIZE - 2 downto OUT_MANTISSA_SIZE) <= std_logic_vector(to_unsigned(0, OUT_EXPONENT_SIZE - IN_EXPONENT_SIZE)) & std_logic_vector(exponent_8);
-			else
-				output(OUT_SIZE - 2 downto OUT_MANTISSA_SIZE) <= std_logic_vector(exponent_8(OUT_EXPONENT_SIZE - 1 downto 0));
-			end if;
+			output(OUT_SIZE - 2 downto OUT_MANTISSA_SIZE) <= std_logic_vector(exponent_8);
+
+			--if(OUT_EXPONENT_SIZE > IN_EXPONENT_SIZE) then
+			--	output(OUT_SIZE - 2 downto OUT_MANTISSA_SIZE) <= std_logic_vector(to_unsigned(0, OUT_EXPONENT_SIZE - IN_EXPONENT_SIZE)) & std_logic_vector(exponent_8);
+			--else
+			--	output(OUT_SIZE - 2 downto OUT_MANTISSA_SIZE) <= std_logic_vector(exponent_8(OUT_EXPONENT_SIZE - 1 downto 0));
+			--end if;
 			
 			if(OUT_MANTISSA_SIZE > IN_MANTISSA_SIZE + 3) then
 				output(OUT_MANTISSA_SIZE - 1 downto 0)        <= std_logic_vector(mantissa_8) & std_logic_vector(to_unsigned(0, OUT_MANTISSA_SIZE - IN_MANTISSA_SIZE - 3));

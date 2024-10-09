@@ -51,7 +51,7 @@ architecture RTL of Floating_Point_Multiplier is
 
 	-- stage 3 add and multiplication
 	signal sign_3 : std_logic;
-	signal exponent_3 : unsigned(IN_EXPONENT_SIZE - 1 downto 0);
+	signal exponent_3 : signed(IN_EXPONENT_SIZE - 1 downto 0);
 	signal mantissa_3 : unsigned((IN_MANTISSA_SIZE + 1) * 2 - 1 downto 0);
 
 	signal new_request_3 : std_logic;
@@ -63,7 +63,7 @@ architecture RTL of Floating_Point_Multiplier is
 	--type exponent_array is array (num_mult_pipe_stages - 1 downto 0) of unsigned(IN_SIZE - IN_MANTISSA_SIZE - 2 downto 0);
 	--type mantissa_array is array (num_mult_pipe_stages - 1 downto 0) of unsigned((IN_MANTISSA_SIZE + 1) * 2 - 1 downto 0);
 	--type aux_array is array (num_mult_pipe_stages - 1 downto 0) of std_logic_vector(AUX_SIZE - 1 downto 0);
-	type exponent_array is array (integer range<>) of unsigned(IN_EXPONENT_SIZE - 1 downto 0);
+	type exponent_array is array (integer range<>) of signed(IN_EXPONENT_SIZE - 1 downto 0);
 	type mantissa_array is array (integer range<>) of unsigned((IN_MANTISSA_SIZE + 1) * 2 - 1 downto 0);
 	type aux_array is array (integer range<>) of std_logic_vector(AUX_SIZE - 1 downto 0);
 
@@ -77,14 +77,14 @@ architecture RTL of Floating_Point_Multiplier is
 	signal new_request_4    : std_logic;
 	signal aux_4            : std_logic_vector(AUX_SIZE - 1 downto 0);
 	signal sign_4           : std_logic;
-	signal exponent_4       : unsigned(IN_EXPONENT_SIZE - 1 downto 0);
+	signal exponent_4       : signed(IN_EXPONENT_SIZE - 1 downto 0);
 	signal mantissa_4       : unsigned((IN_MANTISSA_SIZE + 1) * 2 - 1 downto 0);
 
 	-- stage 5
 	signal new_request_5    : std_logic;
 	signal aux_5            : std_logic_vector(AUX_SIZE - 1 downto 0);
 	signal sign_5           : std_logic;
-	signal exponent_5       : unsigned(IN_EXPONENT_SIZE - 1 downto 0);
+	signal exponent_5       : signed(OUT_EXPONENT_SIZE - 1 downto 0);
 	signal mantissa_5       : unsigned((IN_MANTISSA_SIZE + 1) * 2 - 1 downto 0);
 	signal l_zeros_5        : integer;
 
@@ -92,7 +92,7 @@ architecture RTL of Floating_Point_Multiplier is
 	signal new_request_6    : std_logic;
 	signal aux_6            : std_logic_vector(AUX_SIZE - 1 downto 0);
 	signal sign_6           : std_logic;
-	signal exponent_6       : unsigned(IN_EXPONENT_SIZE - 1 downto 0);
+	signal exponent_6       : signed(OUT_EXPONENT_SIZE - 1 downto 0);
 	signal mantissa_6       : unsigned((IN_MANTISSA_SIZE + 1) * 2 - 1 downto 0);
 
 begin
@@ -135,7 +135,7 @@ begin
 
 			-- stage 3 add and multiply
 			sign_3     <= sign_2;
-			exponent_3 <= unsigned(opa_exponent_2 + opb_exponent_2 + integer(2**(OUT_EXPONENT_SIZE - 1)));-- + 128
+			exponent_3 <= opa_exponent_2 + opb_exponent_2;-- + 128
 			mantissa_3 <= unsigned(opa_mantissa_2) * unsigned(opb_mantissa_2);
 
 			aux_3          <= aux_2;
@@ -167,13 +167,19 @@ begin
 			sign_5        <= sign_4;
 			aux_5         <= aux_4;
 			new_request_5 <= new_request_4;
-			exponent_5    <= exponent_4;
+
+			if(OUT_EXPONENT_SIZE > IN_EXPONENT_SIZE) then
+				exponent_5 <= exponent_4 + to_signed(integer(2**(OUT_EXPONENT_SIZE - 1)), OUT_EXPONENT_SIZE);
+			else
+				exponent_5 <= exponent_4(OUT_EXPONENT_SIZE - 1 downto 0) + to_signed(integer(2**(OUT_EXPONENT_SIZE - 1)), OUT_EXPONENT_SIZE);
+			end if;
+			
 			mantissa_5    <= mantissa_4;
 			l_zeros_5     <= count_l_zeros(mantissa_4);
 
 			-- stage 6 shift left
 			if(mantissa_5 = to_unsigned(0, mantissa_5'length)) then
-				exponent_6 <= to_unsigned(0, exponent_6'length);
+				exponent_6 <= to_signed(0, exponent_6'length);
 				mantissa_6 <= to_unsigned(0, mantissa_6'length);
 				sign_6 <= '0';
 			else
@@ -211,11 +217,13 @@ begin
 
 			output(OUT_SIZE - 1)                          <= sign_6;
 
-			if(OUT_EXPONENT_SIZE > IN_EXPONENT_SIZE) then
-				output(OUT_SIZE - 2 downto OUT_MANTISSA_SIZE) <= std_logic_vector(to_unsigned(0, OUT_EXPONENT_SIZE - IN_EXPONENT_SIZE)) & std_logic_vector(exponent_6);
-			else
-				output(OUT_SIZE - 2 downto OUT_MANTISSA_SIZE) <= std_logic_vector(exponent_6(OUT_SIZE - OUT_MANTISSA_SIZE - 2 downto 0));
-			end if;
+			output(OUT_SIZE - 2 downto OUT_MANTISSA_SIZE) <= std_logic_vector(exponent_6);
+
+			--if(OUT_EXPONENT_SIZE > IN_EXPONENT_SIZE) then
+			--	output(OUT_SIZE - 2 downto OUT_MANTISSA_SIZE) <= std_logic_vector(to_unsigned(0, OUT_EXPONENT_SIZE - IN_EXPONENT_SIZE)) & std_logic_vector(exponent_6);
+			--else
+			--	output(OUT_SIZE - 2 downto OUT_MANTISSA_SIZE) <= std_logic_vector(exponent_6(OUT_EXPONENT_SIZE - 1 downto 0));
+			--end if;
 			
 			if(OUT_MANTISSA_SIZE > (IN_MANTISSA_SIZE + 1)*2) then
 				output(OUT_MANTISSA_SIZE - 1 downto 0)  <= std_logic_vector(mantissa_6) & std_logic_vector(to_unsigned(0, OUT_MANTISSA_SIZE - (IN_MANTISSA_SIZE + 1)*2));

@@ -8,8 +8,8 @@ package Floating_point_unit_interface_pack is
 
 	constant INPUT_SIZE           : integer := 32;
 	constant INPUT_MANTISSA_SIZE  : integer := 23;
-	constant OUTPUT_SIZE          : integer := 34;
-	constant OUTPUT_MANTISSA_SIZE : integer := 14;
+	constant OUTPUT_SIZE          : integer := 32;
+	constant OUTPUT_MANTISSA_SIZE : integer := 23;
 	
 	constant AUX_SIZE          : integer := OUTPUT_SIZE;
 
