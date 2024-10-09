@@ -57,13 +57,13 @@ begin
 		-- real
 		variable int_min : real := -2.0**(2);-- -2.0**((mantissa_size)/2-1)+1.0;
 		variable int_max : real :=  2.0**(2);-- 2.0**((mantissa_size)/2-1)-1.0;
-		variable opa_increment : real := 2.0**(-8);--2.0**(-fraction_size);
-		variable opb_increment : real := 2.0**(-8);--2.0**(-fraction_size);
+		variable opa_increment : real := 2.0**(-2);--2.0**(-fraction_size);
+		variable opb_increment : real := 2.0**(-2);--2.0**(-fraction_size);
 		variable opa     : real := int_min;
 		variable opb     : real := int_min;
 		variable output  : real;
 
-		variable op : FPU_operation := ADD;
+		variable op : FPU_operation := MUL;
 
 	begin
 		if (rising_edge(clk)) then
