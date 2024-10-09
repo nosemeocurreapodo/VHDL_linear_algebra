@@ -27,11 +27,14 @@ end entity Floating_point_Adder;
 
 architecture RTL of Floating_point_Adder is
 
+	constant IN_EXPONENT_SIZE : integer := IN_SIZE - IN_MANTISSA_SIZE - 1;
+	constant OUT_EXPONENT_SIZE : integer := OUT_SIZE - OUT_MANTISSA_SIZE - 1;
+
 	-- stage 1
 	signal opa_sign_1      : std_logic;
 	signal opb_sign_1      : std_logic;
-	signal opa_exponent_1  : std_logic_vector(IN_SIZE - IN_MANTISSA_SIZE - 2 downto 0);
-	signal opb_exponent_1  : std_logic_vector(IN_SIZE - IN_MANTISSA_SIZE - 2 downto 0);
+	signal opa_exponent_1  : std_logic_vector(IN_EXPONENT_SIZE - 1 downto 0);
+	signal opb_exponent_1  : std_logic_vector(IN_EXPONENT_SIZE - 1 downto 0);
 	signal opa_mantissa_1  : std_logic_vector(IN_MANTISSA_SIZE - 1 downto 0);
 	signal opb_mantissa_1  : std_logic_vector(IN_MANTISSA_SIZE - 1 downto 0);
 
@@ -41,8 +44,8 @@ architecture RTL of Floating_point_Adder is
 	-- stage 2
 	signal opa_sign_2      : std_logic;
 	signal opb_sign_2      : std_logic;
-	signal opa_exponent_2  : unsigned(IN_SIZE - IN_MANTISSA_SIZE - 2 downto 0);
-	signal opb_exponent_2  : unsigned(IN_SIZE - IN_MANTISSA_SIZE - 2 downto 0);
+	signal opa_exponent_2  : unsigned(IN_EXPONENT_SIZE - 1 downto 0);
+	signal opb_exponent_2  : unsigned(IN_EXPONENT_SIZE - 1 downto 0);
 	signal opa_mantissa_2  : unsigned(IN_MANTISSA_SIZE - 1 downto 0);
 	signal opb_mantissa_2  : unsigned(IN_MANTISSA_SIZE - 1 downto 0);
 
@@ -52,9 +55,9 @@ architecture RTL of Floating_point_Adder is
 	-- stage 3
 	signal opa_mantissa_3    : signed(IN_MANTISSA_SIZE + 2 downto 0);
 	signal opb_mantissa_3    : signed(IN_MANTISSA_SIZE + 2 downto 0);
-	signal exponent_3        : unsigned(IN_SIZE - IN_MANTISSA_SIZE - 2 downto 0);
+	signal exponent_3        : signed(IN_EXPONENT_SIZE - 1 downto 0);
 
-	signal exponent_diff_3   : unsigned(IN_SIZE - IN_MANTISSA_SIZE - 2 downto 0);
+	signal exponent_diff_3   : unsigned(IN_EXPONENT_SIZE - 1 downto 0);
 
 	signal aux_3             : std_logic_vector(AUX_SIZE - 1 downto 0);
 	signal new_operation_3   : std_logic;
@@ -62,21 +65,21 @@ architecture RTL of Floating_point_Adder is
 	-- stage 4
 	signal opa_mantissa_4    : signed(IN_MANTISSA_SIZE + 2 downto 0);
 	signal opb_mantissa_4    : signed(IN_MANTISSA_SIZE + 2 downto 0);
-	signal exponent_4        : unsigned(IN_SIZE - IN_MANTISSA_SIZE - 2 downto 0);
+	signal exponent_4        : unsigned(IN_EXPONENT_SIZE - 1 downto 0);
 
 	signal aux_4      : std_logic_vector(AUX_SIZE - 1 downto 0);
 	signal new_operation_4   : std_logic;
 
 	-- stage 5
 	signal mantissa_5 : signed(IN_MANTISSA_SIZE + 2 downto 0);
-	signal exponent_5 : unsigned(IN_SIZE - IN_MANTISSA_SIZE - 2 downto 0);
+	signal exponent_5 : unsigned(IN_EXPONENT_SIZE - 1 downto 0);
 
 	signal aux_5      : std_logic_vector(AUX_SIZE - 1 downto 0);
 	signal new_operation_5   : std_logic;
 
 	-- stage 6
 	signal sign_6     : std_logic;
-	signal exponent_6 : unsigned(IN_SIZE - IN_MANTISSA_SIZE - 2 downto 0);
+	signal exponent_6 : unsigned(IN_EXPONENT_SIZE - 1 downto 0);
 	signal mantissa_6 : unsigned(IN_MANTISSA_SIZE + 2 downto 0);
 
 	signal aux_6    : std_logic_vector(AUX_SIZE - 1 downto 0);
@@ -84,7 +87,7 @@ architecture RTL of Floating_point_Adder is
 
 	-- stage 7
 	signal sign_7     : std_logic;
-	signal exponent_7 : unsigned(IN_SIZE - IN_MANTISSA_SIZE - 2 downto 0);
+	signal exponent_7 : unsigned(IN_EXPONENT_SIZE - 1 downto 0);
 	signal mantissa_7 : unsigned(IN_MANTISSA_SIZE + 2 downto 0);
 	signal l_zeros_7 : integer;
 
@@ -93,7 +96,7 @@ architecture RTL of Floating_point_Adder is
 
 	-- stage 8
 	signal sign_8     : std_logic;
-	signal exponent_8 : unsigned(IN_SIZE - IN_MANTISSA_SIZE - 2 downto 0);
+	signal exponent_8 : unsigned(IN_EXPONENT_SIZE - 1 downto 0);
 	signal mantissa_8 : unsigned(IN_MANTISSA_SIZE + 2 downto 0);
 
 	signal aux_8    : std_logic_vector(AUX_SIZE - 1 downto 0);
@@ -107,8 +110,8 @@ begin
 			-- stage 1 input registers
 			opa_sign_1 <= get_sign(opa);
 			opb_sign_1 <= get_sign(opb);
-			opa_exponent_1 <= get_exponent(opa, IN_SIZE - IN_MANTISSA_SIZE - 1);
-			opb_exponent_1 <= get_exponent(opb, IN_SIZE - IN_MANTISSA_SIZE - 1);
+			opa_exponent_1 <= get_exponent(opa, IN_EXPONENT_SIZE);
+			opb_exponent_1 <= get_exponent(opb, IN_EXPONENT_SIZE);
 			opa_mantissa_1 <= get_mantissa(opa, IN_MANTISSA_SIZE);
 			opb_mantissa_1 <= get_mantissa(opb, IN_MANTISSA_SIZE);
 			aux_1    <= aux_in;
@@ -159,7 +162,7 @@ begin
 				opb_mantissa_3 <= -signed("001" & std_logic_vector(opb_mantissa_2));
 			end if;
 
-			exponent_3 <= opa_exponent_2;
+			exponent_3 <= signed(opa_exponent_2) - integer(2**(IN_EXPONENT_SIZE - 1) - 1 ); -- - 127
 
 			aux_3           <= aux_2;
 			new_operation_3 <= new_operation_2;
@@ -167,7 +170,7 @@ begin
 			-- stage 4 shift_right
 			opb_mantissa_4  <= shift_right(opb_mantissa_3, to_integer(exponent_diff_3));
 			opa_mantissa_4  <= opa_mantissa_3;
-			exponent_4      <= exponent_3;
+			exponent_4      <= unsigned(exponent_3 + integer(2**(OUT_EXPONENT_SIZE - 1) - 1 )); -- + 128 -- idn why the extra -1
 
 			aux_4           <= aux_3;
 			new_operation_4 <= new_operation_3;
@@ -245,10 +248,10 @@ begin
 			-- stage output
 			output(OUT_SIZE - 1)                          <= sign_8;
 
-			if(OUT_SIZE - OUT_MANTISSA_SIZE > IN_SIZE - IN_MANTISSA_SIZE) then
-				output(OUT_SIZE - 2 downto OUT_MANTISSA_SIZE) <= std_logic_vector(to_unsigned(0, OUT_SIZE - OUT_MANTISSA_SIZE - IN_SIZE + IN_MANTISSA_SIZE)) & std_logic_vector(exponent_8);
+			if(OUT_EXPONENT_SIZE > IN_EXPONENT_SIZE) then
+				output(OUT_SIZE - 2 downto OUT_MANTISSA_SIZE) <= std_logic_vector(to_unsigned(0, OUT_EXPONENT_SIZE - IN_EXPONENT_SIZE)) & std_logic_vector(exponent_8);
 			else
-				output(OUT_SIZE - 2 downto OUT_MANTISSA_SIZE) <= std_logic_vector(exponent_8(OUT_SIZE - OUT_MANTISSA_SIZE - 2 downto 0));
+				output(OUT_SIZE - 2 downto OUT_MANTISSA_SIZE) <= std_logic_vector(exponent_8(OUT_EXPONENT_SIZE - 1 downto 0));
 			end if;
 			
 			if(OUT_MANTISSA_SIZE > IN_MANTISSA_SIZE + 3) then

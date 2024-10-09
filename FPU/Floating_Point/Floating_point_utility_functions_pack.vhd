@@ -124,7 +124,7 @@ package body Floating_point_utility_functions_pack is
 			quotient := 2.0 ** exponent;
 			mantissa := abs_float / quotient;
 			
-			fp(size - 2 downto mantissa_size) := std_logic_vector(to_unsigned(natural(2**(exponent_size - 1) - 1 + exponent), exponent_size));
+			fp(size - 2 downto mantissa_size) := std_logic_vector(to_unsigned(natural(real(2**(exponent_size - 1) - 1) + exponent), exponent_size));
 			fp(mantissa_size - 1 downto 0)    := std_logic_vector(to_unsigned(natural(round(mantissa*(2.0**(mantissa_size)))), mantissa_size));
 		end if;
 

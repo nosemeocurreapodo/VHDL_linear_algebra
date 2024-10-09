@@ -63,7 +63,7 @@ begin
 		variable opb     : real := int_min;
 		variable output  : real;
 
-		variable op : FPU_operation := MUL;
+		variable op : FPU_operation := ADD;
 
 	begin
 		if (rising_edge(clk)) then
