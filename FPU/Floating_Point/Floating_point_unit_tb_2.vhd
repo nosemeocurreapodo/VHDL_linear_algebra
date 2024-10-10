@@ -55,9 +55,10 @@ begin
 		--		variable output : integer;
 
 		-- real
-		variable int_min : real := -2.0**(2);-- -2.0**((mantissa_size)/2-1)+1.0;
-		variable int_max : real :=  2.0**(2);-- 2.0**((mantissa_size)/2-1)-1.0;
-		variable opa_increment : real := 2.0**(-2);--2.0**(-fraction_size);
+		variable seed1, seed2  : positive; -- seed values for random generator
+		variable int_min : real := -2.0**(4);-- -2.0**((mantissa_size)/2-1)+1.0;
+		variable int_max : real :=  2.0**(4);-- 2.0**((mantissa_size)/2-1)-1.0;
+		variable opa_increment : real := 2.0**(-8);--2.0**(-fraction_size);
 		variable opb_increment : real := 2.0**(-2);--2.0**(-fraction_size);
 		variable opa     : real := int_min;
 		variable opb     : real := int_min;
@@ -98,6 +99,7 @@ begin
 			if (opa > int_max) then
 				opa := int_min;
 				opb := opb + opb_increment;
+				--uniform(seed1, seed2, opb); -- generate random number
 				if (opb > int_max) then
 					opb := int_min;
 					case op is
