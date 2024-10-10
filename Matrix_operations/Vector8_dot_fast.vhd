@@ -7,17 +7,17 @@ use work.FPU_component_pack.all;
 
 entity Vector8_dot_fast is
 	generic(
-		IN_SIZE         : integer := 32;
-		IN_FRAC_SIZE    : integer := 23;
-		ADD_1_SIZE      : integer := 32;
-		ADD_1_FRAC_SIZE : integer := 23;
-		ADD_2_SIZE      : integer := 32;
-		ADD_2_FRAC_SIZE : integer := 23;
-		ADD_3_SIZE      : integer := 32;
-		ADD_3_FRAC_SIZE : integer := 23;
-		OUT_SIZE        : integer := 32;
-		OUT_FRAC_SIZE   : integer := 23;
-		AUX_SIZE        : integer := 32
+		IN_SIZE         : integer;
+		IN_FRAC_SIZE    : integer;
+		ADD_1_SIZE      : integer;
+		ADD_1_FRAC_SIZE : integer;
+		ADD_2_SIZE      : integer;
+		ADD_2_FRAC_SIZE : integer;
+		ADD_3_SIZE      : integer;
+		ADD_3_FRAC_SIZE : integer;
+		OUT_SIZE        : integer;
+		OUT_FRAC_SIZE   : integer;
+		AUX_SIZE        : integer
 	);
 	port(
 		clk           : in  std_logic;

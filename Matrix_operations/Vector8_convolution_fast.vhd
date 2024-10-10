@@ -4,6 +4,7 @@ use ieee.numeric_std.all;
 
 use work.Matrix_definitions_pack.all;
 use work.Matrix_component_pack.all;
+use work.FPU_utility_functions_pack.all;
 
 entity Vector8_convolution_fast is
 	generic(
@@ -33,8 +34,26 @@ architecture RTL of Vector8_convolution_fast is
 	type state_type is (IDLE, LOADING, BUSY_1, BUSY_2);
 	signal state : state_type := IDLE;
 
-	signal Vector1_input : Vector(7 downto 0)(IN_SIZE - 1 downto 0);
-	signal Vector2_input : Vector(7 downto 0)(IN_SIZE - 1 downto 0);
+	signal Vector1_input : Vector(7 downto 0)(IN_SIZE - 1 downto 0);-- := 
+	--	(to_scalar(0.0, IN_SIZE, IN_FRAC_SIZE),
+	--	to_scalar(0.0, IN_SIZE, IN_FRAC_SIZE),
+	--	to_scalar(0.0, IN_SIZE, IN_FRAC_SIZE),
+	--	to_scalar(0.0, IN_SIZE, IN_FRAC_SIZE),
+	--	to_scalar(0.0, IN_SIZE, IN_FRAC_SIZE),
+	--	to_scalar(0.0, IN_SIZE, IN_FRAC_SIZE),
+	--	to_scalar(0.0, IN_SIZE, IN_FRAC_SIZE),
+	--	to_scalar(0.0, IN_SIZE, IN_FRAC_SIZE));
+
+	signal Vector2_input : Vector(7 downto 0)(IN_SIZE - 1 downto 0);-- := 
+	--	(to_scalar(0.0, IN_SIZE, IN_FRAC_SIZE),
+	--	to_scalar(0.0, IN_SIZE, IN_FRAC_SIZE),
+	--	to_scalar(0.0, IN_SIZE, IN_FRAC_SIZE),
+	--	to_scalar(0.0, IN_SIZE, IN_FRAC_SIZE),
+	--	to_scalar(0.0, IN_SIZE, IN_FRAC_SIZE),
+	--	to_scalar(0.0, IN_SIZE, IN_FRAC_SIZE),
+	--	to_scalar(0.0, IN_SIZE, IN_FRAC_SIZE),
+	--	to_scalar(0.0, IN_SIZE, IN_FRAC_SIZE));
+
 	signal scalar_output : std_logic_vector(OUT_SIZE - 1 downto 0);
 
 	signal do_dot   : std_logic;
@@ -78,7 +97,11 @@ begin
 				Vector1_input(I) <= Vector1_input(I+1);
 			end loop;
 			Vector1_input(7) <= input;
-			output  <= scalar_output;
+			if(dot_done = '1') then
+				output  <= scalar_output;
+			else
+				output  <= to_scalar(0, OUT_SIZE, OUT_FRAC_SIZE);
+			end if;
 			conv_done <= dot_done;
 		end if;
 	end process;

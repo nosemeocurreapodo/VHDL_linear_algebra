@@ -11,6 +11,29 @@ end entity Vector8_convolution_tb;
 
 architecture rtl of Vector8_convolution_tb is
 
+	component Vector8_convolution_fast is
+		--generic(
+		--	IN_SIZE         : integer := 32;
+		--	IN_FRAC_SIZE    : integer := 23;
+		--	ADD_1_SIZE      : integer := 32;
+		--	ADD_1_FRAC_SIZE : integer := 23;
+		--	ADD_2_SIZE      : integer := 32;
+		--	ADD_2_FRAC_SIZE : integer := 23;
+		--	ADD_3_SIZE      : integer := 32;
+		--	ADD_3_FRAC_SIZE : integer := 23;
+		--	OUT_SIZE        : integer := 32;
+		--	OUT_FRAC_SIZE   : integer := 23;
+		--	AUX_SIZE        : integer := 32
+		--);
+		port(
+			clk       : in  std_logic;
+			do_conv   : in  std_logic;
+			conv_done : out std_logic;
+			input     : in  std_logic_vector(31 downto 0);
+			output    : out std_logic_vector(31 downto 0)
+		);
+	end component;
+
 	signal clk : std_logic := '1';
 
 	signal new_operation_request    : std_logic := '0';
@@ -25,20 +48,20 @@ architecture rtl of Vector8_convolution_tb is
 
 begin
 	Vector8_convolution_fast_instantiation : Vector8_convolution_fast 
-	generic map
-	(
-		IN_SIZE         => 32,
-		IN_FRAC_SIZE    => 23,
-		ADD_1_SIZE      => 32,
-		ADD_1_FRAC_SIZE => 23,
-		ADD_2_SIZE      => 32,
-		ADD_2_FRAC_SIZE => 23,
-		ADD_3_SIZE      => 32,
-		ADD_3_FRAC_SIZE => 23,
-		OUT_SIZE        => 32,
-		OUT_FRAC_SIZE   => 23,
-		AUX_SIZE        => 32
-	)
+	--generic map
+	--(
+	--	IN_SIZE         => 32,
+	--	IN_FRAC_SIZE    => 23,
+	--	ADD_1_SIZE      => 32,
+	--	ADD_1_FRAC_SIZE => 23,
+	--	ADD_2_SIZE      => 32,
+	--	ADD_2_FRAC_SIZE => 23,
+	--	ADD_3_SIZE      => 32,
+	--	ADD_3_FRAC_SIZE => 23,
+	--	OUT_SIZE        => 32,
+	--	OUT_FRAC_SIZE   => 23,
+	--	AUX_SIZE        => 32
+	--)
 	port map
 	(
 		clk        => clk,

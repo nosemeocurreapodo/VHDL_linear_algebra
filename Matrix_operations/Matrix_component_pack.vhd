@@ -32,29 +32,6 @@ component Vector8_dot_fast is
 	);
 end component;
 
-component Vector8_convolution_fast is
-	generic(
-		IN_SIZE         : integer := 32;
-		IN_FRAC_SIZE    : integer := 23;
-		ADD_1_SIZE      : integer := 32;
-		ADD_1_FRAC_SIZE : integer := 23;
-		ADD_2_SIZE      : integer := 32;
-		ADD_2_FRAC_SIZE : integer := 23;
-		ADD_3_SIZE      : integer := 32;
-		ADD_3_FRAC_SIZE : integer := 23;
-		OUT_SIZE        : integer := 32;
-		OUT_FRAC_SIZE   : integer := 23;
-		AUX_SIZE        : integer := 32
-	);
-	port(
-		clk       : in  std_logic;
-		do_conv   : in  std_logic;
-		conv_done : out std_logic;
-		input     : in  std_logic_vector(IN_SIZE - 1 downto 0);
-		output    : out std_logic_vector(OUT_SIZE - 1 downto 0)
-	);
-end component;
-
 end package Matrix_component_pack;
 
 package body Matrix_component_pack is
